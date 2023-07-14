@@ -3,29 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_poll">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.cultivaet.hassad.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/navigation_poll"
+        android:name="com.cultivaet.hassad.ui.main.poll.PollFragment"
+        android:label="@string/title_poll"
+        tools:layout="@layout/fragment_poll" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.cultivaet.hassad.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_missions"
+        android:name="com.cultivaet.hassad.ui.main.missions.MissionsFragment"
+        android:label="@string/title_missions"
+        tools:layout="@layout/fragment_missions" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.cultivaet.hassad.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_addition"
+        android:name="com.cultivaet.hassad.ui.main.addition.AdditionFragment"
+        android:label="@string/title_addition"
+        tools:layout="@layout/fragment_addition" />
 
     <fragment
-        android:id="@+id/navigation_settings"
-        android:name="com.cultivaet.hassad.ui.settings.SettingsFragment"
-        android:label="@string/title_settings"
-        tools:layout="@layout/fragment_settings" />
+        android:id="@+id/navigation_profile"
+        android:name="com.cultivaet.hassad.ui.main.profile.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_profile" />
 </navigation>

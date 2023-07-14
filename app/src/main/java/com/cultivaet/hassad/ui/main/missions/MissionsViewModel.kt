@@ -1,13 +1,13 @@
-package com.cultivaet.hassad.ui.home
+package com.cultivaet.hassad.ui.main.missions
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class HomeViewModel : ViewModel() {
+class MissionsViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
+        value = "This is missions Fragment"
     }
     val text: LiveData<String> = _text
 }
