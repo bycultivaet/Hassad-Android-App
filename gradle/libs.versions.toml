@@ -20,6 +20,7 @@ coroutines = "1.6.4"
 koin = "3.4.2"
 koin-core-coroutines = "3.4.1"
 ssp-sdp = "1.1.0"
+room = "2.1.0"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -47,6 +48,8 @@ koin-androidx-navigation = { group = "io.insert-koin", name = "koin-androidx-nav
 koin-core-coroutines = { group = "io.insert-koin", name = "koin-core-coroutines", version.ref = "koin-core-coroutines" }
 ssp-android = { group = "com.intuit.ssp", name = "ssp-android", version.ref = "ssp-sdp" }
 sdp-android = { group = "com.intuit.sdp", name = "sdp-android", version.ref = "ssp-sdp" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

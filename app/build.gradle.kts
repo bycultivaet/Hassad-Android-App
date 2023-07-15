@@ -19,12 +19,16 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"https://core-svgj25m4xq-ey.a.run.app\"")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "BASE_URL", "\"https://core-svgj25m4xq-ey.a.run.app\"")
         }
     }
     compileOptions {
@@ -35,6 +39,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
 }
@@ -68,6 +73,9 @@ dependencies {
 
     implementation(libs.ssp.android)
     implementation(libs.sdp.android)
+
+    implementation(libs.room.runtime)
+    annotationProcessor(libs.room.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
