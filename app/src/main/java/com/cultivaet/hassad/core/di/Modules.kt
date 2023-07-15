@@ -3,6 +3,8 @@ package com.cultivaet.hassad.core.di
 import com.cultivaet.hassad.core.source.local.DatabaseBuilder
 import com.cultivaet.hassad.core.source.remote.ApiBuilder
 import com.cultivaet.hassad.data.repository.LoginRepositoryImpl
+import com.cultivaet.hassad.data.source.local.DatabaseHelper
+import com.cultivaet.hassad.data.source.local.DatabaseHelperImpl
 import com.cultivaet.hassad.data.source.remote.ApiHelper
 import com.cultivaet.hassad.data.source.remote.ApiHelperImpl
 import com.cultivaet.hassad.domain.repository.LoginRepository
@@ -21,7 +23,7 @@ val databaseModule = module {
 
 val helperModule = module {
     single<ApiHelper> { ApiHelperImpl(get()) }
-//    single<DatabaseHelper> { DatabaseHelperImpl(get()) }
+    single<DatabaseHelper> { DatabaseHelperImpl(get()) }
 }
 
 val repositoryModule = module {

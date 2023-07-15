@@ -6,7 +6,6 @@ import com.cultivaet.hassad.domain.repository.LoginRepository
 
 class LoginRepositoryImpl(
     private val apiHelper: ApiHelper,
-//    private val databaseHelper: DatabaseHelper
 ) : LoginRepository {
     override suspend fun getFacilitator(phoneNumber: String) = apiHelper.getFacilitator(phoneNumber)
 }

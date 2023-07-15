@@ -5,7 +5,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalCoroutinesApi
 val appComponent = listOf(
     networkModule,
-//    databaseModule,
+    databaseModule,
     helperModule,
     repositoryModule,
     useCaseModule,
