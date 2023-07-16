@@ -8,6 +8,6 @@
     <string name="title_profile">الحساب</string>
 
     <string name="title_login">تسجيل الدخول</string>
-    <string name="please_enter_phone_number">برجاء إدخال رقم التليفون</string>
+    <string name="phone_number">رقم التليفون</string>
     <string name="please_enter_require_data">برجاء إدخال البيانات المطلوبة</string>
 </resources>

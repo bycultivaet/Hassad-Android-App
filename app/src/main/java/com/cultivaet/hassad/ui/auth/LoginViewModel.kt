@@ -39,7 +39,8 @@ class LoginViewModel(
     private fun getFacilitatorByPhoneNumber() {
         viewModelScope.launch {
             _state.value = LoginState.Loading
-            _state.value = when (val resource = loginUseCase.getFacilitatorByPhoneNumber(phoneNumber)) {
+            _state.value =
+                when (val resource = loginUseCase.getFacilitatorByPhoneNumber(phoneNumber)) {
                     is Resource.Success -> LoginState.Success((resource.data?.toFacilitatorDataItem()))
                     is Resource.Error -> LoginState.Error(resource.error)
                 }

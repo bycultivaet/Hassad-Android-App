@@ -21,6 +21,7 @@ koin = "3.4.2"
 koin-core-coroutines = "3.4.1"
 ssp-sdp = "1.1.0"
 room = "2.1.0"
+lottie = "6.0.1"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -50,6 +51,7 @@ ssp-android = { group = "com.intuit.ssp", name = "ssp-android", version.ref = "s
 sdp-android = { group = "com.intuit.sdp", name = "sdp-android", version.ref = "ssp-sdp" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

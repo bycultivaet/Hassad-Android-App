@@ -12,7 +12,7 @@
             type="com.cultivaet.hassad.ui.auth.LoginViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.auth.LoginActivity">
@@ -20,19 +20,37 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <EditText
-                android:id="@+id/edittext_phone_number"
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/animation_view"
+                android:layout_width="@dimen/_200sdp"
+                android:layout_height="@dimen/_200sdp"
+                android:layout_marginTop="@dimen/_64sdp"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/login_lottie" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/outlinedTextField"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/please_enter_phone_number"
-                android:paddingHorizontal="@dimen/_8sdp"
-                android:textSize="@dimen/_20ssp" />
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_32sdp"
+                android:hint="@string/phone_number">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
                 android:id="@+id/button_login"
@@ -40,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_16sdp"
                 android:text="@string/title_login"
-                android:textSize="@dimen/_20ssp" />
+                android:textSize="@dimen/_14ssp" />
         </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>

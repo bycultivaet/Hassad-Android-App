@@ -28,7 +28,7 @@ class LoginActivity : AppCompatActivity() {
         observeViewModel()
 
         binding.buttonLogin.setOnClickListener {
-            loginViewModel.phoneNumber = binding.edittextPhoneNumber.text.toString()
+            loginViewModel.phoneNumber = binding.outlinedTextField.editText?.text.toString()
             if (loginViewModel.phoneNumber.isNotEmpty()) {
                 runBlocking {
                     lifecycleScope.launch { loginViewModel.loginIntent.send(LoginIntent.FetchFacilitator) }
