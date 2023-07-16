@@ -7,9 +7,9 @@
         android:title="@string/title_poll" />
 
     <item
-        android:id="@+id/navigation_missions"
-        android:icon="@drawable/ic_mission"
-        android:title="@string/title_missions" />
+        android:id="@+id/navigation_tasks"
+        android:icon="@drawable/ic_task"
+        android:title="@string/title_tasks" />
 
     <item
         android:id="@+id/navigation_addition"

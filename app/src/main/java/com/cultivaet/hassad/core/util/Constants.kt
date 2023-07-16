@@ -1,23 +1,20 @@
 package com.cultivaet.hassad.core.util
 
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import com.cultivaet.hassad.BuildConfig
 
 object Constants {
-    object Headers {
-        const val X_AUTH_TOKEN = "X-Auth-Token"
-    }
-
     object EndPoints {
         const val GetFacilitatorByPhoneNumber = "api/facilitator/search/{phone}"
     }
 
-    object Database {
-        const val NAME = "${BuildConfig.APPLICATION_ID}.db"
+    object PreferenceKeys {
+        val USER_ID = intPreferencesKey("id")
+        val IS_LOGGED = booleanPreferencesKey("is_logged")
     }
 
-    object Day {
-        const val YESTERDAY = "Yesterday"
-        const val TODAY = "Today"
-        const val TOMORROW = "Tomorrow"
+    object Database {
+        const val NAME = "${BuildConfig.APPLICATION_ID}.db"
     }
 }

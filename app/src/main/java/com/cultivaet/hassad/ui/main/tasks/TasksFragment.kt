@@ -1,4 +1,4 @@
-package com.cultivaet.hassad.ui.main.missions
+package com.cultivaet.hassad.ui.main.tasks
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.cultivaet.hassad.databinding.FragmentMissionsBinding
+import com.cultivaet.hassad.databinding.FragmentTasksBinding
 
-class MissionsFragment : Fragment() {
+class TasksFragment : Fragment() {
 
-    private var _binding: FragmentMissionsBinding? = null
+    private var _binding: FragmentTasksBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -22,13 +22,13 @@ class MissionsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val missionsViewModel = ViewModelProvider(this)[MissionsViewModel::class.java]
+        val tasksViewModel = ViewModelProvider(this)[TasksViewModel::class.java]
 
-        _binding = FragmentMissionsBinding.inflate(inflater, container, false)
+        _binding = FragmentTasksBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val textView: TextView = binding.textDashboard
-        missionsViewModel.text.observe(viewLifecycleOwner) {
+        tasksViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root

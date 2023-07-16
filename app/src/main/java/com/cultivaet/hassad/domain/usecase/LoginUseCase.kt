@@ -7,4 +7,6 @@ import com.cultivaet.hassad.domain.repository.LoginRepository
 class LoginUseCase(private val repository: LoginRepository) {
     suspend fun getFacilitatorByPhoneNumber(phoneNumber: String): Resource<Facilitator> =
         repository.getFacilitator(phoneNumber)
+
+    suspend fun userLoggedIn(userId: Int) = repository.userLoggedIn(userId)
 }

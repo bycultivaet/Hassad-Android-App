@@ -80,6 +80,9 @@ dependencies {
 
     implementation(libs.lottie)
 
+    implementation(libs.datastore.preferences)
+    annotationProcessor(libs.datastore.preferences.core)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)

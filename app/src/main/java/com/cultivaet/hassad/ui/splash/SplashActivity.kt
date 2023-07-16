@@ -1,34 +1,36 @@
 package com.cultivaet.hassad.ui.splash
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.cultivaet.hassad.R
+import com.cultivaet.hassad.core.extension.launchActivity
+import com.cultivaet.hassad.databinding.ActivitySplashBinding
 import com.cultivaet.hassad.ui.auth.LoginActivity
 import com.cultivaet.hassad.ui.main.MainActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.koin.android.ext.android.inject
 
+@ExperimentalCoroutinesApi
 class SplashActivity : AppCompatActivity() {
+    private val splashViewModel: SplashViewModel by inject()
 
-    private val activityScope = CoroutineScope(Dispatchers.Main)
+    private lateinit var binding: ActivitySplashBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash)
 
-        activityScope.launch {
-            delay(3000)
-            startActivity(Intent(this@SplashActivity, MainActivity::class.java))
-            finish()
+        binding = ActivitySplashBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        splashViewModel.handleLoggedInState { isLoggedIn ->
+            if (isLoggedIn == true) {
+                launchActivity<MainActivity>(
+                    withFinish = true
+                )
+            } else {
+                launchActivity<LoginActivity>(
+                    withFinish = true
+                )
+            }
         }
-    }
-
-    override fun onPause() {
-        activityScope.cancel()
-        super.onPause()
     }
 }

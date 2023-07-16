@@ -5,4 +5,6 @@ import com.cultivaet.hassad.domain.model.remote.Facilitator
 
 interface LoginRepository {
     suspend fun getFacilitator(phoneNumber: String): Resource<Facilitator>
+
+    suspend fun userLoggedIn(userId: Int)
 }

@@ -12,10 +12,10 @@
         tools:layout="@layout/fragment_poll" />
 
     <fragment
-        android:id="@+id/navigation_missions"
-        android:name="com.cultivaet.hassad.ui.main.missions.MissionsFragment"
-        android:label="@string/title_missions"
-        tools:layout="@layout/fragment_missions" />
+        android:id="@+id/navigation_tasks"
+        android:name="com.cultivaet.hassad.ui.main.tasks.TasksFragment"
+        android:label="@string/title_tasks"
+        tools:layout="@layout/fragment_tasks" />
 
     <fragment
         android:id="@+id/navigation_addition"
