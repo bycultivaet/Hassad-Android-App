@@ -5,4 +5,6 @@ import retrofit2.Response
 
 interface ApiHelper {
     suspend fun getFacilitator(phoneNumber: String): Response<Facilitator>
+
+    suspend fun getFacilitator(id: Int): Response<Facilitator>
 }

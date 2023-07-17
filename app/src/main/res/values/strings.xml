@@ -9,4 +9,8 @@
     <string name="title_login">تسجيل الدخول</string>
     <string name="phone_number">رقم التليفون</string>
     <string name="please_enter_require_data">برجاء إدخال البيانات المطلوبة</string>
+    <string name="logout">تسجيل خروج</string>
+    <string name="logout_message">هل ترغب بالخروج؟</string>
+    <string name="yes">نعم</string>
+    <string name="no">لا</string>
 </resources>

@@ -48,7 +48,7 @@ class LoginViewModel(
                 when (val resource = loginUseCase.getFacilitatorByPhoneNumber(phoneNumber)) {
                     is Resource.Success -> {
                         val facilitator = resource.data
-                        facilitator?.let { loginUseCase.userLoggedIn(it.id) }
+                        facilitator?.let { loginUseCase.userLoggedIn(it.ID) }
                         LoginState.Success((facilitator?.toFacilitatorDataItem()))
                     }
 

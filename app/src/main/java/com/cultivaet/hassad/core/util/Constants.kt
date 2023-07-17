@@ -7,6 +7,7 @@ import com.cultivaet.hassad.BuildConfig
 object Constants {
     object EndPoints {
         const val GetFacilitatorByPhoneNumber = "api/facilitator/search/{phone}"
+        const val GetFacilitatorById = "api/facilitator/{id}"
     }
 
     object PreferenceKeys {

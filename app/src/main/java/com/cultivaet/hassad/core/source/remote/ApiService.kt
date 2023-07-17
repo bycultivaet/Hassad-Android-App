@@ -9,4 +9,7 @@ import retrofit2.http.Path
 interface ApiService {
     @GET(Constants.EndPoints.GetFacilitatorByPhoneNumber)
     suspend fun getFacilitatorByPhoneNumber(@Path("phone") phoneNumber: String): Response<Facilitator>
+
+    @GET(Constants.EndPoints.GetFacilitatorById)
+    suspend fun getFacilitatorById(@Path("id") id: Int): Response<Facilitator>
 }
