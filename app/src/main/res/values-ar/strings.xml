@@ -14,4 +14,15 @@
     <string name="logout_message">هل ترغب بالخروج؟</string>
     <string name="yes">نعم</string>
     <string name="no">لا</string>
+
+    <string name="firstName">الأسم الأول</string>
+    <string name="lastName">الأسم الأخير</string>
+    <string name="gender">الجنس</string>
+    <string name="age">العمر</string>
+    <string name="address">العنوان</string>
+    <string name="university">الجامعة</string>
+    <string name="major">التخصص</string>
+    <string name="gradYear">سنة التخرج</string>
+    <string name="experience">عدد سنوات الخبرة</string>
+    <string name="hasVehicle">هل لديك سيارة؟</string>
 </resources>

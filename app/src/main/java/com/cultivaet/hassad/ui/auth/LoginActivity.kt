@@ -28,7 +28,7 @@ class LoginActivity : BaseActivity() {
         observeViewModel()
 
         binding.buttonLogin.setOnClickListener {
-            loginViewModel.login(binding.outlinedTextField.editText?.text.toString())
+            loginViewModel.login(binding.phoneNumberTextField.editText?.text.toString())
         }
     }
 

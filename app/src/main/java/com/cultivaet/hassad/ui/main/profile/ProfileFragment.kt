@@ -56,7 +56,21 @@ class ProfileFragment : Fragment() {
 
                     is ProfileState.Success -> {
                         binding.progressBar.visibility = View.GONE
-                        binding.textSettings.text = it.facilitator?.firstName
+                        binding.firstNameTextField.editText?.setText(it.facilitator?.firstName)
+                        binding.lastNameTextField.editText?.setText(it.facilitator?.lastName)
+                        binding.phoneNumberTextField.editText?.setText(it.facilitator?.phoneNumber)
+                        binding.genderTextField.editText?.setText(it.facilitator?.gender)
+                        binding.ageTextField.editText?.setText(it.facilitator?.age.toString())
+                        binding.addressTextField.editText?.setText(it.facilitator?.address)
+                        binding.universityTextField.editText?.setText(it.facilitator?.university)
+                        binding.majorTextField.editText?.setText(it.facilitator?.major)
+                        binding.gradYearTextField.editText?.setText(it.facilitator?.gradYear.toString())
+                        binding.experienceTextField.editText?.setText(it.facilitator?.experience.toString())
+                        binding.hasVehicleTextField.editText?.setText(
+                            it.facilitator?.answerOfHavingVehicle(
+                                activity
+                            )
+                        )
                     }
 
                     is ProfileState.Error -> {
