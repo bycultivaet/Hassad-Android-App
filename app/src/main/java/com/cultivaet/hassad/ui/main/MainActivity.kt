@@ -38,7 +38,7 @@ class MainActivity : BaseActivity() {
             setOf(
                 R.id.navigation_poll,
                 R.id.navigation_tasks,
-                R.id.navigation_addition,
+                R.id.navigation_add_farmer,
                 R.id.navigation_profile
             )
         )

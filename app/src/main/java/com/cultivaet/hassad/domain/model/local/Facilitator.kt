@@ -6,15 +6,15 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "facilitator")
 class Facilitator(
     @PrimaryKey
-    var id: Int,
+    var id: Long,
     var firstName: String,
     var lastName: String,
     var gender: String,
-    var age: Int,
+    var age: Long,
     var university: String,
     var major: String,
-    var gradYear: Int,
-    var experience: Int,
+    var gradYear: Long,
+    var experience: Long,
     var hasVehicle: Boolean,
     var address: String,
     var phoneNumber: String

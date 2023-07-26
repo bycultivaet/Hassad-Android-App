@@ -1,12 +1,9 @@
-package com.cultivaet.hassad.domain.model.remote
+package com.cultivaet.hassad.domain.model.remote.responses
 
 import com.cultivaet.hassad.ui.auth.model.FacilitatorDataItem
 
 data class Facilitator(
     var ID: Int,
-    var CreatedAt: String? = null,
-    var UpdatedAt: String? = null,
-    var DeletedAt: String? = null,
     var firstName: String? = null,
     var lastName: String? = null,
     var gender: String? = null,

@@ -16,9 +16,9 @@
         tools:layout="@layout/fragment_tasks" />
 
     <fragment
-        android:id="@+id/navigation_addition"
-        android:name="com.cultivaet.hassad.ui.main.addition.AdditionFragment"
-        tools:layout="@layout/fragment_addition" />
+        android:id="@+id/navigation_add_farmer"
+        android:name="com.cultivaet.hassad.ui.main.addfarmer.AddFarmerFragment"
+        tools:layout="@layout/fragment_add_farmer" />
 
     <fragment
         android:id="@+id/navigation_profile"

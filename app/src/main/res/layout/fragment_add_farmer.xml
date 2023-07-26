@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.profile.ProfileFragment">
+    tools:context=".ui.main.addfarmer.AddFarmerFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -22,7 +22,6 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:enabled="false"
                 android:hint="@string/firstName">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -40,7 +39,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/_8sdp"
-                android:enabled="false"
                 android:hint="@string/lastName">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -57,7 +55,6 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:enabled="false"
                 android:hint="@string/phone_number">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -71,19 +68,17 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/genderTextField"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/_8sdp"
-                android:enabled="false"
                 android:hint="@string/gender">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <AutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/black" />
+                    android:inputType="none"
+                    android:textAlignment="viewStart" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -92,7 +87,6 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:enabled="false"
                 android:hint="@string/age">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -110,7 +104,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/_8sdp"
-                android:enabled="false"
                 android:hint="@string/address">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -123,12 +116,27 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/universityTextField"
+                android:id="@+id/possessionTypeTextField"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/possessionType">
+
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:textAlignment="viewStart" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/areaLandTextField"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:enabled="false"
-                android:hint="@string/university">
+                android:layout_marginVertical="@dimen/_8sdp"
+                android:hint="@string/areaLand">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -140,13 +148,57 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/majorTextField"
+                android:id="@+id/geographicalLocationEarthTextField"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/_8sdp"
-                android:enabled="false"
-                android:hint="@string/major">
+                android:hint="@string/geographicalLocationEarth">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/_8sdp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/dateTextField"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/firstDayToCultivation"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="viewStart"
+                        android:textColor="@color/black" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <View
+                    android:id="@+id/dateTextFieldAction"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/dateTextField"
+                    app:layout_constraintTop_toTopOf="@+id/dateTextField" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/currentCropTextField"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/currentCrop">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -158,57 +210,29 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/gradYearTextField"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:enabled="false"
-                android:hint="@string/gradYear">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/black" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/experienceTextField"
+                android:id="@+id/previouslyGrownCropsTextField"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/_8sdp"
-                android:enabled="false"
-                android:hint="@string/experience">
+                android:hint="@string/previouslyGrownCrops">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
+                    android:inputType="text"
                     android:textAlignment="viewStart"
                     android:textColor="@color/black" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/hasVehicleTextField"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <Button
+                android:id="@+id/button_add_farmer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_16sdp"
-                android:enabled="false"
-                android:hint="@string/hasVehicle">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/black" />
-
-            </com.google.android.material.textfield.TextInputLayout>
+                android:text="@string/title_addition"
+                android:textSize="@dimen/_14ssp" />
         </LinearLayout>
     </ScrollView>
 

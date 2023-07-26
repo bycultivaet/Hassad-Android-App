@@ -1,7 +1,7 @@
 package com.cultivaet.hassad.data.repository
 
 import com.cultivaet.hassad.core.source.remote.Resource
-import com.cultivaet.hassad.domain.model.remote.ErrorResponse
+import com.cultivaet.hassad.domain.model.remote.responses.ErrorResponse
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

@@ -8,6 +8,9 @@ object Constants {
     object EndPoints {
         const val GetFacilitatorByPhoneNumber = "api/facilitator/search/{phone}"
         const val GetFacilitatorById = "api/facilitator/{id}"
+
+        const val GetAllFarmersById = "api/facilitator/{id}/farmers/"
+        const val PostFarmer = "api/farmer"
     }
 
     object PreferenceKeys {

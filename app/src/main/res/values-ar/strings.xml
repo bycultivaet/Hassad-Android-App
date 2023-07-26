@@ -25,4 +25,14 @@
     <string name="gradYear">سنة التخرج</string>
     <string name="experience">عدد سنوات الخبرة</string>
     <string name="hasVehicle">هل لديك سيارة؟</string>
+    <string name="male">ذكر</string>
+    <string name="female">انثى</string>
+    <string name="ownershipLand">أرض ملك</string>
+    <string name="rentalLand">أرض إيجار</string>
+    <string name="possessionType">نوع الحيازة</string>
+    <string name="areaLand">مساحة الارض</string>
+    <string name="geographicalLocationEarth">الموقع الجغرافي للأرض</string>
+    <string name="currentCrop">المحصول الحالي</string>
+    <string name="previouslyGrownCrops">المحاصيل المزروعة سابقًا</string>
+    <string name="firstDayToCultivation">أول يوم للزراعة</string>
 </resources>
