@@ -13,6 +13,7 @@ import com.cultivaet.hassad.R
 import com.cultivaet.hassad.databinding.FragmentAddFarmerBinding
 import com.cultivaet.hassad.ui.main.addfarmer.intent.AddFarmerIntent
 import com.cultivaet.hassad.ui.main.addfarmer.viewstate.AddFarmerState
+import com.cultivaet.hassad.ui.main.farmers.FarmersBottomSheet
 import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -70,6 +71,15 @@ class AddFarmerFragment : Fragment() {
             }
         }
 
+        binding.listOfFarmers.setOnClickListener {
+            val farmersBottomSheet = addFarmerViewModel.farmersList?.let { farmers ->
+                FarmersBottomSheet(
+                    farmers
+                )
+            }
+            farmersBottomSheet?.show(parentFragmentManager, "farmersBottomSheet")
+        }
+
         return binding.root
     }
 
@@ -79,6 +89,8 @@ class AddFarmerFragment : Fragment() {
                 when (it) {
                     is AddFarmerState.Idle -> {
                         binding.progressBar.visibility = View.GONE
+                        binding.numberOfFarmersTextView.text =
+                            getString(R.string.numberOfFarmersInList, 0)
                     }
 
                     is AddFarmerState.Loading -> {
@@ -87,8 +99,8 @@ class AddFarmerFragment : Fragment() {
 
                     is AddFarmerState.Success -> {
                         binding.progressBar.visibility = View.GONE
-                        Toast.makeText(activity, "Count: ${it.farmers?.size}", Toast.LENGTH_SHORT)
-                            .show()
+                        binding.numberOfFarmersTextView.text =
+                            getString(R.string.numberOfFarmersInList, it.farmers?.size)
                     }
 
                     is AddFarmerState.Error -> {

@@ -34,4 +34,7 @@
     <string name="currentCrop">المحصول الحالي</string>
     <string name="previouslyGrownCrops">المحاصيل المزروعة سابقًا</string>
     <string name="firstDayToCultivation">أول يوم للزراعة</string>
+    <string name="numberOfFarmersInList">يوجد %1$d مزارعين في القائمة</string>
+    <string name="listOfFarmers">قائمة المزارعين</string>
+    <string name="searchHint">ابحث بالأسم او برقم التليفون</string>
 </resources>

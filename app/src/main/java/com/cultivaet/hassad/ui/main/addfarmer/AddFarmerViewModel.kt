@@ -3,6 +3,7 @@ package com.cultivaet.hassad.ui.main.addfarmer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cultivaet.hassad.core.source.remote.Resource
+import com.cultivaet.hassad.domain.model.remote.responses.Farmer
 import com.cultivaet.hassad.domain.usecase.AddFarmerUseCase
 import com.cultivaet.hassad.ui.main.addfarmer.intent.AddFarmerIntent
 import com.cultivaet.hassad.ui.main.addfarmer.viewstate.AddFarmerState
@@ -22,6 +23,7 @@ class AddFarmerViewModel(
     private val _state = MutableStateFlow<AddFarmerState>(AddFarmerState.Idle)
     val state: StateFlow<AddFarmerState> = _state
     private var userId: Int = -1
+    var farmersList: List<Farmer>? = null
 
     init {
         handleIntent()
@@ -60,8 +62,8 @@ class AddFarmerViewModel(
             _state.value =
                 when (val resource = addFarmerUseCase.getAllFarmersById(id)) {
                     is Resource.Success -> {
-                        val farmers = resource.data
-                        AddFarmerState.Success(farmers)
+                        farmersList = resource.data
+                        AddFarmerState.Success(farmersList)
                     }
 
                     is Resource.Error -> AddFarmerState.Error(resource.error)
