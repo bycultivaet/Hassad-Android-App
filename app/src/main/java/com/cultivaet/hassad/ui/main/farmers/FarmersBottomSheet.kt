@@ -7,11 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.cultivaet.hassad.databinding.FarmersBottomSheetBinding
-import com.cultivaet.hassad.domain.model.remote.responses.Farmer
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class FarmersBottomSheet(
-    private val farmersList: List<Farmer>
+    private val farmersList: List<FarmerDataItem>
 ) : BottomSheetDialogFragment() {
 
     private var _binding: FarmersBottomSheetBinding? = null
@@ -27,7 +26,7 @@ class FarmersBottomSheet(
     ): View {
         _binding = FarmersBottomSheetBinding.inflate(inflater, container, false)
 
-        val arrayAdapter = FarmersAdapter(farmersList)
+        val arrayAdapter = activity?.let { FarmersAdapter(it, farmersList) }
         binding.farmersRecyclerView.adapter = arrayAdapter
 
         binding.closeButton.setOnClickListener { this.dismiss() }
@@ -40,8 +39,12 @@ class FarmersBottomSheet(
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val filteredList = farmersList.filter { it.firstName.contains(s.toString()) }
-                arrayAdapter.setItems(filteredList)
+                val searchStr = s.toString()
+                val filteredList = farmersList.filter {
+                    it.fullName.contains(searchStr) ||
+                            it.phoneNumber.contains(searchStr)
+                }
+                arrayAdapter?.setItems(filteredList)
             }
         })
 

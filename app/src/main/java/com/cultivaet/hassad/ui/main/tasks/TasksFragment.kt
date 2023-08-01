@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.cultivaet.hassad.R
 import com.cultivaet.hassad.databinding.FragmentTasksBinding
 
 class TasksFragment : Fragment() {
@@ -28,9 +29,8 @@ class TasksFragment : Fragment() {
         val root: View = binding.root
 
         val textView: TextView = binding.textDashboard
-        tasksViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+        textView.text = getString(R.string.no_missions)
+
         return root
     }
 

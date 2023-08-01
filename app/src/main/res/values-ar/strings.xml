@@ -38,4 +38,9 @@
     <string name="numberOfFarmersInList">يوجد %1$d مزارعين في القائمة</string>
     <string name="listOfFarmers">قائمة المزارعين</string>
     <string name="searchHint">ابحث بالأسم او برقم التليفون</string>
+    <string name="no_missions">لا توجد مهام</string>
+    <string name="name">الأسم</string>
+    <string name="cropType">طريقة الحصاد</string>
+    <string name="zeroDay">يوم البذر</string>
+    <string name="landArea">مساحة الأرض</string>
 </resources>

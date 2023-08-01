@@ -34,7 +34,7 @@
             android:paddingHorizontal="@dimen/_8sdp"
             android:paddingVertical="@dimen/_2sdp"
             android:text="@string/listOfFarmers"
-            android:textColor="@color/black"
+            android:textColor="@color/purple_500"
             android:textSize="@dimen/_12ssp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/numberOfFarmersTextView"
@@ -68,7 +68,8 @@
                     android:layout_height="wrap_content"
                     android:inputType="text"
                     android:textAlignment="viewStart"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12ssp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -85,7 +86,8 @@
                     android:layout_height="wrap_content"
                     android:inputType="text"
                     android:textAlignment="viewStart"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12ssp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -101,7 +103,8 @@
                     android:layout_height="wrap_content"
                     android:inputType="phone"
                     android:textAlignment="viewStart"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12ssp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -117,7 +120,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
-                    android:textAlignment="viewStart" />
+                    android:textAlignment="viewStart"
+                    android:textSize="@dimen/_12ssp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -133,7 +137,8 @@
                     android:layout_height="wrap_content"
                     android:inputType="number"
                     android:textAlignment="viewStart"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12ssp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -150,7 +155,8 @@
                     android:layout_height="wrap_content"
                     android:inputType="text"
                     android:textAlignment="viewStart"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12ssp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -165,7 +171,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
-                    android:textAlignment="viewStart" />
+                    android:textAlignment="viewStart"
+                    android:textSize="@dimen/_12ssp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -182,7 +189,8 @@
                     android:layout_height="wrap_content"
                     android:inputType="text"
                     android:textAlignment="viewStart"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12ssp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -191,14 +199,16 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/geographicalLocationEarth">
+                android:hint="@string/geographicalLocationEarth"
+                android:textSize="@dimen/_12ssp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
                     android:textAlignment="viewStart"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12ssp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -220,7 +230,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAlignment="viewStart"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_12ssp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -244,7 +255,8 @@
                     android:layout_height="wrap_content"
                     android:inputType="text"
                     android:textAlignment="viewStart"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12ssp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -261,7 +273,8 @@
                     android:layout_height="wrap_content"
                     android:inputType="text"
                     android:textAlignment="viewStart"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12ssp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

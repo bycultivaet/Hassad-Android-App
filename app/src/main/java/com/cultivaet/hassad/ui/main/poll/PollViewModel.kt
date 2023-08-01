@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 class PollViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is poll Fragment"
+        value = "صفحة الاستبيان"
     }
     val text: LiveData<String> = _text
 }

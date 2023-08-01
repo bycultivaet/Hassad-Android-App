@@ -15,7 +15,8 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textAlignment="viewStart"
-        android:textAppearance="?attr/textAppearanceSubtitle1"
+        android:textSize="@dimen/_12ssp"
+        android:textStyle="bold"
         tools:text="Name" />
 
     <TextView
@@ -26,6 +27,89 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textAlignment="viewStart"
-        android:textAppearance="?attr/textAppearanceSubtitle1"
+        android:textSize="@dimen/_12ssp"
         tools:text="Phone" />
+
+    <LinearLayout
+        android:id="@+id/restOfFarmerData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_4sdp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAlignment="viewStart"
+            android:textSize="@dimen/_12ssp"
+            tools:text="Address" />
+
+        <TextView
+            android:id="@+id/age"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAlignment="viewStart"
+            android:textSize="@dimen/_12ssp"
+            tools:text="Age" />
+
+        <TextView
+            android:id="@+id/cropType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_4sdp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAlignment="viewStart"
+            android:textSize="@dimen/_12ssp"
+            tools:text="CropType" />
+
+        <TextView
+            android:id="@+id/cropsHistory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAlignment="viewStart"
+            android:textSize="@dimen/_12ssp"
+            tools:text="CropsHistory" />
+
+        <TextView
+            android:id="@+id/possessionType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_4sdp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAlignment="viewStart"
+            android:textSize="@dimen/_12ssp"
+            tools:text="possessionType" />
+
+        <TextView
+            android:id="@+id/zeroDay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAlignment="viewStart"
+            android:textSize="@dimen/_12ssp"
+            tools:text="zeroDay" />
+
+        <TextView
+            android:id="@+id/landArea"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAlignment="viewStart"
+            android:textSize="@dimen/_12ssp"
+            tools:text="landArea" />
+    </LinearLayout>
 </LinearLayout>

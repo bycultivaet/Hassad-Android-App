@@ -37,10 +37,12 @@
     <EditText
         android:id="@+id/searchEditText"
         android:layout_width="match_parent"
-        android:layout_marginVertical="@dimen/_8sdp"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/_8sdp"
+        android:background="@drawable/rounded_stroke"
         android:drawableStart="@drawable/ic_search"
         android:drawablePadding="@dimen/_8sdp"
+        android:padding="@dimen/_8sdp"
         android:hint="@string/searchHint"
         android:textColor="@color/black"
         android:textSize="@dimen/_12ssp" />
