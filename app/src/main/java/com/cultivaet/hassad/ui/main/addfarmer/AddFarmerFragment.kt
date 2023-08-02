@@ -10,7 +10,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.cultivaet.hassad.R
+import com.cultivaet.hassad.core.extension.getDateFromString
 import com.cultivaet.hassad.databinding.FragmentAddFarmerBinding
+import com.cultivaet.hassad.domain.model.remote.requests.Farmer
 import com.cultivaet.hassad.ui.main.addfarmer.intent.AddFarmerIntent
 import com.cultivaet.hassad.ui.main.addfarmer.viewstate.AddFarmerState
 import com.cultivaet.hassad.ui.main.farmers.FarmersBottomSheet
@@ -80,6 +82,44 @@ class AddFarmerFragment : Fragment() {
             farmersBottomSheet?.show(parentFragmentManager, "farmersBottomSheet")
         }
 
+        binding.buttonAddFarmer.setOnClickListener {
+            val firstName = binding.firstNameTextField.editText?.text.toString()
+            val lastName = binding.lastNameTextField.editText?.text.toString()
+            val phoneNumber = binding.phoneNumberTextField.editText?.text.toString()
+            val gender = binding.genderTextField.editText?.text.toString()
+            val age = binding.ageTextField.editText?.text.toString()
+            val address = binding.addressTextField.editText?.text.toString()
+            val possessionType = binding.possessionTypeTextField.editText?.text.toString()
+            val areaLand = binding.areaLandTextField.editText?.text.toString()
+            val geographicalLocationEarth =
+                binding.geographicalLocationEarthTextField.editText?.text.toString()
+            val selectedDate = binding.dateTextField.editText?.text.toString()
+            val currentCrop = binding.currentCropTextField.editText?.text.toString()
+            val previouslyGrownCrops =
+                binding.previouslyGrownCropsTextField.editText?.text.toString()
+
+            addFarmerViewModel.farmer = Farmer(
+                firstName = firstName,
+                lastName = lastName,
+                phoneNumber = phoneNumber,
+                gender = gender,
+                age = age.toInt(),
+                address = address,
+                landArea = areaLand.toDouble(),
+                ownership = possessionType,
+                geolocation = "40.7128° N, 74.0060° W",
+                currentYield = currentCrop,
+                ZeroDay = selectedDate.getDateFromString(),
+                cropType = "annual",
+                cropsHistory = previouslyGrownCrops,
+                facilitatorId = addFarmerViewModel.userId
+            )
+
+            runBlocking {
+                lifecycleScope.launch { addFarmerViewModel.addFarmerIntent.send(AddFarmerIntent.AddFarmer) }
+            }
+        }
+
         return binding.root
     }
 
@@ -97,10 +137,24 @@ class AddFarmerFragment : Fragment() {
                         binding.progressBar.visibility = View.VISIBLE
                     }
 
-                    is AddFarmerState.Success -> {
+                    is AddFarmerState.Success<*> -> {
                         binding.progressBar.visibility = View.GONE
-                        binding.numberOfFarmersTextView.text =
-                            getString(R.string.numberOfFarmersInList, it.farmers?.size)
+                        if (it.data is List<*>)
+                            binding.numberOfFarmersTextView.text =
+                                getString(R.string.numberOfFarmersInList, it.data.size)
+                        else {
+                            Toast.makeText(activity, "تم الإضافة", Toast.LENGTH_SHORT)
+                                .show()
+
+                            // TODO: back to home or clear editTexts
+                            runBlocking {
+                                lifecycleScope.launch {
+                                    addFarmerViewModel.addFarmerIntent.send(
+                                        AddFarmerIntent.GetUserId
+                                    )
+                                }
+                            }
+                        }
                     }
 
                     is AddFarmerState.Error -> {

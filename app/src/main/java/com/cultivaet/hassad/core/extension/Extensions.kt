@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import com.cultivaet.hassad.R
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 inline fun <reified T : Activity> Activity.launchActivity(
     withFinish: Boolean = false
@@ -25,4 +27,9 @@ fun Context.logoutAlert(yesCallback: () -> Unit) {
     val dialog = builder.create()
     dialog.window?.decorView?.layoutDirection = View.LAYOUT_DIRECTION_RTL
     dialog.show()
+}
+
+fun String.getDateFromString(): String {
+    val formatter = SimpleDateFormat("yyyy-MM-dd", Locale("en"))
+    return formatter.format(SimpleDateFormat("d MMM yyyy").parse(this))
 }
