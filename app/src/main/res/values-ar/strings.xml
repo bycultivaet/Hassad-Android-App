@@ -30,7 +30,6 @@
     <string name="ownershipLand">أرض ملك</string>
     <string name="rentalLand">أرض إيجار</string>
     <string name="possessionType">نوع الحيازة</string>
-    <string name="areaLand">مساحة الارض</string>
     <string name="geographicalLocationEarth">الموقع الجغرافي للأرض</string>
     <string name="currentCrop">المحصول الحالي</string>
     <string name="previouslyGrownCrops">المحاصيل المزروعة سابقًا</string>
@@ -43,4 +42,5 @@
     <string name="cropType">طريقة الحصاد</string>
     <string name="zeroDay">يوم البذر</string>
     <string name="landArea">مساحة الأرض</string>
+    <string name="please_enter">برجاء إدخال</string>
 </resources>

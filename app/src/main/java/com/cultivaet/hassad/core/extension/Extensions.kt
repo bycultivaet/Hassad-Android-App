@@ -4,8 +4,11 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import com.cultivaet.hassad.R
+import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -32,4 +35,36 @@ fun Context.logoutAlert(yesCallback: () -> Unit) {
 fun String.getDateFromString(): String {
     val formatter = SimpleDateFormat("yyyy-MM-dd", Locale("en"))
     return formatter.format(SimpleDateFormat("d MMM yyyy").parse(this))
+}
+
+fun TextInputLayout.showError(context: Context, hint: String): Boolean {
+    val textInputLayout = this
+    textInputLayout.editText?.addTextChangedListener(object : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            val text = s.toString()
+            val isEmpty = text.isEmpty()
+            if (isEmpty) {
+                textInputLayout.error = "${context.getString(R.string.please_enter)} $hint"
+                textInputLayout.requestFocus()
+            } else {
+                textInputLayout.error = null
+            }
+        }
+    })
+
+    val isEmpty = textInputLayout.editText?.text.toString().isEmpty()
+    if (isEmpty) {
+        textInputLayout.error = "${context.getString(R.string.please_enter)} $hint"
+        textInputLayout.requestFocus()
+    } else {
+        textInputLayout.error = null
+    }
+
+    return !isEmpty
 }

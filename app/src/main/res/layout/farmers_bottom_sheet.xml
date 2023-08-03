@@ -42,8 +42,11 @@
         android:background="@drawable/rounded_stroke"
         android:drawableStart="@drawable/ic_search"
         android:drawablePadding="@dimen/_8sdp"
-        android:padding="@dimen/_8sdp"
         android:hint="@string/searchHint"
+        android:imeOptions="actionDone"
+        android:maxLines="1"
+        android:padding="@dimen/_8sdp"
+        android:singleLine="true"
         android:textColor="@color/black"
         android:textSize="@dimen/_12ssp" />
 

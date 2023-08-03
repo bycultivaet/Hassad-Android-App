@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.cultivaet.hassad.R
 import com.cultivaet.hassad.core.extension.getDateFromString
+import com.cultivaet.hassad.core.extension.showError
 import com.cultivaet.hassad.databinding.FragmentAddFarmerBinding
 import com.cultivaet.hassad.domain.model.remote.requests.Farmer
 import com.cultivaet.hassad.ui.main.addfarmer.intent.AddFarmerIntent
@@ -98,25 +99,92 @@ class AddFarmerFragment : Fragment() {
             val previouslyGrownCrops =
                 binding.previouslyGrownCropsTextField.editText?.text.toString()
 
-            addFarmerViewModel.farmer = Farmer(
-                firstName = firstName,
-                lastName = lastName,
-                phoneNumber = phoneNumber,
-                gender = gender,
-                age = age.toInt(),
-                address = address,
-                landArea = areaLand.toDouble(),
-                ownership = possessionType,
-                geolocation = "40.7128° N, 74.0060° W",
-                currentYield = currentCrop,
-                ZeroDay = selectedDate.getDateFromString(),
-                cropType = "annual",
-                cropsHistory = previouslyGrownCrops,
-                facilitatorId = addFarmerViewModel.userId
+            val isNotEmptyFirstName = binding.firstNameTextField.showError(
+                requireActivity(),
+                getString(R.string.firstName)
             )
 
-            runBlocking {
-                lifecycleScope.launch { addFarmerViewModel.addFarmerIntent.send(AddFarmerIntent.AddFarmer) }
+            val isNotEmptyLastName = binding.lastNameTextField.showError(
+                requireActivity(),
+                getString(R.string.lastName)
+            )
+
+            val isNotEmptyPhoneNumber = binding.phoneNumberTextField.showError(
+                requireActivity(),
+                getString(R.string.phone_number)
+            )
+
+            val isNotEmptyGender = binding.genderTextField.showError(
+                requireActivity(),
+                getString(R.string.gender)
+            )
+
+            val isNotEmptyAge = binding.ageTextField.showError(
+                requireActivity(),
+                getString(R.string.age)
+            )
+
+            val isNotEmptyAddress = binding.addressTextField.showError(
+                requireActivity(),
+                getString(R.string.address)
+            )
+
+            val isNotEmptyPossessionType = binding.possessionTypeTextField.showError(
+                requireActivity(),
+                getString(R.string.possessionType)
+            )
+
+            val isNotEmptyLandArea = binding.areaLandTextField.showError(
+                requireActivity(),
+                getString(R.string.landArea)
+            )
+
+            val isNotEmptyGeographicalLocationEarth =
+                binding.geographicalLocationEarthTextField.showError(
+                    requireActivity(),
+                    getString(R.string.geographicalLocationEarth)
+                )
+
+            val isNotEmptyFirstDayToCultivation = binding.dateTextField.showError(
+                requireActivity(),
+                getString(R.string.firstDayToCultivation)
+            )
+
+            val isNotEmptyCurrentCrop = binding.currentCropTextField.showError(
+                requireActivity(),
+                getString(R.string.currentCrop)
+            )
+
+            val isNotEmptyPreviouslyGrownCropse = binding.previouslyGrownCropsTextField.showError(
+                requireActivity(),
+                getString(R.string.previouslyGrownCrops)
+            )
+
+            if (isNotEmptyFirstName && isNotEmptyLastName && isNotEmptyPhoneNumber &&
+                isNotEmptyGender && isNotEmptyAge && isNotEmptyAddress &&
+                isNotEmptyPossessionType && isNotEmptyLandArea && isNotEmptyGeographicalLocationEarth &&
+                isNotEmptyFirstDayToCultivation && isNotEmptyCurrentCrop && isNotEmptyPreviouslyGrownCropse
+            ) {
+                addFarmerViewModel.farmer = Farmer(
+                    firstName = firstName,
+                    lastName = lastName,
+                    phoneNumber = phoneNumber,
+                    gender = gender,
+                    age = age.toInt(),
+                    address = address,
+                    landArea = areaLand.toDouble(),
+                    ownership = possessionType,
+                    geolocation = "40.7128° N, 74.0060° W",
+                    currentYield = currentCrop,
+                    ZeroDay = selectedDate.getDateFromString(),
+                    cropType = "annual",
+                    cropsHistory = previouslyGrownCrops,
+                    facilitatorId = addFarmerViewModel.userId
+                )
+
+                runBlocking {
+                    lifecycleScope.launch { addFarmerViewModel.addFarmerIntent.send(AddFarmerIntent.AddFarmer) }
+                }
             }
         }
 
