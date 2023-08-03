@@ -36,7 +36,7 @@ class MainActivity : BaseActivity() {
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_poll,
+                R.id.navigation_survey,
                 R.id.navigation_tasks,
                 R.id.navigation_add_farmer,
                 R.id.navigation_profile

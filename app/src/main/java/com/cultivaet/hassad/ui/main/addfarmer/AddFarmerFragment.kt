@@ -211,8 +211,11 @@ class AddFarmerFragment : Fragment() {
                             binding.numberOfFarmersTextView.text =
                                 getString(R.string.numberOfFarmersInList, it.data.size)
                         else {
-                            Toast.makeText(activity, "تم الإضافة", Toast.LENGTH_SHORT)
-                                .show()
+                            Toast.makeText(
+                                activity,
+                                getString(R.string.added_successfully),
+                                Toast.LENGTH_SHORT
+                            ).show()
 
                             // TODO: back to home or clear editTexts
                             runBlocking {

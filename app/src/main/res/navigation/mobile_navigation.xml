@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_poll">
+    app:startDestination="@+id/navigation_survey">
 
     <fragment
-        android:id="@+id/navigation_poll"
-        android:name="com.cultivaet.hassad.ui.main.poll.PollFragment"
-        tools:layout="@layout/fragment_poll" />
+        android:id="@+id/navigation_survey"
+        android:name="com.cultivaet.hassad.ui.main.survey.SurveyFragment"
+        tools:layout="@layout/fragment_survey" />
 
     <fragment
         android:id="@+id/navigation_tasks"

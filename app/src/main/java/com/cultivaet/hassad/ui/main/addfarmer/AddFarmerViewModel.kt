@@ -37,7 +37,7 @@ class AddFarmerViewModel(
                 when (it) {
                     is AddFarmerIntent.GetUserId -> getUserId()
 
-                    is AddFarmerIntent.FetchAllFarmers -> getFacilitatorById(userId)
+                    is AddFarmerIntent.FetchAllFarmers -> getAllFarmersById(userId)
 
                     is AddFarmerIntent.AddFarmer -> addFarmer(farmer)
                 }
@@ -51,14 +51,14 @@ class AddFarmerViewModel(
                 addFarmerUseCase.userId().collect { id ->
                     if (id != null) {
                         userId = id
-                        getFacilitatorById(userId)
+                        getAllFarmersById(userId)
                     }
                 }
             }
         }
     }
 
-    private fun getFacilitatorById(id: Int) {
+    private fun getAllFarmersById(id: Int) {
         viewModelScope.launch {
             _state.value = AddFarmerState.Loading
             _state.value =

@@ -1,7 +1,5 @@
 package com.cultivaet.hassad.ui.main.addfarmer.viewstate
 
-import com.cultivaet.hassad.ui.main.farmers.FarmerDataItem
-
 sealed class AddFarmerState {
     object Idle : AddFarmerState()
     object Loading : AddFarmerState()

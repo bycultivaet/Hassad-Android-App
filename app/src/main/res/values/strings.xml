@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">حصاد</string>
 
-    <string name="title_poll">إستبيان</string>
+    <string name="title_survey">إستبيان</string>
     <string name="title_tasks">المهام</string>
     <string name="title_addition">إضافة</string>
     <string name="title_profile">الحساب</string>
@@ -42,4 +42,5 @@
     <string name="zeroDay">يوم البذر</string>
     <string name="landArea">مساحة الأرض</string>
     <string name="please_enter">برجاء إدخال</string>
+    <string name="added_successfully">تم الإضافة</string>
 </resources>
