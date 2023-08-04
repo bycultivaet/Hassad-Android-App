@@ -44,4 +44,16 @@
     <string name="landArea">مساحة الأرض</string>
     <string name="please_enter">برجاء إدخال</string>
     <string name="added_successfully">تم الإضافة</string>
+    <string name="select_farmer_from_menu">اختر مزارع من القائمة لبدء الاستبيان</string>
+    <string name="village">القرية</string>
+    <string name="center">المركز</string>
+    <string name="typeOfWork">نوع العمل</string>
+    <string name="typeOfWorkFirstOption">قطاع عام او خاص</string>
+    <string name="typeOfWorkSecondOption">التفرغ التام للزراعة</string>
+    <string name="deputizingFarmerMsg">في حالة عدم التفرغ للزراعة - اختيار من ينوب عن المزارع</string>
+    <string name="wife">الزوجة</string>
+    <string name="son">الابن</string>
+    <string name="worker">عامل</string>
+    <string name="partner">شريك</string>
+    <string name="relative">احد الاقارب</string>
 </resources>

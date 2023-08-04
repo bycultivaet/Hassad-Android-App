@@ -7,6 +7,8 @@ import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import com.cultivaet.hassad.R
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
@@ -67,4 +69,9 @@ fun TextInputLayout.showError(context: Context, hint: String): Boolean {
     }
 
     return !isEmpty
+}
+
+fun TextInputLayout.fillListOfTypesToAdapter(context: Context, list: List<String>) {
+    val arrayAdapter = ArrayAdapter(context, R.layout.list_item, list)
+    (this.editText as? AutoCompleteTextView)?.setAdapter(arrayAdapter)
 }

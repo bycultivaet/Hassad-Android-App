@@ -1,17 +1,23 @@
 package com.cultivaet.hassad.ui.main.farmers
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.cultivaet.hassad.R
 
+@SuppressLint("NotifyDataSetChanged")
 class FarmersAdapter(
     private val context: Context,
-    private var mList: List<FarmerDataItem>
+    private var mList: List<FarmerDataItem>,
+    private var selectedFarmerId: Int,
+    private val isSelectedOption: Boolean = false,
+    private val setFarmerId: (selectedFarmerId: Int?) -> Unit
 ) : RecyclerView.Adapter<FarmersAdapter.ViewHolder>() {
 
     private val expandedHashSet: HashSet<Int> = hashSetOf()
@@ -45,12 +51,20 @@ class FarmersAdapter(
         holder.restOfFarmerDataLinearLayout.visibility =
             if (expandedHashSet.contains(farmer.id)) View.VISIBLE else View.GONE
 
-        holder.itemView.setOnClickListener {
-            if (expandedHashSet.contains(farmer.id))
-                expandedHashSet.remove(farmer.id)
-            else
-                expandedHashSet.add(farmer.id)
-            notifyItemChanged(position)
+        holder.selectIcon.visibility = if (isSelectedOption) View.VISIBLE else View.GONE
+
+        holder.selectIcon.setImageResource(if (farmer.id == selectedFarmerId) R.drawable.ic_checked else R.drawable.ic_unchecked)
+
+        holder.selectIcon.setOnClickListener {
+            selectedFarmerId = farmer.id
+            setFarmerId.invoke(selectedFarmerId)
+            notifyDataSetChanged()
+        }
+
+        holder.contentLinearLayout.setOnClickListener {
+            if (expandedHashSet.contains(farmer.id)) expandedHashSet.remove(farmer.id)
+            else expandedHashSet.add(farmer.id)
+            notifyDataSetChanged()
         }
     }
 
@@ -59,6 +73,8 @@ class FarmersAdapter(
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val selectIcon: ImageView = itemView.findViewById(R.id.selectIcon)
+        val contentLinearLayout: LinearLayout = itemView.findViewById(R.id.contentLinearLayout)
         val restOfFarmerDataLinearLayout: LinearLayout =
             itemView.findViewById(R.id.restOfFarmerData)
         val name: TextView = itemView.findViewById(R.id.name)

@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.cultivaet.hassad.R
+import com.cultivaet.hassad.core.extension.fillListOfTypesToAdapter
 import com.cultivaet.hassad.core.extension.getDateFromString
 import com.cultivaet.hassad.core.extension.showError
 import com.cultivaet.hassad.databinding.FragmentAddFarmerBinding
@@ -46,18 +45,16 @@ class AddFarmerFragment : Fragment() {
             lifecycleScope.launch { addFarmerViewModel.addFarmerIntent.send(AddFarmerIntent.GetUserId) }
         }
 
-        val genderTypes = listOf(getString(R.string.male), getString(R.string.female))
-        val genderTypesAdapter = ArrayAdapter(requireContext(), R.layout.list_item, genderTypes)
-        (binding.genderTextField.editText as? AutoCompleteTextView)?.setAdapter(genderTypesAdapter)
-
-        val possessionTypes = listOf(
-            getString(R.string.ownershipLand),
-            getString(R.string.rentalLand)
+        binding.genderTextField.fillListOfTypesToAdapter(
+            requireContext(),
+            listOf(getString(R.string.male), getString(R.string.female))
         )
-        val possessionTypesAdapter =
-            ArrayAdapter(requireContext(), R.layout.list_item, possessionTypes)
-        (binding.possessionTypeTextField.editText as? AutoCompleteTextView)?.setAdapter(
-            possessionTypesAdapter
+
+        binding.possessionTypeTextField.fillListOfTypesToAdapter(
+            requireContext(), listOf(
+                getString(R.string.ownershipLand),
+                getString(R.string.rentalLand)
+            )
         )
 
         binding.dateTextFieldAction.setOnClickListener {

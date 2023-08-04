@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.cultivaet.hassad.R
+import com.cultivaet.hassad.core.extension.fillListOfTypesToAdapter
 import com.cultivaet.hassad.databinding.FragmentSurveyBinding
 import com.cultivaet.hassad.ui.main.farmers.FarmersBottomSheet
 import com.cultivaet.hassad.ui.main.survey.intent.SurveyIntent
@@ -27,6 +28,8 @@ class SurveyFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    private var selectedFarmerId: Int = -1
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,6 +39,21 @@ class SurveyFragment : Fragment() {
 
         observeViewModel()
 
+        binding.typeOfWorkTextField.fillListOfTypesToAdapter(
+            requireContext(), listOf(
+                getString(R.string.typeOfWorkFirstOption),
+                getString(R.string.typeOfWorkSecondOption)
+            )
+        )
+
+        binding.deputizingFarmerTextField.fillListOfTypesToAdapter(
+            requireContext(), listOf(
+                getString(R.string.wife), getString(R.string.son),
+                getString(R.string.worker), getString(R.string.partner),
+                getString(R.string.relative)
+            )
+        )
+
         runBlocking {
             lifecycleScope.launch { surveyViewModel.surveyIntent.send(SurveyIntent.GetUserId) }
         }
@@ -43,8 +61,16 @@ class SurveyFragment : Fragment() {
         binding.listOfFarmers.setOnClickListener {
             val farmersBottomSheet = surveyViewModel.farmersList?.let { farmers ->
                 FarmersBottomSheet(
-                    farmers
-                )
+                    farmers,
+                    isSelectedOption = true,
+                    selectedFarmerId
+                ) { farmerId ->
+                    if (farmerId != null && farmerId != -1) {
+                        selectedFarmerId = farmerId
+                        binding.scrollView.visibility = View.VISIBLE
+                        binding.selectFarmerMsgTextView.visibility = View.GONE
+                    }
+                }
             }
             farmersBottomSheet?.show(parentFragmentManager, "farmersBottomSheet")
         }
@@ -92,5 +118,6 @@ class SurveyFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        selectedFarmerId = -1
     }
 }
