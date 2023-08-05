@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 interface SurveyRepository {
     suspend fun userId(): Flow<Int?>
 
-    suspend fun getAllFarmersById(id: Int): Resource<List<Farmer>>
+    suspend fun getAllFarmersById(id: Int, filter: Boolean): Resource<List<Farmer>>
 }

@@ -9,7 +9,7 @@ interface ApiHelper {
 
     suspend fun getFacilitator(id: Int): Response<Facilitator>
 
-    suspend fun getAllFarmersById(id: Int): Response<List<Farmer>>
+    suspend fun getAllFarmersById(id: Int, filter: Boolean): Response<List<Farmer>>
 
     suspend fun addFarmer(farmer: com.cultivaet.hassad.domain.model.remote.requests.Farmer): Response<Farmer>
 }

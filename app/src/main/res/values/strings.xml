@@ -38,7 +38,7 @@
     <string name="searchHint">ابحث بالأسم او برقم التليفون</string>
     <string name="no_missions">لا توجد مهام</string>
     <string name="name">الأسم</string>
-    <string name="cropType">طريقة الحصاد</string>
+    <string name="cropType">نوع المحصول</string>
     <string name="zeroDay">يوم البذر</string>
     <string name="landArea">مساحة الأرض</string>
     <string name="please_enter">برجاء إدخال</string>
@@ -55,4 +55,5 @@
     <string name="worker">عامل</string>
     <string name="partner">شريك</string>
     <string name="relative">احد الاقارب</string>
+    <string name="permissionDeniedMsg">تم رفض الإذن بالموقع</string>
 </resources>

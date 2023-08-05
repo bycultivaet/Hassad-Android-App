@@ -1,6 +1,7 @@
 package com.cultivaet.hassad.ui.main.survey
 
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import com.cultivaet.hassad.databinding.FragmentSurveyBinding
 import com.cultivaet.hassad.ui.main.farmers.FarmersBottomSheet
 import com.cultivaet.hassad.ui.main.survey.intent.SurveyIntent
 import com.cultivaet.hassad.ui.main.survey.viewstate.SurveyState
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -35,46 +37,50 @@ class SurveyFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSurveyBinding.inflate(inflater, container, false)
+        if (_binding == null) {
+            _binding = FragmentSurveyBinding.inflate(inflater, container, false)
 
-        observeViewModel()
+            observeViewModel()
 
-        binding.typeOfWorkTextField.fillListOfTypesToAdapter(
-            requireContext(), listOf(
-                getString(R.string.typeOfWorkFirstOption),
-                getString(R.string.typeOfWorkSecondOption)
+            binding.rootContainer.addView(addTextInputLayout(getString(R.string.village)))
+
+            binding.rootContainer.addView(
+                addTextInputLayout(
+                    getString(R.string.center),
+                    isNumberType = true
+                )
             )
-        )
 
-        binding.deputizingFarmerTextField.fillListOfTypesToAdapter(
-            requireContext(), listOf(
-                getString(R.string.wife), getString(R.string.son),
-                getString(R.string.worker), getString(R.string.partner),
-                getString(R.string.relative)
+            binding.rootContainer.addView(
+                addTextInputLayout(
+                    getString(R.string.typeOfWork), list = listOf(
+                        getString(R.string.typeOfWorkFirstOption),
+                        getString(R.string.typeOfWorkSecondOption)
+                    )
+                )
             )
-        )
 
-        runBlocking {
-            lifecycleScope.launch { surveyViewModel.surveyIntent.send(SurveyIntent.GetUserId) }
-        }
+            runBlocking {
+                lifecycleScope.launch { surveyViewModel.surveyIntent.send(SurveyIntent.GetUserId) }
+            }
 
-        binding.listOfFarmers.setOnClickListener {
-            val farmersBottomSheet = surveyViewModel.farmersList?.let { farmers ->
-                FarmersBottomSheet(
-                    farmers,
-                    isSelectedOption = true,
-                    selectedFarmerId
-                ) { farmerId ->
-                    if (farmerId != null && farmerId != -1) {
-                        selectedFarmerId = farmerId
-                        binding.scrollView.visibility = View.VISIBLE
-                        binding.selectFarmerMsgTextView.visibility = View.GONE
+            binding.listOfFarmers.setOnClickListener {
+                val farmersBottomSheet = surveyViewModel.farmersList?.let { farmers ->
+                    FarmersBottomSheet(
+                        farmers,
+                        isSelectedOption = true,
+                        selectedFarmerId
+                    ) { farmerId ->
+                        if (farmerId != null && farmerId != -1) {
+                            selectedFarmerId = farmerId
+                            binding.scrollView.visibility = View.VISIBLE
+                            binding.selectFarmerMsgTextView.visibility = View.GONE
+                        }
                     }
                 }
+                farmersBottomSheet?.show(parentFragmentManager, "farmersBottomSheet")
             }
-            farmersBottomSheet?.show(parentFragmentManager, "farmersBottomSheet")
         }
-
         return binding.root
     }
 
@@ -115,9 +121,29 @@ class SurveyFragment : Fragment() {
         }
     }
 
+    private fun addTextInputLayout(
+        hintText: String,
+        isNumberType: Boolean = false,
+        list: List<String> = listOf()
+    ): TextInputLayout {
+        val textInputLayout = LayoutInflater.from(requireContext())
+            .inflate(
+                if (list.isEmpty()) R.layout.text_input_layout_text else R.layout.text_input_layout_drop_down_list,
+                null
+            ) as TextInputLayout
+        textInputLayout.hint = hintText
+        if (list.isNotEmpty())
+            textInputLayout.fillListOfTypesToAdapter(
+                requireContext(), list
+            )
+        if (list.isEmpty() && isNumberType) textInputLayout.editText?.inputType =
+            InputType.TYPE_CLASS_NUMBER
+        return textInputLayout
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+//        _binding = null
         selectedFarmerId = -1
     }
 }

@@ -12,8 +12,11 @@ class AddFarmerRepositoryImpl(
 ) : BaseRepository(), AddFarmerRepository {
     override suspend fun userId() = preferencesDataSource.userId()
 
-    override suspend fun getAllFarmersById(id: Int): Resource<List<Farmer>> =
-        safeApiCall { apiHelper.getAllFarmersById(id) }
+    override suspend fun getAllFarmersById(
+        id: Int,
+        filter: Boolean
+    ): Resource<List<Farmer>> =
+        safeApiCall { apiHelper.getAllFarmersById(id, filter) }
 
     override suspend fun addFarmer(farmer: com.cultivaet.hassad.domain.model.remote.requests.Farmer): Resource<Farmer> =
         safeApiCall { apiHelper.addFarmer(farmer) }

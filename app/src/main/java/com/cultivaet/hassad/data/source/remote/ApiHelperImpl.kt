@@ -9,8 +9,8 @@ class ApiHelperImpl(private val apiService: ApiService) : ApiHelper {
         apiService.getFacilitatorByPhoneNumber(phoneNumber)
 
     override suspend fun getFacilitator(id: Int) = apiService.getFacilitatorById(id)
-    override suspend fun getAllFarmersById(id: Int): Response<List<Farmer>> =
-        apiService.getAllFarmersById(id)
+    override suspend fun getAllFarmersById(id: Int, filter: Boolean): Response<List<Farmer>> =
+        apiService.getAllFarmersById(id, filter)
 
     override suspend fun addFarmer(farmer: com.cultivaet.hassad.domain.model.remote.requests.Farmer): Response<Farmer> =
         apiService.addFarmer(farmer)

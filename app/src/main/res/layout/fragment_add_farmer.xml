@@ -225,32 +225,9 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/geographicalLocationEarthTextField"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/geographicalLocationEarth"
-                android:textSize="@dimen/_12ssp"
-                app:errorEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="actionDone"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_12ssp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/_4sdp">
+                android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/dateTextField"
@@ -282,11 +259,12 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/currentCropTextField"
+                android:id="@+id/cropTypeTextField"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/currentCrop"
+                android:layout_marginVertical="@dimen/_4sdp"
+                android:hint="@string/cropType"
                 app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -307,7 +285,6 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/_4sdp"
                 android:hint="@string/previouslyGrownCrops"
                 app:errorEnabled="true">
 
@@ -328,6 +305,7 @@
                 android:id="@+id/button_add_farmer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_8sdp"
                 android:layout_marginBottom="@dimen/_16sdp"
                 android:text="@string/title_addition"
                 android:textSize="@dimen/_14ssp" />

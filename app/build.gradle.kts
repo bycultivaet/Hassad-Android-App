@@ -83,6 +83,8 @@ dependencies {
     implementation(libs.datastore.preferences)
     annotationProcessor(libs.datastore.preferences.core)
 
+    implementation(libs.play.services.location)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)

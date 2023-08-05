@@ -10,7 +10,6 @@ data class Farmer(
     var landArea: Double? = null,
     var ownership: String? = null,
     var geolocation: String? = null,
-    var currentYield: String? = null,
     var ZeroDay: String? = null,
     var cropType: String? = null,
     var cropsHistory: String? = null,

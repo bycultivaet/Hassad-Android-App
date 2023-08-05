@@ -30,16 +30,16 @@ class ProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentProfileBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        if (_binding == null) {
+            _binding = FragmentProfileBinding.inflate(inflater, container, false)
 
-        observeViewModel()
+            observeViewModel()
 
-        runBlocking {
-            lifecycleScope.launch { profileViewModel.profileIntent.send(ProfileIntent.GetUserId) }
+            runBlocking {
+                lifecycleScope.launch { profileViewModel.profileIntent.send(ProfileIntent.GetUserId) }
+            }
         }
-
-        return root
+        return binding.root
     }
 
     private fun observeViewModel() {
@@ -80,10 +80,5 @@ class ProfileFragment : Fragment() {
                 }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
