@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/dateTextField"
+        android:id="@+id/textInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,9 +25,9 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <View
-        android:id="@+id/dateTextFieldAction"
+        android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/dateTextField"
-        app:layout_constraintTop_toTopOf="@+id/dateTextField" />
+        app:layout_constraintBottom_toBottomOf="@+id/textInputLayout"
+        app:layout_constraintTop_toTopOf="@+id/textInputLayout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

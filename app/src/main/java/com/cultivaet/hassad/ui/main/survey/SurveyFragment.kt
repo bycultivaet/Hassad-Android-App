@@ -2,9 +2,12 @@ package com.cultivaet.hassad.ui.main.survey
 
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
@@ -22,6 +25,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
+
 
 @ExperimentalCoroutinesApi
 class SurveyFragment : Fragment() {
@@ -123,30 +127,32 @@ class SurveyFragment : Fragment() {
         for (field in form.fields) {
             val viewGroup = when (field.type) {
                 "number" -> {
-                    addTextInputLayout(field.placeholder, field.type)
+                    addTextInputLayout(field.name, field.placeholder, field.type)
                 }
 
                 "select" -> {
                     addTextInputLayout(
-                        field.placeholder,
+                        field.name, field.placeholder,
                         field.type,
                         list = field.options.map { it.label })
                 }
 
                 "date" -> {
-                    addConstraintLayout(field.placeholder)
+                    addConstraintLayout(field.name, field.placeholder)
                 }
 
                 else -> {
-                    addTextInputLayout(field.placeholder, field.type)
+                    addTextInputLayout(field.name, field.placeholder, field.type)
                 }
             }
             binding.rootContainer.addView(viewGroup)
         }
+        binding.rootContainer.addView(addButton())
     }
 
     private fun addTextInputLayout(
-        hintText: String,
+        name: String,
+        placeholder: String,
         type: String,
         list: List<String> = listOf()
     ): TextInputLayout {
@@ -163,30 +169,40 @@ class SurveyFragment : Fragment() {
                 },
                 null
             ) as TextInputLayout
-        textInputLayout.hint = hintText
+
+        textInputLayout.hint = placeholder
+        textInputLayout.tag = name
+
         if (type == "select") {
             textInputLayout.fillListOfTypesToAdapter(
                 requireContext(), list
             )
         } else if (type == "number") {
-            textInputLayout.editText?.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED
+            textInputLayout.editText?.inputType =
+                InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED
         }
         return textInputLayout
     }
 
     private fun addConstraintLayout(
-        hintText: String,
+        name: String,
+        placeholder: String,
     ): ConstraintLayout {
         val constraintLayout = LayoutInflater.from(requireContext())
             .inflate(
                 R.layout.text_input_layout_date,
                 null
             ) as ConstraintLayout
-        val textInputLayout = constraintLayout.findViewById<TextInputLayout>(R.id.dateTextField)
-        textInputLayout.hint = hintText
 
-        val dateTextFieldAction = constraintLayout.findViewById<View>(R.id.dateTextFieldAction)
-        dateTextFieldAction.setOnClickListener {
+        constraintLayout.tag = name
+
+        val textInputLayout = constraintLayout.findViewById<TextInputLayout>(R.id.textInputLayout)
+
+        textInputLayout.hint = placeholder
+
+        textInputLayout.tag = "constraintLayout.$name"
+
+        constraintLayout.findViewById<View>(R.id.view).setOnClickListener {
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setSelection(MaterialDatePicker.todayInUtcMilliseconds()).build()
 
@@ -201,6 +217,22 @@ class SurveyFragment : Fragment() {
             }
         }
         return constraintLayout
+    }
+
+    private fun addButton(): Button {
+        val button = LayoutInflater.from(requireContext())
+            .inflate(
+                R.layout.button_item,
+                null
+            ) as Button
+        button.setOnClickListener {
+            val viewParent = it.parent
+            if (viewParent is LinearLayout) {
+                val textInputLayout = viewParent.findViewWithTag<TextInputLayout>("القرية")
+                Log.d("TAG", "addButton: ${textInputLayout.editText?.text}")
+            }
+        }
+        return button
     }
 
     override fun onDestroyView() {
