@@ -51,11 +51,11 @@ val helperModule = module {
 
 val repositoryModule = module {
     single<SplashRepository> { SplashRepositoryImpl(get()) }
-    single<LoginRepository> { LoginRepositoryImpl(get(), get()) }
+    single<LoginRepository> { LoginRepositoryImpl(get(), get(), get()) }
     single<MainRepository> { MainRepositoryImpl(get()) }
-    single<ProfileRepository> { ProfileRepositoryImpl(get(), get()) }
-    single<AddFarmerRepository> { AddFarmerRepositoryImpl(get(), get()) }
-    single<SurveyRepository> { SurveyRepositoryImpl(get(), get()) }
+    single<ProfileRepository> { ProfileRepositoryImpl(get(), get(), get()) }
+    single<AddFarmerRepository> { AddFarmerRepositoryImpl(get(), get(), get()) }
+    single<SurveyRepository> { SurveyRepositoryImpl(get(), get(), get()) }
 }
 
 val useCaseModule = module {

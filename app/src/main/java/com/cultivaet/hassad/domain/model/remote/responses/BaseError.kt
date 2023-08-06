@@ -1,5 +1,5 @@
 package com.cultivaet.hassad.domain.model.remote.responses
 
-data class ErrorResponse(
+data class BaseError(
     var error: String? = null
 )
