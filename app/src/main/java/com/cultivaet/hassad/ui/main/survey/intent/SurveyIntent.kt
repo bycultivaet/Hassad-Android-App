@@ -4,4 +4,6 @@ sealed class SurveyIntent {
     object GetUserId : SurveyIntent()
 
     object FetchAllFarmers : SurveyIntent()
+
+    object FetchFarmerForm : SurveyIntent()
 }

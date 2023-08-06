@@ -11,6 +11,8 @@ object Constants {
 
         const val GetAllFarmersById = "api/facilitator/{id}/farmers/"
         const val PostFarmer = "api/farmer"
+
+        const val GetFarmerForm = "api/farmer/{id}/form"
     }
 
     object PreferenceKeys {

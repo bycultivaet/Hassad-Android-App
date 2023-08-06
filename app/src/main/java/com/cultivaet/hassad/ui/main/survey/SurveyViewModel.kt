@@ -22,8 +22,9 @@ class SurveyViewModel(
     val surveyIntent = Channel<SurveyIntent>(Channel.UNLIMITED)
     private val _state = MutableStateFlow<SurveyState>(SurveyState.Idle)
     val state: StateFlow<SurveyState> = _state
-    internal var userId: Int = -1
     var farmersList: List<FarmerDataItem>? = null
+    internal var userId: Int = -1
+    internal var farmerId: Int = -1
 
     init {
         handleIntent()
@@ -36,6 +37,8 @@ class SurveyViewModel(
                     is SurveyIntent.GetUserId -> getUserId()
 
                     is SurveyIntent.FetchAllFarmers -> getAllFarmersById(userId)
+
+                    is SurveyIntent.FetchFarmerForm -> getFarmerForm(farmerId)
                 }
             }
         }
@@ -62,6 +65,21 @@ class SurveyViewModel(
                     is Resource.Success -> {
                         farmersList = resource.data?.map { it.toFarmerDataItem() }
                         SurveyState.Success(farmersList)
+                    }
+
+                    is Resource.Error -> SurveyState.Error(resource.error)
+                }
+        }
+    }
+
+    private fun getFarmerForm(id: Int) {
+        viewModelScope.launch {
+            _state.value = SurveyState.Loading
+            _state.value =
+                when (val resource = surveyUseCase.getFarmerForm(id)) {
+                    is Resource.Success -> {
+                        val form = resource.data
+                        SurveyState.Success(form)
                     }
 
                     is Resource.Error -> SurveyState.Error(resource.error)

@@ -6,14 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.cultivaet.hassad.R
 import com.cultivaet.hassad.core.extension.fillListOfTypesToAdapter
 import com.cultivaet.hassad.databinding.FragmentSurveyBinding
+import com.cultivaet.hassad.domain.model.remote.responses.Form
 import com.cultivaet.hassad.ui.main.farmers.FarmersBottomSheet
 import com.cultivaet.hassad.ui.main.survey.intent.SurveyIntent
 import com.cultivaet.hassad.ui.main.survey.viewstate.SurveyState
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -30,8 +33,6 @@ class SurveyFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private var selectedFarmerId: Int = -1
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,24 +43,6 @@ class SurveyFragment : Fragment() {
 
             observeViewModel()
 
-            binding.rootContainer.addView(addTextInputLayout(getString(R.string.village)))
-
-            binding.rootContainer.addView(
-                addTextInputLayout(
-                    getString(R.string.center),
-                    isNumberType = true
-                )
-            )
-
-            binding.rootContainer.addView(
-                addTextInputLayout(
-                    getString(R.string.typeOfWork), list = listOf(
-                        getString(R.string.typeOfWorkFirstOption),
-                        getString(R.string.typeOfWorkSecondOption)
-                    )
-                )
-            )
-
             runBlocking {
                 lifecycleScope.launch { surveyViewModel.surveyIntent.send(SurveyIntent.GetUserId) }
             }
@@ -69,12 +52,17 @@ class SurveyFragment : Fragment() {
                     FarmersBottomSheet(
                         farmers,
                         isSelectedOption = true,
-                        selectedFarmerId
+                        surveyViewModel.farmerId
                     ) { farmerId ->
                         if (farmerId != null && farmerId != -1) {
-                            selectedFarmerId = farmerId
-                            binding.scrollView.visibility = View.VISIBLE
-                            binding.selectFarmerMsgTextView.visibility = View.GONE
+                            surveyViewModel.farmerId = farmerId
+                            runBlocking {
+                                lifecycleScope.launch {
+                                    surveyViewModel.surveyIntent.send(
+                                        SurveyIntent.FetchFarmerForm
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -100,15 +88,25 @@ class SurveyFragment : Fragment() {
 
                     is SurveyState.Success<*> -> {
                         binding.progressBar.visibility = View.GONE
-                        if (it.data is List<*>)
-                            binding.numberOfFarmersTextView.text =
-                                getString(R.string.numberOfFarmersInList, it.data.size)
-                        else {
-                            Toast.makeText(
-                                activity,
-                                getString(R.string.added_successfully),
-                                Toast.LENGTH_SHORT
-                            ).show()
+                        when (it.data) {
+                            is List<*> -> {
+                                binding.numberOfFarmersTextView.text =
+                                    getString(R.string.numberOfFarmersInList, it.data.size)
+                            }
+
+                            is Form -> {
+                                renderDynamicViews(it.data)
+                                binding.scrollView.visibility = View.VISIBLE
+                                binding.selectFarmerMsgTextView.visibility = View.GONE
+                            }
+
+                            else -> {
+                                Toast.makeText(
+                                    activity,
+                                    getString(R.string.added_successfully),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     }
 
@@ -121,29 +119,93 @@ class SurveyFragment : Fragment() {
         }
     }
 
+    private fun renderDynamicViews(form: Form) {
+        for (field in form.fields) {
+            val viewGroup = when (field.type) {
+                "number" -> {
+                    addTextInputLayout(field.placeholder, field.type)
+                }
+
+                "select" -> {
+                    addTextInputLayout(
+                        field.placeholder,
+                        field.type,
+                        list = field.options.map { it.label })
+                }
+
+                "date" -> {
+                    addConstraintLayout(field.placeholder)
+                }
+
+                else -> {
+                    addTextInputLayout(field.placeholder, field.type)
+                }
+            }
+            binding.rootContainer.addView(viewGroup)
+        }
+    }
+
     private fun addTextInputLayout(
         hintText: String,
-        isNumberType: Boolean = false,
+        type: String,
         list: List<String> = listOf()
     ): TextInputLayout {
         val textInputLayout = LayoutInflater.from(requireContext())
             .inflate(
-                if (list.isEmpty()) R.layout.text_input_layout_text else R.layout.text_input_layout_drop_down_list,
+                when (type) {
+                    "select" -> {
+                        R.layout.text_input_layout_drop_down_list
+                    }
+
+                    else -> {
+                        R.layout.text_input_layout_text
+                    }
+                },
                 null
             ) as TextInputLayout
         textInputLayout.hint = hintText
-        if (list.isNotEmpty())
+        if (type == "select") {
             textInputLayout.fillListOfTypesToAdapter(
                 requireContext(), list
             )
-        if (list.isEmpty() && isNumberType) textInputLayout.editText?.inputType =
-            InputType.TYPE_CLASS_NUMBER
+        } else if (type == "number") {
+            textInputLayout.editText?.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED
+        }
         return textInputLayout
+    }
+
+    private fun addConstraintLayout(
+        hintText: String,
+    ): ConstraintLayout {
+        val constraintLayout = LayoutInflater.from(requireContext())
+            .inflate(
+                R.layout.text_input_layout_date,
+                null
+            ) as ConstraintLayout
+        val textInputLayout = constraintLayout.findViewById<TextInputLayout>(R.id.dateTextField)
+        textInputLayout.hint = hintText
+
+        val dateTextFieldAction = constraintLayout.findViewById<View>(R.id.dateTextFieldAction)
+        dateTextFieldAction.setOnClickListener {
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds()).build()
+
+            datePicker.apply {
+                show(
+                    this@SurveyFragment.requireActivity().supportFragmentManager,
+                    "DATE_PICKER"
+                )
+                addOnPositiveButtonClickListener {
+                    textInputLayout.editText?.setText(this.headerText)
+                }
+            }
+        }
+        return constraintLayout
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
 //        _binding = null
-        selectedFarmerId = -1
+        surveyViewModel.farmerId = -1
     }
 }

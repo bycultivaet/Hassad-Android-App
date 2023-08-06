@@ -3,6 +3,7 @@ package com.cultivaet.hassad.core.source.remote
 import com.cultivaet.hassad.core.util.Constants
 import com.cultivaet.hassad.domain.model.remote.responses.Facilitator
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
+import com.cultivaet.hassad.domain.model.remote.responses.Form
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -25,4 +26,7 @@ interface ApiService {
 
     @POST(Constants.EndPoints.PostFarmer)
     suspend fun addFarmer(@Body farmer: com.cultivaet.hassad.domain.model.remote.requests.Farmer): Response<Farmer>
+
+    @GET(Constants.EndPoints.GetFarmerForm)
+    suspend fun getFarmerForm(@Path("id") id: Int): Response<Form>
 }

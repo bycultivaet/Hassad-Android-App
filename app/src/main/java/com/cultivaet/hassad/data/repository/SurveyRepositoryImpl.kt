@@ -5,6 +5,7 @@ import com.cultivaet.hassad.core.source.local.datastore.PreferencesDataSource
 import com.cultivaet.hassad.core.source.remote.Resource
 import com.cultivaet.hassad.data.source.remote.ApiHelper
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
+import com.cultivaet.hassad.domain.model.remote.responses.Form
 import com.cultivaet.hassad.domain.repository.SurveyRepository
 
 class SurveyRepositoryImpl(
@@ -16,4 +17,7 @@ class SurveyRepositoryImpl(
 
     override suspend fun getAllFarmersById(id: Int, filter: Boolean): Resource<List<Farmer>> =
         safeApiCall { apiHelper.getAllFarmersById(id, filter) }
+
+    override suspend fun getFarmerForm(id: Int): Resource<Form> =
+        safeApiCall { apiHelper.getFarmerForm(id) }
 }
