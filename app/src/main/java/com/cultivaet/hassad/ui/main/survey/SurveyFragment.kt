@@ -126,15 +126,15 @@ class SurveyFragment : Fragment() {
     private fun renderDynamicViews(form: Form) {
         for (field in form.fields) {
             val viewGroup = when (field.type) {
-                "number" -> {
-                    addTextInputLayout(field.name, field.placeholder, field.type)
-                }
-
                 "select" -> {
                     addTextInputLayout(
                         field.name, field.placeholder,
                         field.type,
                         list = field.options.map { it.label })
+                }
+
+                "number" -> {
+                    addTextInputLayout(field.name, field.placeholder, field.type)
                 }
 
                 "date" -> {
@@ -225,23 +225,24 @@ class SurveyFragment : Fragment() {
                 R.layout.button_item,
                 null
             ) as Button
+
         button.setOnClickListener {
             val viewParent = it.parent
             if (viewParent is LinearLayout) {
                 val count: Int = viewParent.childCount
                 for (i in 0 until count) {
-                    val view: View = viewParent.getChildAt(i)
-                    if (view is TextInputLayout) {
-                        val textInputLayout = viewParent.findViewWithTag<TextInputLayout>(view.tag)
-                        Log.d("TAG", "addButton: ${textInputLayout.editText?.text}")
-                    } else if (view is ConstraintLayout) {
-                        val textInputLayout = view.findViewWithTag<TextInputLayout>(
-                            "textInputLayout.${view.tag}"
-                        )
-                        Log.d(
-                            "TAG",
-                            "addButton: textInputLayout: ${textInputLayout.editText?.text}"
-                        )
+                    val textInputLayout = when (val view: View = viewParent.getChildAt(i)) {
+                        is TextInputLayout -> {
+                            viewParent.findViewWithTag(view.tag)
+                        }
+
+                        else -> {
+                            view.findViewWithTag<TextInputLayout>("textInputLayout.${view.tag}")
+                        }
+                    }
+
+                    if (textInputLayout != null) {
+                        Log.d("TAG", "addButton $i: ${textInputLayout.editText?.text}")
                     }
                 }
             }
