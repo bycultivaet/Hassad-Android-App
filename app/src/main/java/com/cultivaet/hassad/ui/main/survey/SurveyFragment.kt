@@ -200,7 +200,7 @@ class SurveyFragment : Fragment() {
 
         textInputLayout.hint = placeholder
 
-        textInputLayout.tag = "constraintLayout.$name"
+        textInputLayout.tag = "textInputLayout.$name"
 
         constraintLayout.findViewById<View>(R.id.view).setOnClickListener {
             val datePicker = MaterialDatePicker.Builder.datePicker()
@@ -228,8 +228,22 @@ class SurveyFragment : Fragment() {
         button.setOnClickListener {
             val viewParent = it.parent
             if (viewParent is LinearLayout) {
-                val textInputLayout = viewParent.findViewWithTag<TextInputLayout>("القرية")
-                Log.d("TAG", "addButton: ${textInputLayout.editText?.text}")
+                val count: Int = viewParent.childCount
+                for (i in 0 until count) {
+                    val view: View = viewParent.getChildAt(i)
+                    if (view is TextInputLayout) {
+                        val textInputLayout = viewParent.findViewWithTag<TextInputLayout>(view.tag)
+                        Log.d("TAG", "addButton: ${textInputLayout.editText?.text}")
+                    } else if (view is ConstraintLayout) {
+                        val textInputLayout = view.findViewWithTag<TextInputLayout>(
+                            "textInputLayout.${view.tag}"
+                        )
+                        Log.d(
+                            "TAG",
+                            "addButton: textInputLayout: ${textInputLayout.editText?.text}"
+                        )
+                    }
+                }
             }
         }
         return button
