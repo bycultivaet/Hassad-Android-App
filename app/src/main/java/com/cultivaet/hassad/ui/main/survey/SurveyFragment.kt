@@ -14,7 +14,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.cultivaet.hassad.R
 import com.cultivaet.hassad.core.extension.fillListOfTypesToAdapter
+import com.cultivaet.hassad.core.extension.setMargin
+import com.cultivaet.hassad.core.extension.showError
 import com.cultivaet.hassad.databinding.FragmentSurveyBinding
+import com.cultivaet.hassad.domain.model.remote.requests.Answer
 import com.cultivaet.hassad.domain.model.remote.responses.Form
 import com.cultivaet.hassad.ui.main.farmers.FarmersBottomSheet
 import com.cultivaet.hassad.ui.main.survey.intent.SurveyIntent
@@ -124,7 +127,7 @@ class SurveyFragment : Fragment() {
     }
 
     private fun renderDynamicViews(form: Form) {
-        for (field in form.fields) {
+        form.fields.forEachIndexed { index, field ->
             val viewGroup = when (field.type) {
                 "select" -> {
                     addTextInputLayout(
@@ -145,9 +148,20 @@ class SurveyFragment : Fragment() {
                     addTextInputLayout(field.name, field.placeholder, field.type)
                 }
             }
+            surveyViewModel.answers.add(Answer((field.type)))
+
+            if (index % 2 == 1) {
+                val marginValue = resources.getDimension(com.intuit.sdp.R.dimen._4sdp).toInt()
+                viewGroup.setMargin(top = marginValue, bottom = marginValue)
+            }
+
             binding.rootContainer.addView(viewGroup)
         }
-        binding.rootContainer.addView(addButton())
+
+        binding.rootContainer.addView(addButton().apply {
+            val marginValue = resources.getDimension(com.intuit.sdp.R.dimen._16sdp).toInt()
+            setMargin(bottom = marginValue)
+        })
     }
 
     private fun addTextInputLayout(
@@ -230,21 +244,38 @@ class SurveyFragment : Fragment() {
             val viewParent = it.parent
             if (viewParent is LinearLayout) {
                 val count: Int = viewParent.childCount
-                for (i in 0 until count) {
-                    val textInputLayout = when (val view: View = viewParent.getChildAt(i)) {
+                var answerIndex = 0
+                var isNotEmptyWholeValidation: Boolean = true
+                for (index in 0 until count) {
+                    val textInputLayout = when (val view: View = viewParent.getChildAt(index)) {
                         is TextInputLayout -> {
                             viewParent.findViewWithTag(view.tag)
                         }
 
-                        else -> {
+                        is ConstraintLayout -> {
                             view.findViewWithTag<TextInputLayout>("textInputLayout.${view.tag}")
+                        }
+
+                        else -> {
+                            null
                         }
                     }
 
                     if (textInputLayout != null) {
-                        Log.d("TAG", "addButton $i: ${textInputLayout.editText?.text}")
+                        val isNotEmpty = textInputLayout.showError(requireActivity())
+                        isNotEmptyWholeValidation = isNotEmptyWholeValidation && isNotEmpty
+
+                        surveyViewModel.answers[answerIndex++].apply {
+                            this.body = textInputLayout.editText?.text.toString()
+                        }
+
+//                        Log.d("TAG", "addButton $answerIndex: ${textInputLayout.editText?.text}")
                     }
                 }
+                Log.d(
+                    "TAG",
+                    "addButton: ${surveyViewModel.answers} boolean: $isNotEmptyWholeValidation"
+                )
             }
         }
         return button

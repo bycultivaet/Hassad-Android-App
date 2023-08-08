@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
-import com.cultivaet.hassad.R
 import com.cultivaet.hassad.core.extension.launchActivity
 import com.cultivaet.hassad.core.extension.showError
 import com.cultivaet.hassad.databinding.ActivityLoginBinding
@@ -30,10 +29,7 @@ class LoginActivity : BaseActivity() {
         observeViewModel()
 
         binding.buttonLogin.setOnClickListener {
-            val isNotEmptyPhoneNumber = binding.phoneNumberTextField.showError(
-                this@LoginActivity,
-                getString(R.string.phone_number)
-            )
+            val isNotEmptyPhoneNumber = binding.phoneNumberTextField.showError(this@LoginActivity)
             if (isNotEmptyPhoneNumber)
                 loginViewModel.login(binding.phoneNumberTextField.editText?.text.toString())
         }

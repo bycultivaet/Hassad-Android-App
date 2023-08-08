@@ -42,7 +42,7 @@
     <string name="cropType">نوع المحصول</string>
     <string name="zeroDay">يوم البذر</string>
     <string name="landArea">مساحة الأرض</string>
-    <string name="please_enter">برجاء إدخال</string>
+    <string name="please_enter">برجاء إدخال هذا الحقل</string>
     <string name="added_successfully">تم الإضافة</string>
     <string name="select_farmer_from_menu">اختر مزارع من القائمة لبدء الاستبيان</string>
     <string name="village">القرية</string>

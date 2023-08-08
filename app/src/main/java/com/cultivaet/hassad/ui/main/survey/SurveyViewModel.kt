@@ -3,6 +3,7 @@ package com.cultivaet.hassad.ui.main.survey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cultivaet.hassad.core.source.remote.Resource
+import com.cultivaet.hassad.domain.model.remote.requests.Answer
 import com.cultivaet.hassad.domain.usecase.SurveyUseCase
 import com.cultivaet.hassad.ui.main.farmers.FarmerDataItem
 import com.cultivaet.hassad.ui.main.survey.intent.SurveyIntent
@@ -25,6 +26,7 @@ class SurveyViewModel(
     var farmersList: List<FarmerDataItem>? = null
     internal var userId: Int = -1
     internal var farmerId: Int = -1
+    internal val answers = mutableListOf<Answer>()
 
     init {
         handleIntent()

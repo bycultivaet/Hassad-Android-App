@@ -142,53 +142,34 @@ class AddFarmerFragment : Fragment() {
                 val previouslyGrownCrops =
                     binding.previouslyGrownCropsTextField.editText?.text.toString()
 
-                val isNotEmptyFirstName = binding.firstNameTextField.showError(
-                    requireActivity(), getString(R.string.firstName)
-                )
+                val isNotEmptyFirstName = binding.firstNameTextField.showError(requireActivity())
 
-                val isNotEmptyLastName = binding.lastNameTextField.showError(
-                    requireActivity(), getString(R.string.lastName)
-                )
+                val isNotEmptyLastName = binding.lastNameTextField.showError(requireActivity())
 
-                val isNotEmptyPhoneNumber = binding.phoneNumberTextField.showError(
-                    requireActivity(), getString(R.string.phone_number)
-                )
+                val isNotEmptyPhoneNumber =
+                    binding.phoneNumberTextField.showError(requireActivity())
 
-                val isNotEmptyGender = binding.genderTextField.showError(
-                    requireActivity(), getString(R.string.gender)
-                )
+                val isNotEmptyGender = binding.genderTextField.showError(requireActivity())
 
-                val isNotEmptyAge = binding.ageTextField.showError(
-                    requireActivity(), getString(R.string.age)
-                )
+                val isNotEmptyAge = binding.ageTextField.showError(requireActivity())
 
-                val isNotEmptyAddress = binding.addressTextField.showError(
-                    requireActivity(), getString(R.string.address)
-                )
+                val isNotEmptyAddress = binding.addressTextField.showError(requireActivity())
 
-                val isNotEmptyPossessionType = binding.possessionTypeTextField.showError(
-                    requireActivity(), getString(R.string.possessionType)
-                )
+                val isNotEmptyPossessionType =
+                    binding.possessionTypeTextField.showError(requireActivity())
 
-                val isNotEmptyLandArea = binding.areaLandTextField.showError(
-                    requireActivity(), getString(R.string.landArea)
-                )
+                val isNotEmptyLandArea = binding.areaLandTextField.showError(requireActivity())
 
                 val isNotEmptyGeographicalLocationEarth =
                     currentLocationLatitudeAndLongitude != null
 
-                val isNotEmptyFirstDayToCultivation = binding.dateTextField.showError(
-                    requireActivity(), getString(R.string.firstDayToCultivation)
-                )
+                val isNotEmptyFirstDayToCultivation =
+                    binding.dateTextField.showError(requireActivity())
 
-                val isNotEmptyCropType = binding.cropTypeTextField.showError(
-                    requireActivity(), getString(R.string.cropType)
-                )
+                val isNotEmptyCropType = binding.cropTypeTextField.showError(requireActivity())
 
                 val isNotEmptyPreviouslyGrownCropse =
-                    binding.previouslyGrownCropsTextField.showError(
-                        requireActivity(), getString(R.string.previouslyGrownCrops)
-                    )
+                    binding.previouslyGrownCropsTextField.showError(requireActivity())
 
                 if (isNotEmptyFirstName && isNotEmptyLastName && isNotEmptyPhoneNumber && isNotEmptyGender && isNotEmptyAge && isNotEmptyAddress && isNotEmptyPossessionType && isNotEmptyLandArea && isNotEmptyGeographicalLocationEarth && isNotEmptyFirstDayToCultivation && isNotEmptyCropType && isNotEmptyPreviouslyGrownCropse) {
                     addFarmerViewModel.farmer = Farmer(

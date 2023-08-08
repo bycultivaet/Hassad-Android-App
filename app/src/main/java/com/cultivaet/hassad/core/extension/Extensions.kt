@@ -9,6 +9,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.LinearLayout
 import com.cultivaet.hassad.R
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
@@ -39,7 +40,7 @@ fun String.getDateFromString(): String {
     return formatter.format(SimpleDateFormat("d MMM yyyy").parse(this))
 }
 
-fun TextInputLayout.showError(context: Context, hint: String): Boolean {
+fun TextInputLayout.showError(context: Context): Boolean {
     val textInputLayout = this
     textInputLayout.editText?.addTextChangedListener(object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
@@ -52,7 +53,7 @@ fun TextInputLayout.showError(context: Context, hint: String): Boolean {
             val text = s.toString()
             val isEmpty = text.isEmpty()
             if (isEmpty) {
-                textInputLayout.error = "${context.getString(R.string.please_enter)} $hint"
+                textInputLayout.error = context.getString(R.string.please_enter)
                 textInputLayout.requestFocus()
             } else {
                 textInputLayout.error = null
@@ -62,7 +63,7 @@ fun TextInputLayout.showError(context: Context, hint: String): Boolean {
 
     val isEmpty = textInputLayout.editText?.text.toString().isEmpty()
     if (isEmpty) {
-        textInputLayout.error = "${context.getString(R.string.please_enter)} $hint"
+        textInputLayout.error = context.getString(R.string.please_enter)
         textInputLayout.requestFocus()
     } else {
         textInputLayout.error = null
@@ -74,4 +75,13 @@ fun TextInputLayout.showError(context: Context, hint: String): Boolean {
 fun TextInputLayout.fillListOfTypesToAdapter(context: Context, list: List<String>) {
     val arrayAdapter = ArrayAdapter(context, R.layout.list_item, list)
     (this.editText as? AutoCompleteTextView)?.setAdapter(arrayAdapter)
+}
+
+fun View.setMargin(left: Int = 0, top: Int = 0, right: Int = 0, bottom: Int = 0) {
+    val layoutParams = LinearLayout.LayoutParams(
+        LinearLayout.LayoutParams.MATCH_PARENT,
+        LinearLayout.LayoutParams.WRAP_CONTENT
+    )
+    layoutParams.setMargins(left, top, right, bottom)
+    this.layoutParams = layoutParams
 }
