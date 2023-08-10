@@ -66,7 +66,7 @@ class SurveyFragment : Fragment() {
                             runBlocking {
                                 lifecycleScope.launch {
                                     surveyViewModel.surveyIntent.send(
-                                        SurveyIntent.FetchFarmerForm
+                                        SurveyIntent.FetchFacilitatorForm
                                     )
                                 }
                             }
@@ -127,6 +127,7 @@ class SurveyFragment : Fragment() {
     }
 
     private fun renderDynamicViews(form: Form) {
+        surveyViewModel.formId = form.ID
         form.fields.forEachIndexed { index, field ->
             val viewGroup = when (field.type) {
                 "select" -> {

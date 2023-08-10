@@ -5,5 +5,5 @@ sealed class SurveyIntent {
 
     object FetchAllFarmers : SurveyIntent()
 
-    object FetchFarmerForm : SurveyIntent()
+    object FetchFacilitatorForm : SurveyIntent()
 }

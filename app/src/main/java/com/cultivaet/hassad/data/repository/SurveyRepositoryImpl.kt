@@ -18,6 +18,6 @@ class SurveyRepositoryImpl(
     override suspend fun getAllFarmersById(id: Int, filter: Boolean): Resource<List<Farmer>> =
         safeApiCall { apiHelper.getAllFarmersById(id, filter) }
 
-    override suspend fun getFarmerForm(id: Int): Resource<Form> =
-        safeApiCall { apiHelper.getFarmerForm(id) }
+    override suspend fun getFacilitatorForm(id: Int): Resource<Form> =
+        safeApiCall { apiHelper.getFacilitatorForm(id) }
 }

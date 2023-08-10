@@ -27,6 +27,6 @@ interface ApiService {
     @POST(Constants.EndPoints.PostFarmer)
     suspend fun addFarmer(@Body farmer: com.cultivaet.hassad.domain.model.remote.requests.Farmer): Response<Farmer>
 
-    @GET(Constants.EndPoints.GetFarmerForm)
-    suspend fun getFarmerForm(@Path("id") id: Int): Response<Form>
+    @GET(Constants.EndPoints.GetFacilitatorForm)
+    suspend fun getFacilitatorForm(@Path("id") id: Int): Response<Form>
 }

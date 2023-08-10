@@ -52,6 +52,8 @@ class AddFarmerFragment : Fragment() {
 
     private var currentLocationLatitudeAndLongitude: String? = null
 
+    private val listOfChecks = mutableListOf<Boolean>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -142,36 +144,25 @@ class AddFarmerFragment : Fragment() {
                 val previouslyGrownCrops =
                     binding.previouslyGrownCropsTextField.editText?.text.toString()
 
-                val isNotEmptyFirstName = binding.firstNameTextField.showError(requireActivity())
+                listOfChecks.clear()
+                listOfChecks.add(binding.firstNameTextField.showError(requireActivity()))
+                listOfChecks.add(binding.lastNameTextField.showError(requireActivity()))
+                listOfChecks.add(binding.phoneNumberTextField.showError(requireActivity()))
+                listOfChecks.add(binding.genderTextField.showError(requireActivity()))
+                listOfChecks.add(binding.ageTextField.showError(requireActivity()))
+                listOfChecks.add(binding.addressTextField.showError(requireActivity()))
+                listOfChecks.add(binding.possessionTypeTextField.showError(requireActivity()))
+                listOfChecks.add(binding.areaLandTextField.showError(requireActivity()))
+                listOfChecks.add(currentLocationLatitudeAndLongitude != null)
+                listOfChecks.add(binding.dateTextField.showError(requireActivity()))
+                listOfChecks.add(binding.cropTypeTextField.showError(requireActivity()))
+                listOfChecks.add(binding.previouslyGrownCropsTextField.showError(requireActivity()))
 
-                val isNotEmptyLastName = binding.lastNameTextField.showError(requireActivity())
+                var isValid = true
+                for (check in listOfChecks)
+                    isValid = isValid && check
 
-                val isNotEmptyPhoneNumber =
-                    binding.phoneNumberTextField.showError(requireActivity())
-
-                val isNotEmptyGender = binding.genderTextField.showError(requireActivity())
-
-                val isNotEmptyAge = binding.ageTextField.showError(requireActivity())
-
-                val isNotEmptyAddress = binding.addressTextField.showError(requireActivity())
-
-                val isNotEmptyPossessionType =
-                    binding.possessionTypeTextField.showError(requireActivity())
-
-                val isNotEmptyLandArea = binding.areaLandTextField.showError(requireActivity())
-
-                val isNotEmptyGeographicalLocationEarth =
-                    currentLocationLatitudeAndLongitude != null
-
-                val isNotEmptyFirstDayToCultivation =
-                    binding.dateTextField.showError(requireActivity())
-
-                val isNotEmptyCropType = binding.cropTypeTextField.showError(requireActivity())
-
-                val isNotEmptyPreviouslyGrownCropse =
-                    binding.previouslyGrownCropsTextField.showError(requireActivity())
-
-                if (isNotEmptyFirstName && isNotEmptyLastName && isNotEmptyPhoneNumber && isNotEmptyGender && isNotEmptyAge && isNotEmptyAddress && isNotEmptyPossessionType && isNotEmptyLandArea && isNotEmptyGeographicalLocationEarth && isNotEmptyFirstDayToCultivation && isNotEmptyCropType && isNotEmptyPreviouslyGrownCropse) {
+                if (isValid) {
                     addFarmerViewModel.farmer = Farmer(
                         firstName = firstName,
                         lastName = lastName,
@@ -293,8 +284,7 @@ class AddFarmerFragment : Fragment() {
                 if (location != null) {
                     // When location result is not
                     // null set latitude
-                    currentLocationLatitudeAndLongitude =
-                        "${location.latitude},${location.longitude}"
+                    currentLocationLatitudeAndLongitude = "${location.latitude},${location.longitude}"
                 } else {
                     // When location result is null
                     // initialize location request

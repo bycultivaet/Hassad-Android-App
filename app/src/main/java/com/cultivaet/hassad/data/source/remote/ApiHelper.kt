@@ -14,5 +14,5 @@ interface ApiHelper {
 
     suspend fun addFarmer(farmer: com.cultivaet.hassad.domain.model.remote.requests.Farmer): Response<Farmer>
 
-    suspend fun getFarmerForm(id: Int): Response<Form>
+    suspend fun getFacilitatorForm(id: Int): Response<Form>
 }

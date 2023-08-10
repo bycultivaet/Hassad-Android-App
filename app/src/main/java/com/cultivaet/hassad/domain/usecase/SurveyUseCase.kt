@@ -8,5 +8,5 @@ class SurveyUseCase(private val repository: SurveyRepository) {
     suspend fun getAllFarmersById(id: Int, filter: Boolean = true) =
         repository.getAllFarmersById(id, filter)
 
-    suspend fun getFarmerForm(id: Int) = repository.getFarmerForm(id)
+    suspend fun getFacilitatorForm(id: Int) = repository.getFacilitatorForm(id)
 }

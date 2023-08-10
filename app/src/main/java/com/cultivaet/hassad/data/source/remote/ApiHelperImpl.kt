@@ -16,5 +16,5 @@ class ApiHelperImpl(private val apiService: ApiService) : ApiHelper {
     override suspend fun addFarmer(farmer: com.cultivaet.hassad.domain.model.remote.requests.Farmer): Response<Farmer> =
         apiService.addFarmer(farmer)
 
-    override suspend fun getFarmerForm(id: Int): Response<Form> = apiService.getFarmerForm(id)
+    override suspend fun getFacilitatorForm(id: Int): Response<Form> = apiService.getFacilitatorForm(id)
 }

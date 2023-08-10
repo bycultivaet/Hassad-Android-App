@@ -26,6 +26,7 @@ class SurveyViewModel(
     var farmersList: List<FarmerDataItem>? = null
     internal var userId: Int = -1
     internal var farmerId: Int = -1
+    internal var formId: Int = -1
     internal val answers = mutableListOf<Answer>()
 
     init {
@@ -40,7 +41,7 @@ class SurveyViewModel(
 
                     is SurveyIntent.FetchAllFarmers -> getAllFarmersById(userId)
 
-                    is SurveyIntent.FetchFarmerForm -> getFarmerForm(farmerId)
+                    is SurveyIntent.FetchFacilitatorForm -> getFacilitatorForm(userId)
                 }
             }
         }
@@ -74,11 +75,11 @@ class SurveyViewModel(
         }
     }
 
-    private fun getFarmerForm(id: Int) {
+    private fun getFacilitatorForm(id: Int) {
         viewModelScope.launch {
             _state.value = SurveyState.Loading
             _state.value =
-                when (val resource = surveyUseCase.getFarmerForm(id)) {
+                when (val resource = surveyUseCase.getFacilitatorForm(id)) {
                     is Resource.Success -> {
                         val form = resource.data
                         SurveyState.Success(form)

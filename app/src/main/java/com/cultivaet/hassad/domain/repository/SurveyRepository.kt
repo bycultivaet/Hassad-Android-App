@@ -10,5 +10,5 @@ interface SurveyRepository {
 
     suspend fun getAllFarmersById(id: Int, filter: Boolean): Resource<List<Farmer>>
 
-    suspend fun getFarmerForm(id: Int): Resource<Form>
+    suspend fun getFacilitatorForm(id: Int): Resource<Form>
 }
