@@ -13,7 +13,6 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -35,11 +34,10 @@ class MainActivity : BaseActivity(), LocationListener {
     private lateinit var binding: ActivityMainBinding
 
     private lateinit var locationManager: LocationManager
+
+    private var location: Location? = null
+
     private val locationPermissionCode = 2
-
-    private lateinit var fragmentRefreshListener: FragmentRefreshListener
-
-//    val geoLocation: MutableLiveData<Location> = MutableLiveData()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,12 +107,11 @@ class MainActivity : BaseActivity(), LocationListener {
     }
 
     override fun onLocationChanged(location: Location) {
-//        geoLocation.value = location
         Log.d(
             "TAG: MainActivity",
             "onLocationChanged: Latitude: ${location.latitude}, Longitude: ${location.longitude}"
         )
-        getFragmentRefreshListener().onLocationChanged(location)
+        this.location = location
     }
 
     override fun onRequestPermissionsResult(
@@ -136,11 +133,7 @@ class MainActivity : BaseActivity(), LocationListener {
         }
     }
 
-    private fun getFragmentRefreshListener(): FragmentRefreshListener {
-        return fragmentRefreshListener
-    }
-
-    fun setFragmentRefreshListener(fragmentRefreshListener: FragmentRefreshListener) {
-        this.fragmentRefreshListener = fragmentRefreshListener
+    fun getLocation(): Location? {
+        return this.location
     }
 }

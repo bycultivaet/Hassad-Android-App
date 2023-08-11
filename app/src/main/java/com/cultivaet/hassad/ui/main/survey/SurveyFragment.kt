@@ -1,6 +1,5 @@
 package com.cultivaet.hassad.ui.main.survey
 
-import android.location.Location
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -20,7 +19,6 @@ import com.cultivaet.hassad.core.extension.showError
 import com.cultivaet.hassad.databinding.FragmentSurveyBinding
 import com.cultivaet.hassad.domain.model.remote.requests.Answer
 import com.cultivaet.hassad.domain.model.remote.responses.Form
-import com.cultivaet.hassad.ui.main.FragmentRefreshListener
 import com.cultivaet.hassad.ui.main.MainActivity
 import com.cultivaet.hassad.ui.main.farmers.FarmersBottomSheet
 import com.cultivaet.hassad.ui.main.survey.intent.SurveyIntent
@@ -52,22 +50,6 @@ class SurveyFragment : Fragment() {
             _binding = FragmentSurveyBinding.inflate(inflater, container, false)
 
             observeViewModel()
-
-//            (activity as MainActivity).geoLocation.observe(requireActivity()) { geoLocation ->
-//                Log.d(
-//                    "TAG: SurveyFragment",
-//                    "onLocationChanged: Latitude: ${geoLocation.latitude}, Longitude: ${geoLocation.longitude}"
-//                )
-//            }
-
-            (activity as MainActivity).setFragmentRefreshListener(object : FragmentRefreshListener {
-                override fun onLocationChanged(location: Location) {
-                    Log.d(
-                        "TAG: SurveyFragment",
-                        "onLocationChanged: Latitude: ${location.latitude}, Longitude: ${location.longitude}"
-                    )
-                }
-            })
 
             runBlocking {
                 lifecycleScope.launch { surveyViewModel.surveyIntent.send(SurveyIntent.GetUserId) }
@@ -261,13 +243,19 @@ class SurveyFragment : Fragment() {
             ) as Button
 
         button.setOnClickListener {
-            (activity as MainActivity).getCurrentLocation()
+            val location = (activity as MainActivity).getLocation()
+            if (location != null) {
+                Log.d(
+                    "TAG: SurveyFragment",
+                    "onLocationChanged: Latitude: ${location.latitude}, Longitude: ${location.longitude}"
+                )
+            }
 
             val viewParent = it.parent
             if (viewParent is LinearLayout) {
                 val count: Int = viewParent.childCount
                 var answerIndex = 0
-                var isNotEmptyWholeValidation: Boolean = true
+                var isNotEmptyWholeValidation = true
                 for (index in 0 until count) {
                     val textInputLayout = when (val view: View = viewParent.getChildAt(index)) {
                         is TextInputLayout -> {
@@ -301,6 +289,12 @@ class SurveyFragment : Fragment() {
             }
         }
         return button
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as MainActivity).getCurrentLocation()
+        Log.d("Survey", "onResume: ")
     }
 
     override fun onDestroyView() {

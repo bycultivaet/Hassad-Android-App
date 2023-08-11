@@ -48,22 +48,6 @@ class AddFarmerFragment : Fragment() {
 
             observeViewModel()
 
-//            (activity as MainActivity).geoLocation.observe(requireActivity()) { geoLocation ->
-//                Log.d(
-//                    "TAG: AddFarmerFragment",
-//                    "onLocationChanged: Latitude: ${geoLocation.latitude}, Longitude: ${geoLocation.longitude}"
-//                )
-//            }
-
-            (activity as MainActivity).setFragmentRefreshListener(object : FragmentRefreshListener {
-                override fun onLocationChanged(location: Location) {
-                    Log.d(
-                        "TAG: SurveyFragment",
-                        "onLocationChanged: Latitude: ${location.latitude}, Longitude: ${location.longitude}"
-                    )
-                }
-            })
-
             runBlocking {
                 lifecycleScope.launch { addFarmerViewModel.addFarmerIntent.send(AddFarmerIntent.GetUserId) }
             }
@@ -103,7 +87,13 @@ class AddFarmerFragment : Fragment() {
             }
 
             binding.buttonAddFarmer.setOnClickListener {
-                (activity as MainActivity).getCurrentLocation()
+                val location = (activity as MainActivity).getLocation()
+                if (location != null) {
+                    Log.d(
+                        "TAG: AddFarmerFragment",
+                        "onLocationChanged: Latitude: ${location.latitude}, Longitude: ${location.longitude}"
+                    )
+                }
 
                 val firstName = binding.firstNameTextField.editText?.text.toString()
                 val lastName = binding.lastNameTextField.editText?.text.toString()
@@ -207,5 +197,11 @@ class AddFarmerFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as MainActivity).getCurrentLocation()
+        Log.d("AddFarmer", "onResume: ")
     }
 }
