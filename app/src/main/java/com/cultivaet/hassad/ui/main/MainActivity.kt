@@ -1,8 +1,19 @@
 package com.cultivaet.hassad.ui.main
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -18,10 +29,17 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.android.ext.android.inject
 
 @ExperimentalCoroutinesApi
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity(), LocationListener {
     private val mainViewModel: MainViewModel by inject()
 
     private lateinit var binding: ActivityMainBinding
+
+    private lateinit var locationManager: LocationManager
+    private val locationPermissionCode = 2
+
+    private lateinit var fragmentRefreshListener: FragmentRefreshListener
+
+//    val geoLocation: MutableLiveData<Location> = MutableLiveData()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,5 +80,67 @@ class MainActivity : BaseActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    fun getCurrentLocation() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            == PackageManager.PERMISSION_GRANTED
+            && ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f, this)
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ),
+                locationPermissionCode
+            )
+        }
+    }
+
+    override fun onLocationChanged(location: Location) {
+//        geoLocation.value = location
+        Log.d(
+            "TAG: MainActivity",
+            "onLocationChanged: Latitude: ${location.latitude}, Longitude: ${location.longitude}"
+        )
+        getFragmentRefreshListener().onLocationChanged(location)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == locationPermissionCode) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getCurrentLocation()
+            } else {
+                Toast.makeText(
+                    this,
+                    getString(R.string.permissionDeniedMsg),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    private fun getFragmentRefreshListener(): FragmentRefreshListener {
+        return fragmentRefreshListener
+    }
+
+    fun setFragmentRefreshListener(fragmentRefreshListener: FragmentRefreshListener) {
+        this.fragmentRefreshListener = fragmentRefreshListener
     }
 }
