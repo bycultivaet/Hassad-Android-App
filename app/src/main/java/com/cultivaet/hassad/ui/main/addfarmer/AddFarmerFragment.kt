@@ -1,6 +1,5 @@
 package com.cultivaet.hassad.ui.main.addfarmer
 
-import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,7 +14,6 @@ import com.cultivaet.hassad.core.extension.getDateFromString
 import com.cultivaet.hassad.core.extension.showError
 import com.cultivaet.hassad.databinding.FragmentAddFarmerBinding
 import com.cultivaet.hassad.domain.model.remote.requests.Farmer
-import com.cultivaet.hassad.ui.main.FragmentRefreshListener
 import com.cultivaet.hassad.ui.main.MainActivity
 import com.cultivaet.hassad.ui.main.addfarmer.intent.AddFarmerIntent
 import com.cultivaet.hassad.ui.main.addfarmer.viewstate.AddFarmerState
@@ -89,9 +87,10 @@ class AddFarmerFragment : Fragment() {
             binding.buttonAddFarmer.setOnClickListener {
                 val location = (activity as MainActivity).getLocation()
                 if (location != null) {
+                    currentLocationLatitudeAndLongitude = "${location.latitude}, ${location.longitude}"
                     Log.d(
                         "TAG: AddFarmerFragment",
-                        "onLocationChanged: Latitude: ${location.latitude}, Longitude: ${location.longitude}"
+                        "onLocationChanged: $currentLocationLatitudeAndLongitude"
                     )
                 }
 

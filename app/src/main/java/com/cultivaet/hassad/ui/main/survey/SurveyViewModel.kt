@@ -3,7 +3,7 @@ package com.cultivaet.hassad.ui.main.survey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cultivaet.hassad.core.source.remote.Resource
-import com.cultivaet.hassad.domain.model.remote.requests.Answer
+import com.cultivaet.hassad.domain.model.remote.requests.FacilitatorAnswer
 import com.cultivaet.hassad.domain.usecase.SurveyUseCase
 import com.cultivaet.hassad.ui.main.farmers.FarmerDataItem
 import com.cultivaet.hassad.ui.main.survey.intent.SurveyIntent
@@ -24,10 +24,7 @@ class SurveyViewModel(
     private val _state = MutableStateFlow<SurveyState>(SurveyState.Idle)
     val state: StateFlow<SurveyState> = _state
     var farmersList: List<FarmerDataItem>? = null
-    internal var userId: Int = -1
-    internal var farmerId: Int = -1
-    internal var formId: Int = -1
-    internal val answers = mutableListOf<Answer>()
+    val facilitatorAnswer = FacilitatorAnswer()
 
     init {
         handleIntent()
@@ -39,9 +36,13 @@ class SurveyViewModel(
                 when (it) {
                     is SurveyIntent.GetUserId -> getUserId()
 
-                    is SurveyIntent.FetchAllFarmers -> getAllFarmersById(userId)
+                    is SurveyIntent.FetchAllFarmers -> getAllFarmersById(facilitatorAnswer.userId)
 
-                    is SurveyIntent.FetchFacilitatorForm -> getFacilitatorForm(userId)
+                    is SurveyIntent.FetchFacilitatorForm -> getFacilitatorForm(facilitatorAnswer.userId)
+
+                    is SurveyIntent.SubmitFacilitatorAnswer -> submitFacilitatorAnswer(
+                        facilitatorAnswer
+                    )
                 }
             }
         }
@@ -52,8 +53,8 @@ class SurveyViewModel(
             viewModelScope.launch {
                 surveyUseCase.userId().collect { id ->
                     if (id != null) {
-                        userId = id
-                        getAllFarmersById(userId)
+                        facilitatorAnswer.userId = id
+                        getAllFarmersById(facilitatorAnswer.userId)
                     }
                 }
             }
@@ -83,6 +84,20 @@ class SurveyViewModel(
                     is Resource.Success -> {
                         val form = resource.data
                         SurveyState.Success(form)
+                    }
+
+                    is Resource.Error -> SurveyState.Error(resource.error)
+                }
+        }
+    }
+
+    private fun submitFacilitatorAnswer(facilitatorAnswer: FacilitatorAnswer) {
+        viewModelScope.launch {
+            _state.value = SurveyState.Loading
+            _state.value =
+                when (val resource = surveyUseCase.submitFacilitatorAnswer(facilitatorAnswer)) {
+                    is Resource.Success -> {
+                        SurveyState.Success(resource.data)
                     }
 
                     is Resource.Error -> SurveyState.Error(resource.error)

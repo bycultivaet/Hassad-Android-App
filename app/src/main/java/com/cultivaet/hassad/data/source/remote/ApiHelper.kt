@@ -1,6 +1,7 @@
 package com.cultivaet.hassad.data.source.remote
 
 import com.cultivaet.hassad.domain.model.remote.responses.Facilitator
+import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
 import com.cultivaet.hassad.domain.model.remote.responses.Form
 import retrofit2.Response
@@ -15,4 +16,6 @@ interface ApiHelper {
     suspend fun addFarmer(farmer: com.cultivaet.hassad.domain.model.remote.requests.Farmer): Response<Farmer>
 
     suspend fun getFacilitatorForm(id: Int): Response<Form>
+
+    suspend fun submitFacilitatorAnswer(facilitatorAnswer: com.cultivaet.hassad.domain.model.remote.requests.FacilitatorAnswer): Response<FacilitatorAnswer>
 }

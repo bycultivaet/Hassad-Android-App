@@ -2,6 +2,7 @@ package com.cultivaet.hassad.core.source.remote
 
 import com.cultivaet.hassad.core.util.Constants
 import com.cultivaet.hassad.domain.model.remote.responses.Facilitator
+import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
 import com.cultivaet.hassad.domain.model.remote.responses.Form
 import retrofit2.Response
@@ -29,4 +30,8 @@ interface ApiService {
 
     @GET(Constants.EndPoints.GetFacilitatorForm)
     suspend fun getFacilitatorForm(@Path("id") id: Int): Response<Form>
+
+    @POST(Constants.EndPoints.PostSubmitFacilitatorAnswer)
+    suspend fun submitFacilitatorAnswer(@Body facilitatorAnswer: com.cultivaet.hassad.domain.model.remote.requests.FacilitatorAnswer): Response<FacilitatorAnswer>
+
 }

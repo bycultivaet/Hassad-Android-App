@@ -18,6 +18,7 @@ import com.cultivaet.hassad.core.extension.setMargin
 import com.cultivaet.hassad.core.extension.showError
 import com.cultivaet.hassad.databinding.FragmentSurveyBinding
 import com.cultivaet.hassad.domain.model.remote.requests.Answer
+import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Form
 import com.cultivaet.hassad.ui.main.MainActivity
 import com.cultivaet.hassad.ui.main.farmers.FarmersBottomSheet
@@ -29,7 +30,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
-
 
 @ExperimentalCoroutinesApi
 class SurveyFragment : Fragment() {
@@ -60,10 +60,10 @@ class SurveyFragment : Fragment() {
                     FarmersBottomSheet(
                         farmers,
                         isSelectedOption = true,
-                        surveyViewModel.farmerId
+                        surveyViewModel.facilitatorAnswer.farmerId
                     ) { farmerId ->
                         if (farmerId != null && farmerId != -1) {
-                            surveyViewModel.farmerId = farmerId
+                            surveyViewModel.facilitatorAnswer.farmerId = farmerId
                             runBlocking {
                                 lifecycleScope.launch {
                                     surveyViewModel.surveyIntent.send(
@@ -108,12 +108,27 @@ class SurveyFragment : Fragment() {
                                 binding.selectFarmerMsgTextView.visibility = View.GONE
                             }
 
-                            else -> {
+                            is FacilitatorAnswer -> {
                                 Toast.makeText(
                                     activity,
                                     getString(R.string.added_successfully),
                                     Toast.LENGTH_SHORT
                                 ).show()
+
+                                binding.scrollView.visibility = View.GONE
+                                binding.selectFarmerMsgTextView.visibility = View.VISIBLE
+
+                                runBlocking {
+                                    lifecycleScope.launch {
+                                        surveyViewModel.surveyIntent.send(
+                                            SurveyIntent.FetchAllFarmers
+                                        )
+                                    }
+                                }
+                            }
+
+                            else -> {
+
                             }
                         }
                     }
@@ -128,7 +143,7 @@ class SurveyFragment : Fragment() {
     }
 
     private fun renderDynamicViews(form: Form) {
-        surveyViewModel.formId = form.ID
+        surveyViewModel.facilitatorAnswer.formId = form.ID
         form.fields.forEachIndexed { index, field ->
             val viewGroup = when (field.type) {
                 "select" -> {
@@ -150,7 +165,7 @@ class SurveyFragment : Fragment() {
                     addTextInputLayout(field.name, field.placeholder, field.type)
                 }
             }
-            surveyViewModel.answers.add(Answer((field.type)))
+            surveyViewModel.facilitatorAnswer.answers.add(Answer((field.type)))
 
             if (index % 2 == 1) {
                 val marginValue = resources.getDimension(com.intuit.sdp.R.dimen._4sdp).toInt()
@@ -245,9 +260,11 @@ class SurveyFragment : Fragment() {
         button.setOnClickListener {
             val location = (activity as MainActivity).getLocation()
             if (location != null) {
+                surveyViewModel.facilitatorAnswer.geolocation =
+                    "${location.latitude}, ${location.longitude}"
                 Log.d(
                     "TAG: SurveyFragment",
-                    "onLocationChanged: Latitude: ${location.latitude}, Longitude: ${location.longitude}"
+                    "onLocationChanged: ${surveyViewModel.facilitatorAnswer.geolocation}"
                 )
             }
 
@@ -275,17 +292,24 @@ class SurveyFragment : Fragment() {
                         val isNotEmpty = textInputLayout.showError(requireActivity())
                         isNotEmptyWholeValidation = isNotEmptyWholeValidation && isNotEmpty
 
-                        surveyViewModel.answers[answerIndex++].apply {
+                        surveyViewModel.facilitatorAnswer.answers[answerIndex++].apply {
                             this.body = textInputLayout.editText?.text.toString()
                         }
-
-//                        Log.d("TAG", "addButton $answerIndex: ${textInputLayout.editText?.text}")
                     }
                 }
+
                 Log.d(
                     "TAG",
-                    "addButton: ${surveyViewModel.answers} boolean: $isNotEmptyWholeValidation"
+                    "addButton: ${surveyViewModel.facilitatorAnswer}"
                 )
+
+                runBlocking {
+                    lifecycleScope.launch {
+                        surveyViewModel.surveyIntent.send(
+                            SurveyIntent.SubmitFacilitatorAnswer
+                        )
+                    }
+                }
             }
         }
         return button
@@ -295,11 +319,5 @@ class SurveyFragment : Fragment() {
         super.onResume()
         (activity as MainActivity).getCurrentLocation()
         Log.d("Survey", "onResume: ")
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-//        _binding = null
-        surveyViewModel.farmerId = -1
     }
 }

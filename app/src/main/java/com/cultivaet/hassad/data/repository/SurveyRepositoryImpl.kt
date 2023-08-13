@@ -4,6 +4,7 @@ import android.app.Application
 import com.cultivaet.hassad.core.source.local.datastore.PreferencesDataSource
 import com.cultivaet.hassad.core.source.remote.Resource
 import com.cultivaet.hassad.data.source.remote.ApiHelper
+import com.cultivaet.hassad.domain.model.remote.requests.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
 import com.cultivaet.hassad.domain.model.remote.responses.Form
 import com.cultivaet.hassad.domain.repository.SurveyRepository
@@ -20,4 +21,7 @@ class SurveyRepositoryImpl(
 
     override suspend fun getFacilitatorForm(id: Int): Resource<Form> =
         safeApiCall { apiHelper.getFacilitatorForm(id) }
+
+    override suspend fun submitFacilitatorAnswer(facilitatorAnswer: FacilitatorAnswer): Resource<com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer> =
+        safeApiCall { apiHelper.submitFacilitatorAnswer(facilitatorAnswer) }
 }
