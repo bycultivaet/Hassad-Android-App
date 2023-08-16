@@ -1,5 +1,6 @@
 package com.cultivaet.hassad.ui.main.addfarmer
 
+import android.location.Address
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import com.cultivaet.hassad.core.extension.getDateFromString
 import com.cultivaet.hassad.core.extension.showError
 import com.cultivaet.hassad.databinding.FragmentAddFarmerBinding
 import com.cultivaet.hassad.domain.model.remote.requests.Farmer
+import com.cultivaet.hassad.ui.main.AddressListener
 import com.cultivaet.hassad.ui.main.MainActivity
 import com.cultivaet.hassad.ui.main.addfarmer.intent.AddFarmerIntent
 import com.cultivaet.hassad.ui.main.addfarmer.viewstate.AddFarmerState
@@ -25,7 +27,7 @@ import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
 
 @ExperimentalCoroutinesApi
-class AddFarmerFragment : Fragment() {
+class AddFarmerFragment : Fragment(), AddressListener {
     private val addFarmerViewModel: AddFarmerViewModel by inject()
 
     private var _binding: FragmentAddFarmerBinding? = null
@@ -34,9 +36,9 @@ class AddFarmerFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private var currentLocationLatitudeAndLongitude: String? = null
-
     private val listOfChecks = mutableListOf<Boolean>()
+
+    private var isNotEmptyWholeValidation = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -45,6 +47,8 @@ class AddFarmerFragment : Fragment() {
             _binding = FragmentAddFarmerBinding.inflate(inflater, container, false)
 
             observeViewModel()
+
+            (activity as MainActivity).setAddressListener(this)
 
             runBlocking {
                 lifecycleScope.launch { addFarmerViewModel.addFarmerIntent.send(AddFarmerIntent.GetUserId) }
@@ -85,15 +89,6 @@ class AddFarmerFragment : Fragment() {
             }
 
             binding.buttonAddFarmer.setOnClickListener {
-                val location = (activity as MainActivity).getLocation()
-                if (location != null) {
-                    currentLocationLatitudeAndLongitude = "${location.latitude}, ${location.longitude}"
-                    Log.d(
-                        "TAG: AddFarmerFragment",
-                        "onLocationChanged: $currentLocationLatitudeAndLongitude"
-                    )
-                }
-
                 val firstName = binding.firstNameTextField.editText?.text.toString()
                 val lastName = binding.lastNameTextField.editText?.text.toString()
                 val phoneNumber = binding.phoneNumberTextField.editText?.text.toString()
@@ -116,16 +111,14 @@ class AddFarmerFragment : Fragment() {
                 listOfChecks.add(binding.addressTextField.showError(requireActivity()))
                 listOfChecks.add(binding.possessionTypeTextField.showError(requireActivity()))
                 listOfChecks.add(binding.areaLandTextField.showError(requireActivity()))
-                listOfChecks.add(currentLocationLatitudeAndLongitude != null)
                 listOfChecks.add(binding.dateTextField.showError(requireActivity()))
                 listOfChecks.add(binding.cropTypeTextField.showError(requireActivity()))
                 listOfChecks.add(binding.previouslyGrownCropsTextField.showError(requireActivity()))
 
-                var isValid = true
                 for (check in listOfChecks)
-                    isValid = isValid && check
+                    isNotEmptyWholeValidation = isNotEmptyWholeValidation && check
 
-                if (isValid) {
+                if (isNotEmptyWholeValidation) {
                     addFarmerViewModel.farmer = Farmer(
                         firstName = firstName,
                         lastName = lastName,
@@ -135,21 +128,16 @@ class AddFarmerFragment : Fragment() {
                         address = address,
                         landArea = areaLand.toDouble(),
                         ownership = if (possessionType == getString(R.string.ownershipLand)) "owned" else "rented",
-                        geolocation = currentLocationLatitudeAndLongitude,
                         ZeroDay = selectedDate.getDateFromString(),
                         cropType = cropType,
                         cropsHistory = previouslyGrownCrops,
                         facilitatorId = addFarmerViewModel.userId
                     )
 
-                    runBlocking {
-                        lifecycleScope.launch {
-                            addFarmerViewModel.addFarmerIntent.send(
-                                AddFarmerIntent.AddFarmer
-                            )
-                        }
-                    }
+                    (activity as MainActivity).getCurrentLocation()
                 }
+
+                isNotEmptyWholeValidation = true
             }
         }
         return binding.root
@@ -178,11 +166,56 @@ class AddFarmerFragment : Fragment() {
                                 activity, getString(R.string.added_successfully), Toast.LENGTH_SHORT
                             ).show()
 
+                            binding.firstNameTextField.apply {
+                                showError(requireActivity(), isClearFlag = true)
+                                editText?.text?.clear()
+                            }
+                            binding.lastNameTextField.apply {
+                                showError(requireActivity(), isClearFlag = true)
+                                editText?.text?.clear()
+                            }
+                            binding.phoneNumberTextField.apply {
+                                showError(requireActivity(), isClearFlag = true)
+                                editText?.text?.clear()
+                            }
+                            binding.genderTextField.apply {
+                                showError(requireActivity(), isClearFlag = true)
+                                editText?.text?.clear()
+                            }
+                            binding.ageTextField.apply {
+                                showError(requireActivity(), isClearFlag = true)
+                                editText?.text?.clear()
+                            }
+                            binding.addressTextField.apply {
+                                showError(requireActivity(), isClearFlag = true)
+                                editText?.text?.clear()
+                            }
+                            binding.possessionTypeTextField.apply {
+                                showError(requireActivity(), isClearFlag = true)
+                                editText?.text?.clear()
+                            }
+                            binding.areaLandTextField.apply {
+                                showError(requireActivity(), isClearFlag = true)
+                                editText?.text?.clear()
+                            }
+                            binding.dateTextField.apply {
+                                showError(requireActivity(), isClearFlag = true)
+                                editText?.text?.clear()
+                            }
+                            binding.cropTypeTextField.apply {
+                                showError(requireActivity(), isClearFlag = true)
+                                editText?.text?.clear()
+                            }
+                            binding.previouslyGrownCropsTextField.apply {
+                                showError(requireActivity(), isClearFlag = true)
+                                editText?.text?.clear()
+                            }
+
                             // TODO: back to home or clear editTexts
                             runBlocking {
                                 lifecycleScope.launch {
                                     addFarmerViewModel.addFarmerIntent.send(
-                                        AddFarmerIntent.GetUserId
+                                        AddFarmerIntent.FetchAllFarmers
                                     )
                                 }
                             }
@@ -198,9 +231,15 @@ class AddFarmerFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        (activity as MainActivity).getCurrentLocation()
-        Log.d("AddFarmer", "onResume: ")
+    override fun onAddressChanged(address: Address?) {
+        addFarmerViewModel.farmer.geolocation = "${address?.latitude}, ${address?.longitude}"
+        Log.d("AddFarmerFragment", "farmer: ${addFarmerViewModel.farmer}")
+        runBlocking {
+            lifecycleScope.launch {
+                addFarmerViewModel.addFarmerIntent.send(
+                    AddFarmerIntent.AddFarmer
+                )
+            }
+        }
     }
 }

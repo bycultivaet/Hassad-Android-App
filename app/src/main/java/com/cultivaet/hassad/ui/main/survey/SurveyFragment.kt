@@ -1,5 +1,6 @@
 package com.cultivaet.hassad.ui.main.survey
 
+import android.location.Address
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -20,6 +21,7 @@ import com.cultivaet.hassad.databinding.FragmentSurveyBinding
 import com.cultivaet.hassad.domain.model.remote.requests.Answer
 import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Form
+import com.cultivaet.hassad.ui.main.AddressListener
 import com.cultivaet.hassad.ui.main.MainActivity
 import com.cultivaet.hassad.ui.main.farmers.FarmersBottomSheet
 import com.cultivaet.hassad.ui.main.survey.intent.SurveyIntent
@@ -32,7 +34,7 @@ import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
 
 @ExperimentalCoroutinesApi
-class SurveyFragment : Fragment() {
+class SurveyFragment : Fragment(), AddressListener {
     private val surveyViewModel: SurveyViewModel by inject()
 
     private var _binding: FragmentSurveyBinding? = null
@@ -40,6 +42,8 @@ class SurveyFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private var isNotEmptyWholeValidation = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,6 +54,8 @@ class SurveyFragment : Fragment() {
             _binding = FragmentSurveyBinding.inflate(inflater, container, false)
 
             observeViewModel()
+
+            (activity as MainActivity).setAddressListener(this)
 
             runBlocking {
                 lifecycleScope.launch { surveyViewModel.surveyIntent.send(SurveyIntent.GetUserId) }
@@ -64,6 +70,9 @@ class SurveyFragment : Fragment() {
                     ) { farmerId ->
                         if (farmerId != null && farmerId != -1) {
                             surveyViewModel.facilitatorAnswer.farmerId = farmerId
+
+                            binding.rootContainer.removeAllViews()
+
                             runBlocking {
                                 lifecycleScope.launch {
                                     surveyViewModel.surveyIntent.send(
@@ -258,21 +267,10 @@ class SurveyFragment : Fragment() {
             ) as Button
 
         button.setOnClickListener {
-            val location = (activity as MainActivity).getLocation()
-            if (location != null) {
-                surveyViewModel.facilitatorAnswer.geolocation =
-                    "${location.latitude}, ${location.longitude}"
-                Log.d(
-                    "TAG: SurveyFragment",
-                    "onLocationChanged: ${surveyViewModel.facilitatorAnswer.geolocation}"
-                )
-            }
-
             val viewParent = it.parent
             if (viewParent is LinearLayout) {
                 val count: Int = viewParent.childCount
                 var answerIndex = 0
-                var isNotEmptyWholeValidation = true
                 for (index in 0 until count) {
                     val textInputLayout = when (val view: View = viewParent.getChildAt(index)) {
                         is TextInputLayout -> {
@@ -298,11 +296,22 @@ class SurveyFragment : Fragment() {
                     }
                 }
 
-                Log.d(
-                    "TAG",
-                    "addButton: ${surveyViewModel.facilitatorAnswer}"
-                )
+                (activity as MainActivity).getCurrentLocation()
+            }
+            isNotEmptyWholeValidation = true
+        }
+        return button
+    }
 
+    override fun onAddressChanged(address: Address?) {
+        if (address != null) {
+            surveyViewModel.facilitatorAnswer.geolocation =
+                "${address.latitude}, ${address.longitude}"
+            Log.d(
+                "SurveyFragment",
+                "facilitatorAnswer: ${surveyViewModel.facilitatorAnswer}"
+            )
+            if (isNotEmptyWholeValidation) {
                 runBlocking {
                     lifecycleScope.launch {
                         surveyViewModel.surveyIntent.send(
@@ -312,12 +321,5 @@ class SurveyFragment : Fragment() {
                 }
             }
         }
-        return button
-    }
-
-    override fun onResume() {
-        super.onResume()
-        (activity as MainActivity).getCurrentLocation()
-        Log.d("Survey", "onResume: ")
     }
 }
