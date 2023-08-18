@@ -14,6 +14,8 @@ object Constants {
 
         const val GetFacilitatorForm = "api/facilitator/{id}/form"
         const val PostSubmitFacilitatorAnswer = "api/facilitator/answer"
+
+        const val PostImage = "api/images"
     }
 
     object PreferenceKeys {

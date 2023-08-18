@@ -5,10 +5,14 @@ import com.cultivaet.hassad.domain.model.remote.responses.Facilitator
 import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
 import com.cultivaet.hassad.domain.model.remote.responses.Form
+import com.cultivaet.hassad.domain.model.remote.responses.ImageUUID
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -34,4 +38,7 @@ interface ApiService {
     @POST(Constants.EndPoints.PostSubmitFacilitatorAnswer)
     suspend fun submitFacilitatorAnswer(@Body facilitatorAnswer: com.cultivaet.hassad.domain.model.remote.requests.FacilitatorAnswer): Response<FacilitatorAnswer>
 
+    @Multipart
+    @POST(Constants.EndPoints.PostImage)
+    suspend fun uploadImage(@Part image: MultipartBody.Part): Response<ImageUUID>
 }

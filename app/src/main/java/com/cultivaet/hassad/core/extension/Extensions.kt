@@ -4,14 +4,17 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Base64
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.LinearLayout
 import com.cultivaet.hassad.R
 import com.google.android.material.textfield.TextInputLayout
+import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -84,4 +87,11 @@ fun View.setMargin(left: Int = 0, top: Int = 0, right: Int = 0, bottom: Int = 0)
     )
     layoutParams.setMargins(left, top, right, bottom)
     this.layoutParams = layoutParams
+}
+
+fun Bitmap.getEncoded64ImageStringFromBitmap(): String {
+    val byteArrayOutputStream = ByteArrayOutputStream()
+    this.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+    val imageBytes: ByteArray = byteArrayOutputStream.toByteArray()
+    return Base64.encodeToString(imageBytes, Base64.DEFAULT)
 }

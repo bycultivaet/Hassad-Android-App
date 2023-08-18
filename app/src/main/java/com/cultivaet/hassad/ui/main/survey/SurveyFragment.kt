@@ -57,10 +57,6 @@ class SurveyFragment : Fragment(), AddressListener {
 
             (activity as MainActivity).setAddressListener(this)
 
-            runBlocking {
-                lifecycleScope.launch { surveyViewModel.surveyIntent.send(SurveyIntent.GetUserId) }
-            }
-
             binding.listOfFarmers.setOnClickListener {
                 val farmersBottomSheet = surveyViewModel.farmersList?.let { farmers ->
                     FarmersBottomSheet(
@@ -87,6 +83,13 @@ class SurveyFragment : Fragment(), AddressListener {
             }
         }
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        runBlocking {
+            lifecycleScope.launch { surveyViewModel.surveyIntent.send(SurveyIntent.GetUserId) }
+        }
     }
 
     private fun observeViewModel() {
@@ -267,6 +270,8 @@ class SurveyFragment : Fragment(), AddressListener {
             ) as Button
 
         button.setOnClickListener {
+            isNotEmptyWholeValidation = true
+
             val viewParent = it.parent
             if (viewParent is LinearLayout) {
                 val count: Int = viewParent.childCount
@@ -287,18 +292,17 @@ class SurveyFragment : Fragment(), AddressListener {
                     }
 
                     if (textInputLayout != null) {
-                        val isNotEmpty = textInputLayout.showError(requireActivity())
-                        isNotEmptyWholeValidation = isNotEmptyWholeValidation && isNotEmpty
+                        isNotEmptyWholeValidation = isNotEmptyWholeValidation && textInputLayout.showError(requireActivity())
 
                         surveyViewModel.facilitatorAnswer.answers[answerIndex++].apply {
                             this.body = textInputLayout.editText?.text.toString()
                         }
                     }
                 }
-
-                (activity as MainActivity).getCurrentLocation()
+                if (answerIndex > 0) {
+                    (activity as MainActivity).getCurrentLocation()
+                }
             }
-            isNotEmptyWholeValidation = true
         }
         return button
     }

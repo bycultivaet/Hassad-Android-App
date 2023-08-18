@@ -89,6 +89,8 @@ class AddFarmerFragment : Fragment(), AddressListener {
             }
 
             binding.buttonAddFarmer.setOnClickListener {
+                isNotEmptyWholeValidation = true
+
                 val firstName = binding.firstNameTextField.editText?.text.toString()
                 val lastName = binding.lastNameTextField.editText?.text.toString()
                 val phoneNumber = binding.phoneNumberTextField.editText?.text.toString()
@@ -136,8 +138,6 @@ class AddFarmerFragment : Fragment(), AddressListener {
 
                     (activity as MainActivity).getCurrentLocation()
                 }
-
-                isNotEmptyWholeValidation = true
             }
         }
         return binding.root
@@ -232,13 +232,16 @@ class AddFarmerFragment : Fragment(), AddressListener {
     }
 
     override fun onAddressChanged(address: Address?) {
-        addFarmerViewModel.farmer.geolocation = "${address?.latitude}, ${address?.longitude}"
-        Log.d("AddFarmerFragment", "farmer: ${addFarmerViewModel.farmer}")
-        runBlocking {
-            lifecycleScope.launch {
-                addFarmerViewModel.addFarmerIntent.send(
-                    AddFarmerIntent.AddFarmer
-                )
+        if (address != null) {
+//            Log.d("AddFarmerFragment", "onAddressChanged: $address")
+            addFarmerViewModel.farmer.geolocation = "${address.latitude}, ${address.longitude}"
+            Log.d("AddFarmerFragment", "farmer: ${addFarmerViewModel.farmer}")
+            runBlocking {
+                lifecycleScope.launch {
+                    addFarmerViewModel.addFarmerIntent.send(
+                        AddFarmerIntent.AddFarmer
+                    )
+                }
             }
         }
     }
