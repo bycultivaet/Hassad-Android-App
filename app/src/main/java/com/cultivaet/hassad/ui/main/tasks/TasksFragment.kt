@@ -16,7 +16,6 @@ import com.cultivaet.hassad.R
 import com.cultivaet.hassad.core.extension.getEncoded64ImageStringFromBitmap
 import com.cultivaet.hassad.databinding.FragmentTasksBinding
 
-
 class TasksFragment : Fragment() {
 
     private var _binding: FragmentTasksBinding? = null

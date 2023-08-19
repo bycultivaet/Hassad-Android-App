@@ -43,7 +43,7 @@ fun String.getDateFromString(): String {
     return formatter.format(SimpleDateFormat("d MMM yyyy").parse(this))
 }
 
-fun TextInputLayout.showError(context: Context, isClearFlag: Boolean = false): Boolean {
+fun TextInputLayout.showError(context: Context): Boolean {
     val textInputLayout = this
     textInputLayout.editText?.addTextChangedListener(object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
@@ -55,7 +55,7 @@ fun TextInputLayout.showError(context: Context, isClearFlag: Boolean = false): B
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             val text = s.toString()
             val isEmpty = text.isEmpty()
-            if (isEmpty && !isClearFlag) {
+            if (isEmpty) {
                 textInputLayout.error = context.getString(R.string.please_enter)
                 textInputLayout.requestFocus()
             } else {
@@ -65,7 +65,7 @@ fun TextInputLayout.showError(context: Context, isClearFlag: Boolean = false): B
     })
 
     val isEmpty = textInputLayout.editText?.text.toString().isEmpty()
-    if (isEmpty && !isClearFlag) {
+    if (isEmpty) {
         textInputLayout.error = context.getString(R.string.please_enter)
         textInputLayout.requestFocus()
     } else {

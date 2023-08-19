@@ -5,7 +5,7 @@
     <string name="title_survey">إستبيان</string>
     <string name="title_tasks">المهام</string>
     <string name="title_addition">إضافة</string>
-    <string name="title_profile">الحساب</string>
+    <string name="title_profile">حسابي</string>
 
     <string name="title_login">تسجيل الدخول</string>
     <string name="phone_number">رقم التليفون</string>
@@ -59,4 +59,9 @@
     <string name="permissionDeniedMsg">تم رفض الإذن بالموقع</string>
     <string name="errorMsg">حدث خطأ</string>
     <string name="connectionError">يرجى التحقق من اتصال الشبكة الخاص بك</string>
+    <string name="noFarmers">لا يوجد مزارعين</string>
+    <string name="farmers">مزارعين</string>
+    <string name="addFarmer">إضافة مزارع</string>
+    <string name="content">المحتوى</string>
+    <string name="noContent">لا يوجد محتوى</string>
 </resources>

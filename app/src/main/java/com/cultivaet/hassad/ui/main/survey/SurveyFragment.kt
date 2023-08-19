@@ -23,7 +23,7 @@ import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Form
 import com.cultivaet.hassad.ui.main.AddressListener
 import com.cultivaet.hassad.ui.main.MainActivity
-import com.cultivaet.hassad.ui.main.farmers.FarmersBottomSheet
+import com.cultivaet.hassad.ui.main.farmers.bottomsheet.FarmersBottomSheet
 import com.cultivaet.hassad.ui.main.survey.intent.SurveyIntent
 import com.cultivaet.hassad.ui.main.survey.viewstate.SurveyState
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -139,9 +139,7 @@ class SurveyFragment : Fragment(), AddressListener {
                                 }
                             }
 
-                            else -> {
-
-                            }
+                            else -> {}
                         }
                     }
 
@@ -292,7 +290,8 @@ class SurveyFragment : Fragment(), AddressListener {
                     }
 
                     if (textInputLayout != null) {
-                        isNotEmptyWholeValidation = isNotEmptyWholeValidation && textInputLayout.showError(requireActivity())
+                        val isNotEmpty = textInputLayout.showError(requireActivity())
+                        isNotEmptyWholeValidation = isNotEmptyWholeValidation && isNotEmpty
 
                         surveyViewModel.facilitatorAnswer.answers[answerIndex++].apply {
                             this.body = textInputLayout.editText?.text.toString()

@@ -1,12 +1,12 @@
-package com.cultivaet.hassad.ui.main.addfarmer
+package com.cultivaet.hassad.ui.main.farmers
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cultivaet.hassad.core.source.remote.Resource
 import com.cultivaet.hassad.domain.model.remote.requests.Farmer
 import com.cultivaet.hassad.domain.usecase.AddFarmerUseCase
-import com.cultivaet.hassad.ui.main.addfarmer.intent.AddFarmerIntent
-import com.cultivaet.hassad.ui.main.addfarmer.viewstate.AddFarmerState
+import com.cultivaet.hassad.ui.main.farmers.intent.FarmersIntent
+import com.cultivaet.hassad.ui.main.farmers.viewstate.FarmersState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,14 +16,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 @ExperimentalCoroutinesApi
-class AddFarmerViewModel(
+class FarmersViewModel(
     private val addFarmerUseCase: AddFarmerUseCase
 ) : ViewModel() {
-    val addFarmerIntent = Channel<AddFarmerIntent>(Channel.UNLIMITED)
-    private val _state = MutableStateFlow<AddFarmerState>(AddFarmerState.Idle)
-    val state: StateFlow<AddFarmerState> = _state
+    val farmersIntent = Channel<FarmersIntent>(Channel.UNLIMITED)
+    private val _state = MutableStateFlow<FarmersState>(FarmersState.Idle)
+    val state: StateFlow<FarmersState> = _state
     internal var userId: Int = -1
     internal lateinit var farmer: Farmer
+    var farmersList: List<FarmerDataItem>? = null
 
     init {
         handleIntent()
@@ -31,11 +32,11 @@ class AddFarmerViewModel(
 
     private fun handleIntent() {
         viewModelScope.launch {
-            addFarmerIntent.consumeAsFlow().collect {
+            farmersIntent.consumeAsFlow().collect {
                 when (it) {
-                    is AddFarmerIntent.GetUserId -> getUserId()
+                    is FarmersIntent.GetUserId -> getUserId()
 
-                    is AddFarmerIntent.AddFarmer -> addFarmer(farmer)
+                    is FarmersIntent.FetchAllFarmers -> getAllFarmersById(userId)
                 }
             }
         }
@@ -47,22 +48,24 @@ class AddFarmerViewModel(
                 addFarmerUseCase.userId().collect { id ->
                     if (id != null) {
                         userId = id
+                        getAllFarmersById(userId)
                     }
                 }
             }
         }
     }
 
-    private fun addFarmer(farmer: Farmer) {
+    private fun getAllFarmersById(id: Int) {
         viewModelScope.launch {
-            _state.value = AddFarmerState.Loading
+            _state.value = FarmersState.Loading
             _state.value =
-                when (val resource = addFarmerUseCase.addFarmer(farmer)) {
+                when (val resource = addFarmerUseCase.getAllFarmersById(id)) {
                     is Resource.Success -> {
-                        AddFarmerState.Success(resource.data)
+                        farmersList = resource.data?.map { it.toFarmerDataItem() }
+                        FarmersState.Success(farmersList)
                     }
 
-                    is Resource.Error -> AddFarmerState.Error(resource.error)
+                    is Resource.Error -> FarmersState.Error(resource.error)
                 }
         }
     }

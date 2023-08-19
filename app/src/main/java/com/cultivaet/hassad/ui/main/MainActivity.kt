@@ -14,6 +14,7 @@ import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import androidx.core.app.ActivityCompat
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -42,6 +43,8 @@ class MainActivity : BaseActivity() {
 
     private var addressListener: AddressListener? = null
 
+    private lateinit var navController: NavController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -52,15 +55,15 @@ class MainActivity : BaseActivity() {
 
         val navView: BottomNavigationView = binding.navView
 
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
+        navController = findNavController(R.id.nav_host_fragment_activity_main)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_survey,
                 R.id.navigation_tasks,
-                R.id.navigation_add_farmer,
-                R.id.navigation_profile
+                R.id.navigation_farmers,
+                R.id.navigation_content
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -74,6 +77,10 @@ class MainActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.profile -> {
+                navController.navigate(R.id.navigation_profile)
+            }
+
             R.id.logout -> {
                 this@MainActivity.logoutAlert {
                     mainViewModel.loggedInState {
@@ -93,7 +100,8 @@ class MainActivity : BaseActivity() {
                     val location: Location? = task.result
                     if (location != null) {
                         val geocoder = Geocoder(this, Locale.getDefault())
-                        val list: MutableList<Address>? = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+                        val list: MutableList<Address>? =
+                            geocoder.getFromLocation(location.latitude, location.longitude, 1)
                         addressListener?.onAddressChanged(list?.get(0))
                     }
                 }
@@ -150,5 +158,9 @@ class MainActivity : BaseActivity() {
 
     fun setAddressListener(addressListener: AddressListener) {
         this.addressListener = addressListener
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 }

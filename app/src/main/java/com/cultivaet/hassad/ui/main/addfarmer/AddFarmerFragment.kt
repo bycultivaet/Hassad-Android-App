@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.cultivaet.hassad.R
 import com.cultivaet.hassad.core.extension.fillListOfTypesToAdapter
 import com.cultivaet.hassad.core.extension.getDateFromString
@@ -19,7 +20,6 @@ import com.cultivaet.hassad.ui.main.AddressListener
 import com.cultivaet.hassad.ui.main.MainActivity
 import com.cultivaet.hassad.ui.main.addfarmer.intent.AddFarmerIntent
 import com.cultivaet.hassad.ui.main.addfarmer.viewstate.AddFarmerState
-import com.cultivaet.hassad.ui.main.farmers.FarmersBottomSheet
 import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -77,15 +77,6 @@ class AddFarmerFragment : Fragment(), AddressListener {
                         binding.dateTextField.editText?.setText(this.headerText)
                     }
                 }
-            }
-
-            binding.listOfFarmers.setOnClickListener {
-                val farmersBottomSheet = addFarmerViewModel.farmersList?.let { farmers ->
-                    FarmersBottomSheet(
-                        farmers
-                    )
-                }
-                farmersBottomSheet?.show(parentFragmentManager, "farmersBottomSheet")
             }
 
             binding.buttonAddFarmer.setOnClickListener {
@@ -149,77 +140,20 @@ class AddFarmerFragment : Fragment(), AddressListener {
                 when (it) {
                     is AddFarmerState.Idle -> {
                         binding.progressBar.visibility = View.GONE
-                        binding.numberOfFarmersTextView.text =
-                            getString(R.string.numberOfFarmersInList, 0)
                     }
 
                     is AddFarmerState.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
                     }
 
-                    is AddFarmerState.Success<*> -> {
+                    is AddFarmerState.Success -> {
                         binding.progressBar.visibility = View.GONE
-                        if (it.data is List<*>) binding.numberOfFarmersTextView.text =
-                            getString(R.string.numberOfFarmersInList, it.data.size)
-                        else {
-                            Toast.makeText(
-                                activity, getString(R.string.added_successfully), Toast.LENGTH_SHORT
-                            ).show()
 
-                            binding.firstNameTextField.apply {
-                                showError(requireActivity(), isClearFlag = true)
-                                editText?.text?.clear()
-                            }
-                            binding.lastNameTextField.apply {
-                                showError(requireActivity(), isClearFlag = true)
-                                editText?.text?.clear()
-                            }
-                            binding.phoneNumberTextField.apply {
-                                showError(requireActivity(), isClearFlag = true)
-                                editText?.text?.clear()
-                            }
-                            binding.genderTextField.apply {
-                                showError(requireActivity(), isClearFlag = true)
-                                editText?.text?.clear()
-                            }
-                            binding.ageTextField.apply {
-                                showError(requireActivity(), isClearFlag = true)
-                                editText?.text?.clear()
-                            }
-                            binding.addressTextField.apply {
-                                showError(requireActivity(), isClearFlag = true)
-                                editText?.text?.clear()
-                            }
-                            binding.possessionTypeTextField.apply {
-                                showError(requireActivity(), isClearFlag = true)
-                                editText?.text?.clear()
-                            }
-                            binding.areaLandTextField.apply {
-                                showError(requireActivity(), isClearFlag = true)
-                                editText?.text?.clear()
-                            }
-                            binding.dateTextField.apply {
-                                showError(requireActivity(), isClearFlag = true)
-                                editText?.text?.clear()
-                            }
-                            binding.cropTypeTextField.apply {
-                                showError(requireActivity(), isClearFlag = true)
-                                editText?.text?.clear()
-                            }
-                            binding.previouslyGrownCropsTextField.apply {
-                                showError(requireActivity(), isClearFlag = true)
-                                editText?.text?.clear()
-                            }
+                        Toast.makeText(
+                            activity, getString(R.string.added_successfully), Toast.LENGTH_SHORT
+                        ).show()
 
-                            // TODO: back to home or clear editTexts
-                            runBlocking {
-                                lifecycleScope.launch {
-                                    addFarmerViewModel.addFarmerIntent.send(
-                                        AddFarmerIntent.FetchAllFarmers
-                                    )
-                                }
-                            }
-                        }
+                        findNavController().popBackStack()
                     }
 
                     is AddFarmerState.Error -> {

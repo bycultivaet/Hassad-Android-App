@@ -1,4 +1,4 @@
-package com.cultivaet.hassad.ui.main.farmers
+package com.cultivaet.hassad.ui.main.farmers.bottomsheet
 
 import android.os.Bundle
 import android.text.Editable
@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.cultivaet.hassad.R
 import com.cultivaet.hassad.databinding.FarmersBottomSheetBinding
+import com.cultivaet.hassad.ui.main.farmers.FarmerDataItem
+import com.cultivaet.hassad.ui.main.farmers.FarmersAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class FarmersBottomSheet(
