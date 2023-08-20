@@ -5,18 +5,19 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.cultivaet.hassad.R
@@ -25,12 +26,11 @@ import com.cultivaet.hassad.core.extension.logoutAlert
 import com.cultivaet.hassad.databinding.ActivityMainBinding
 import com.cultivaet.hassad.ui.BaseActivity
 import com.cultivaet.hassad.ui.auth.LoginActivity
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.cultivaet.hassad.ui.profile.ProfileActivity
+import com.google.android.gms.location.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.android.ext.android.inject
-import java.util.Locale
 
 @ExperimentalCoroutinesApi
 class MainActivity : BaseActivity() {
@@ -38,12 +38,14 @@ class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var mFusedLocationClient: FusedLocationProviderClient
-    private val permissionId = 2
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-    private var addressListener: AddressListener? = null
+    private var location: Location? = null
+
+    private val locationPermissionCode = 2
 
     private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,23 +53,25 @@ class MainActivity : BaseActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
         val navView: BottomNavigationView = binding.navView
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        getCurrentLocation()
+
         navController = findNavController(R.id.nav_host_fragment_activity_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(
+        navView.setupWithNavController(navController)
+
+        // Setup the ActionBar with navController and 4 top level destinations
+        appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_survey,
-                R.id.navigation_tasks,
-                R.id.navigation_farmers,
-                R.id.navigation_content
+                R.id.fragment_survey,
+                R.id.fragment_tasks,
+                R.id.fragment_farmers,
+                R.id.fragment_content
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -78,7 +82,7 @@ class MainActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.profile -> {
-                navController.navigate(R.id.navigation_profile)
+                launchActivity<ProfileActivity>()
             }
 
             R.id.logout -> {
@@ -90,27 +94,6 @@ class MainActivity : BaseActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    @SuppressLint("MissingPermission", "SetTextI18n")
-    fun getCurrentLocation() {
-        if (checkPermissions()) {
-            if (isLocationEnabled()) {
-                mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
-                    val location: Location? = task.result
-                    if (location != null) {
-                        val geocoder = Geocoder(this, Locale.getDefault())
-                        val list: MutableList<Address>? =
-                            geocoder.getFromLocation(location.latitude, location.longitude, 1)
-                        addressListener?.onAddressChanged(list?.get(0))
-                    }
-                }
-            } else {
-                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-            }
-        } else {
-            requestPermissions()
-        }
     }
 
     private fun isLocationEnabled(): Boolean {
@@ -139,28 +122,67 @@ class MainActivity : BaseActivity() {
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ),
-            permissionId
+            locationPermissionCode
         )
     }
 
-    @SuppressLint("MissingSuperCall")
+    @SuppressLint("MissingPermission")
+    fun getCurrentLocation() {
+        if (checkPermissions()) {
+            if (isLocationEnabled()) {
+                val locationRequest = LocationRequest.create().apply {
+                    priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+                    interval = 5000 // Update interval in milliseconds
+                    maxWaitTime = 15000 // Maximum time to wait for a location fix
+                }
+
+                fusedLocationClient.requestLocationUpdates(
+                    locationRequest,
+                    object : LocationCallback() {
+                        override fun onLocationResult(locationResult: LocationResult) {
+                            super.onLocationResult(locationResult)
+                            val lastLocation = locationResult.lastLocation
+                            location = lastLocation
+                            Log.d(
+                                "MainActivity",
+                                "onLocationResult: ${lastLocation.latitude}, ${lastLocation.longitude}"
+                            )
+                        }
+                    },
+                    null
+                )
+            } else {
+                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            }
+        } else {
+            requestPermissions()
+        }
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
-        permissions: Array<String>,
+        permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if (requestCode == permissionId) {
-            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == locationPermissionCode) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getCurrentLocation()
+            } else {
+                Toast.makeText(
+                    this,
+                    getString(R.string.permissionDeniedMsg),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
 
-    fun setAddressListener(addressListener: AddressListener) {
-        this.addressListener = addressListener
+    fun getLocation(): Location? {
+        return this.location
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp() || super.onSupportNavigateUp()
+        return navController.navigateUp(appBarConfiguration)
     }
 }

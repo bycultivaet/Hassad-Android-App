@@ -76,7 +76,7 @@ class FarmersFragment : Fragment() {
             })
 
             binding.fab.setOnClickListener { _ ->
-                findNavController().navigate(R.id.action_farmersFragment_to_addFarmerFragment)
+                findNavController().navigate(R.id.to_add_farmer_fragment)
             }
         }
         return binding.root

@@ -39,6 +39,9 @@
             android:name=".ui.main.MainActivity"
             android:exported="false"
             android:launchMode="singleInstance" />
+        <activity
+            android:name=".ui.profile.ProfileActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

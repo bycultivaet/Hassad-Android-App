@@ -1,4 +1,4 @@
-package com.cultivaet.hassad.ui.main.profile.intent
+package com.cultivaet.hassad.ui.profile.intent
 
 sealed class ProfileIntent {
     object GetUserId : ProfileIntent()

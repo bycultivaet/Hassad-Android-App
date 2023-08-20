@@ -1,6 +1,5 @@
 package com.cultivaet.hassad.ui.main.survey
 
-import android.location.Address
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -20,8 +19,8 @@ import com.cultivaet.hassad.core.extension.showError
 import com.cultivaet.hassad.databinding.FragmentSurveyBinding
 import com.cultivaet.hassad.domain.model.remote.requests.Answer
 import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
+import com.cultivaet.hassad.domain.model.remote.responses.Field
 import com.cultivaet.hassad.domain.model.remote.responses.Form
-import com.cultivaet.hassad.ui.main.AddressListener
 import com.cultivaet.hassad.ui.main.MainActivity
 import com.cultivaet.hassad.ui.main.farmers.bottomsheet.FarmersBottomSheet
 import com.cultivaet.hassad.ui.main.survey.intent.SurveyIntent
@@ -34,7 +33,7 @@ import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
 
 @ExperimentalCoroutinesApi
-class SurveyFragment : Fragment(), AddressListener {
+class SurveyFragment : Fragment() {
     private val surveyViewModel: SurveyViewModel by inject()
 
     private var _binding: FragmentSurveyBinding? = null
@@ -55,8 +54,6 @@ class SurveyFragment : Fragment(), AddressListener {
 
             observeViewModel()
 
-            (activity as MainActivity).setAddressListener(this)
-
             binding.listOfFarmers.setOnClickListener {
                 val farmersBottomSheet = surveyViewModel.farmersList?.let { farmers ->
                     FarmersBottomSheet(
@@ -68,6 +65,8 @@ class SurveyFragment : Fragment(), AddressListener {
                             surveyViewModel.facilitatorAnswer.farmerId = farmerId
 
                             binding.rootContainer.removeAllViews()
+
+                            (activity as MainActivity).getCurrentLocation()
 
                             runBlocking {
                                 lifecycleScope.launch {
@@ -156,23 +155,12 @@ class SurveyFragment : Fragment(), AddressListener {
         surveyViewModel.facilitatorAnswer.formId = form.ID
         form.fields.forEachIndexed { index, field ->
             val viewGroup = when (field.type) {
-                "select" -> {
-                    addTextInputLayout(
-                        field.name, field.placeholder,
-                        field.type,
-                        list = field.options.map { it.label })
-                }
-
-                "number" -> {
-                    addTextInputLayout(field.name, field.placeholder, field.type)
-                }
-
                 "date" -> {
-                    addConstraintLayout(field.name, field.placeholder)
+                    addConstraintLayout(field)
                 }
 
                 else -> {
-                    addTextInputLayout(field.name, field.placeholder, field.type)
+                    addTextInputLayout(field)
                 }
             }
             surveyViewModel.facilitatorAnswer.answers.add(Answer((field.type)))
@@ -191,15 +179,10 @@ class SurveyFragment : Fragment(), AddressListener {
         })
     }
 
-    private fun addTextInputLayout(
-        name: String,
-        placeholder: String,
-        type: String,
-        list: List<String> = listOf()
-    ): TextInputLayout {
+    private fun addTextInputLayout(field: Field): TextInputLayout {
         val textInputLayout = LayoutInflater.from(requireContext())
             .inflate(
-                when (type) {
+                when (field.type) {
                     "select" -> {
                         R.layout.text_input_layout_drop_down_list
                     }
@@ -211,37 +194,39 @@ class SurveyFragment : Fragment(), AddressListener {
                 null
             ) as TextInputLayout
 
-        textInputLayout.hint = placeholder
-        textInputLayout.tag = name
+        textInputLayout.hint = field.name
 
-        if (type == "select") {
+        textInputLayout.editText?.hint = field.placeholder
+
+        textInputLayout.tag = field.name
+
+        if (field.type == "select") {
             textInputLayout.fillListOfTypesToAdapter(
-                requireContext(), list
+                requireContext(), field.options.map { it.label }
             )
-        } else if (type == "number") {
+        } else if (field.type == "number") {
             textInputLayout.editText?.inputType =
                 InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED
         }
         return textInputLayout
     }
 
-    private fun addConstraintLayout(
-        name: String,
-        placeholder: String,
-    ): ConstraintLayout {
+    private fun addConstraintLayout(field: Field): ConstraintLayout {
         val constraintLayout = LayoutInflater.from(requireContext())
             .inflate(
                 R.layout.text_input_layout_date,
                 null
             ) as ConstraintLayout
 
-        constraintLayout.tag = name
+        constraintLayout.tag = field.name
 
         val textInputLayout = constraintLayout.findViewById<TextInputLayout>(R.id.textInputLayout)
 
-        textInputLayout.hint = placeholder
+        textInputLayout.hint = field.name
 
-        textInputLayout.tag = "textInputLayout.$name"
+        textInputLayout.editText?.hint = field.placeholder
+
+        textInputLayout.tag = "textInputLayout.${field.name}"
 
         constraintLayout.findViewById<View>(R.id.view).setOnClickListener {
             val datePicker = MaterialDatePicker.Builder.datePicker()
@@ -298,31 +283,33 @@ class SurveyFragment : Fragment(), AddressListener {
                         }
                     }
                 }
-                if (answerIndex > 0) {
+
+                val location = (activity as MainActivity).getLocation()
+                Log.d("SurveyFragment", "locationAAA: $location")
+
+                if (location != null) {
+                    surveyViewModel.facilitatorAnswer.geolocation =
+                        "${location.latitude}, ${location.longitude}"
+
+                    Log.d(
+                        "SurveyFragment",
+                        "facilitatorAnswer: ${surveyViewModel.facilitatorAnswer}"
+                    )
+
+                    if (isNotEmptyWholeValidation) {
+                        runBlocking {
+                            lifecycleScope.launch {
+                                surveyViewModel.surveyIntent.send(
+                                    SurveyIntent.SubmitFacilitatorAnswer
+                                )
+                            }
+                        }
+                    }
+                } else {
                     (activity as MainActivity).getCurrentLocation()
                 }
             }
         }
         return button
-    }
-
-    override fun onAddressChanged(address: Address?) {
-        if (address != null) {
-            surveyViewModel.facilitatorAnswer.geolocation =
-                "${address.latitude}, ${address.longitude}"
-            Log.d(
-                "SurveyFragment",
-                "facilitatorAnswer: ${surveyViewModel.facilitatorAnswer}"
-            )
-            if (isNotEmptyWholeValidation) {
-                runBlocking {
-                    lifecycleScope.launch {
-                        surveyViewModel.surveyIntent.send(
-                            SurveyIntent.SubmitFacilitatorAnswer
-                        )
-                    }
-                }
-            }
-        }
     }
 }

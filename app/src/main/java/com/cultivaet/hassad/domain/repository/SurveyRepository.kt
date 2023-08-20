@@ -13,5 +13,17 @@ interface SurveyRepository {
 
     suspend fun getFacilitatorForm(id: Int): Resource<Form>
 
-    suspend fun submitFacilitatorAnswer(facilitatorAnswer: com.cultivaet.hassad.domain.model.remote.requests.FacilitatorAnswer): Resource<FacilitatorAnswer>
+    suspend fun submitFacilitatorAnswer(
+        facilitatorAnswer: com.cultivaet.hassad.domain.model.remote.requests.FacilitatorAnswer
+    ): Resource<FacilitatorAnswer>
+
+    suspend fun insertFacilitatorAnswer(
+        facilitatorAnswer: com.cultivaet.hassad.domain.model.local.FacilitatorAnswer
+    )
+
+    suspend fun deleteFacilitatorAnswer(
+        facilitatorAnswer: com.cultivaet.hassad.domain.model.local.FacilitatorAnswer
+    )
+
+    suspend fun getFacilitatorAnswers(): List<com.cultivaet.hassad.domain.model.local.FacilitatorAnswer>
 }

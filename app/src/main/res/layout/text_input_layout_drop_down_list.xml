@@ -4,7 +4,8 @@
     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:errorEnabled="true">
+    app:errorEnabled="true"
+    app:expandedHintEnabled="false">
 
     <AutoCompleteTextView
         android:layout_width="match_parent"

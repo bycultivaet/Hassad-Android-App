@@ -14,4 +14,15 @@ class SurveyUseCase(private val repository: SurveyRepository) {
 
     suspend fun submitFacilitatorAnswer(facilitatorAnswer: com.cultivaet.hassad.domain.model.remote.requests.FacilitatorAnswer): Resource<FacilitatorAnswer> =
         repository.submitFacilitatorAnswer(facilitatorAnswer)
+
+    suspend fun insertFacilitatorAnswer(
+        facilitatorAnswer: com.cultivaet.hassad.domain.model.local.FacilitatorAnswer
+    ) = repository.insertFacilitatorAnswer(facilitatorAnswer)
+
+    suspend fun deleteFacilitatorAnswer(
+        facilitatorAnswer: com.cultivaet.hassad.domain.model.local.FacilitatorAnswer
+    ) = repository.deleteFacilitatorAnswer(facilitatorAnswer)
+
+    suspend fun getFacilitatorAnswers(): List<com.cultivaet.hassad.domain.model.local.FacilitatorAnswer> =
+        repository.getFacilitatorAnswers()
 }

@@ -22,6 +22,7 @@ inline fun <reified T : Activity> Activity.launchActivity(
     withFinish: Boolean = false
 ) {
     startActivity(Intent(this, T::class.java))
+    overridePendingTransition(R.anim.slide_out_bottom, R.anim.slide_in_bottom);
     if (withFinish) this.finish()
 }
 

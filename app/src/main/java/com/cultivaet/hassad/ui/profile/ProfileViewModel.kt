@@ -1,11 +1,11 @@
-package com.cultivaet.hassad.ui.main.profile
+package com.cultivaet.hassad.ui.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cultivaet.hassad.core.source.remote.Resource
 import com.cultivaet.hassad.domain.usecase.ProfileUseCase
-import com.cultivaet.hassad.ui.main.profile.intent.ProfileIntent
-import com.cultivaet.hassad.ui.main.profile.viewstate.ProfileState
+import com.cultivaet.hassad.ui.profile.intent.ProfileIntent
+import com.cultivaet.hassad.ui.profile.viewstate.ProfileState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow

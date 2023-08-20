@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_farmers"
+    app:startDestination="@+id/fragment_farmers">
+
+    <fragment
+        android:id="@+id/fragment_farmers"
+        android:name="com.cultivaet.hassad.ui.main.farmers.FarmersFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_farmers">
+        <action
+            android:id="@+id/to_add_farmer_fragment"
+            app:destination="@id/fragment_add_farmer" />
+        <action
+            android:id="@+id/to_profile"
+            app:destination="@id/fragment_profile" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_add_farmer"
+        android:name="com.cultivaet.hassad.ui.main.addfarmer.AddFarmerFragment"
+        android:label="@string/addFarmer"
+        tools:layout="@layout/fragment_add_farmer">
+        <action
+            android:id="@+id/to_profile"
+            app:destination="@id/fragment_profile" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_profile"
+        android:name="com.cultivaet.hassad.ui.profile.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_profile" />
+</navigation>
