@@ -8,4 +8,5 @@
     <include app:graph="@navigation/nav_tasks" />
     <include app:graph="@navigation/nav_farmers" />
     <include app:graph="@navigation/nav_content" />
+    <include app:graph="@navigation/nav_profile" />
 </navigation>

@@ -1,4 +1,4 @@
-package com.cultivaet.hassad.ui.main.addfarmer.viewstate
+package com.cultivaet.hassad.ui.main.farmers.addfarmer.viewstate
 
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
 

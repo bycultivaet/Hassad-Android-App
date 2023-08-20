@@ -1,4 +1,4 @@
-package com.cultivaet.hassad.ui.profile
+package com.cultivaet.hassad.ui.main.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,8 +8,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.cultivaet.hassad.databinding.FragmentProfileBinding
-import com.cultivaet.hassad.ui.profile.intent.ProfileIntent
-import com.cultivaet.hassad.ui.profile.viewstate.ProfileState
+import com.cultivaet.hassad.ui.main.profile.intent.ProfileIntent
+import com.cultivaet.hassad.ui.main.profile.viewstate.ProfileState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking

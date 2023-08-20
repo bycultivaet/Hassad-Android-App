@@ -255,6 +255,8 @@ class SurveyFragment : Fragment() {
         button.setOnClickListener {
             isNotEmptyWholeValidation = true
 
+            surveyViewModel.insertFacilitatorAnswer()
+
             val viewParent = it.parent
             if (viewParent is LinearLayout) {
                 val count: Int = viewParent.childCount

@@ -26,7 +26,6 @@ import com.cultivaet.hassad.core.extension.logoutAlert
 import com.cultivaet.hassad.databinding.ActivityMainBinding
 import com.cultivaet.hassad.ui.BaseActivity
 import com.cultivaet.hassad.ui.auth.LoginActivity
-import com.cultivaet.hassad.ui.profile.ProfileActivity
 import com.google.android.gms.location.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -45,6 +44,7 @@ class MainActivity : BaseActivity() {
     private val locationPermissionCode = 2
 
     private lateinit var navController: NavController
+
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +68,8 @@ class MainActivity : BaseActivity() {
                 R.id.fragment_survey,
                 R.id.fragment_tasks,
                 R.id.fragment_farmers,
-                R.id.fragment_content
+                R.id.fragment_content,
+                R.id.fragment_profile
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -81,10 +82,6 @@ class MainActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.profile -> {
-                launchActivity<ProfileActivity>()
-            }
-
             R.id.logout -> {
                 this@MainActivity.logoutAlert {
                     mainViewModel.loggedInState {
@@ -145,7 +142,7 @@ class MainActivity : BaseActivity() {
                             location = lastLocation
                             Log.d(
                                 "MainActivity",
-                                "onLocationResult: ${lastLocation.latitude}, ${lastLocation.longitude}"
+                                "onLocationResult: ${lastLocation?.latitude}, ${lastLocation?.longitude}"
                             )
                         }
                     },

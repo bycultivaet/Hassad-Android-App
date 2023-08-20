@@ -1,4 +1,4 @@
-package com.cultivaet.hassad.ui.main.addfarmer.intent
+package com.cultivaet.hassad.ui.main.farmers.addfarmer.intent
 
 sealed class AddFarmerIntent {
     object GetUserId : AddFarmerIntent()

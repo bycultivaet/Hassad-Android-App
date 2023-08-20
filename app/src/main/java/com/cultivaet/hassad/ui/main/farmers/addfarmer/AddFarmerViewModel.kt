@@ -1,12 +1,12 @@
-package com.cultivaet.hassad.ui.main.addfarmer
+package com.cultivaet.hassad.ui.main.farmers.addfarmer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cultivaet.hassad.core.source.remote.Resource
 import com.cultivaet.hassad.domain.model.remote.requests.Farmer
 import com.cultivaet.hassad.domain.usecase.AddFarmerUseCase
-import com.cultivaet.hassad.ui.main.addfarmer.intent.AddFarmerIntent
-import com.cultivaet.hassad.ui.main.addfarmer.viewstate.AddFarmerState
+import com.cultivaet.hassad.ui.main.farmers.addfarmer.intent.AddFarmerIntent
+import com.cultivaet.hassad.ui.main.farmers.addfarmer.viewstate.AddFarmerState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow

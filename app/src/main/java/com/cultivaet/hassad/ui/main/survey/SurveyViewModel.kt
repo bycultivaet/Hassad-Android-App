@@ -1,5 +1,7 @@
 package com.cultivaet.hassad.ui.main.survey
 
+import android.app.Application
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cultivaet.hassad.core.source.remote.Resource
@@ -103,5 +105,19 @@ class SurveyViewModel(
                     is Resource.Error -> SurveyState.Error(resource.error)
                 }
         }
+    }
+
+    fun insertFacilitatorAnswer() {
+        val facilitatorAnswerLocal = com.cultivaet.hassad.domain.model.local.FacilitatorAnswer(
+            facilitatorAnswer.userId,
+            facilitatorAnswer.formId,
+            facilitatorAnswer.farmerId,
+            facilitatorAnswer.geolocation,
+            facilitatorAnswer.answers.toString(),
+            facilitatorAnswer.type
+        )
+        viewModelScope.launch { surveyUseCase.insertFacilitatorAnswer(facilitatorAnswerLocal) }
+
+        Log.d("TAG", "insertFacilitatorAnswer: $facilitatorAnswerLocal")
     }
 }

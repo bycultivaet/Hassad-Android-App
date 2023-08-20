@@ -1,4 +1,4 @@
-package com.cultivaet.hassad.ui.profile.viewstate
+package com.cultivaet.hassad.ui.main.profile.viewstate
 
 import com.cultivaet.hassad.ui.auth.model.FacilitatorDataItem
 

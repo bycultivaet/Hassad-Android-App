@@ -1,4 +1,4 @@
-package com.cultivaet.hassad.ui.main.addfarmer
+package com.cultivaet.hassad.ui.main.farmers.addfarmer
 
 import android.os.Bundle
 import android.util.Log
@@ -16,8 +16,8 @@ import com.cultivaet.hassad.core.extension.showError
 import com.cultivaet.hassad.databinding.FragmentAddFarmerBinding
 import com.cultivaet.hassad.domain.model.remote.requests.Farmer
 import com.cultivaet.hassad.ui.main.MainActivity
-import com.cultivaet.hassad.ui.main.addfarmer.intent.AddFarmerIntent
-import com.cultivaet.hassad.ui.main.addfarmer.viewstate.AddFarmerState
+import com.cultivaet.hassad.ui.main.farmers.addfarmer.intent.AddFarmerIntent
+import com.cultivaet.hassad.ui.main.farmers.addfarmer.viewstate.AddFarmerState
 import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch

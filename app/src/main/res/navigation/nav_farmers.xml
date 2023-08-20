@@ -13,24 +13,11 @@
         <action
             android:id="@+id/to_add_farmer_fragment"
             app:destination="@id/fragment_add_farmer" />
-        <action
-            android:id="@+id/to_profile"
-            app:destination="@id/fragment_profile" />
     </fragment>
 
     <fragment
         android:id="@+id/fragment_add_farmer"
-        android:name="com.cultivaet.hassad.ui.main.addfarmer.AddFarmerFragment"
+        android:name="com.cultivaet.hassad.ui.main.farmers.addfarmer.AddFarmerFragment"
         android:label="@string/addFarmer"
-        tools:layout="@layout/fragment_add_farmer">
-        <action
-            android:id="@+id/to_profile"
-            app:destination="@id/fragment_profile" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/fragment_profile"
-        android:name="com.cultivaet.hassad.ui.profile.ProfileFragment"
-        android:label="@string/title_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_add_farmer" />
 </navigation>

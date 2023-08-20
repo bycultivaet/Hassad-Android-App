@@ -31,9 +31,9 @@ import com.cultivaet.hassad.domain.usecase.SplashUseCase
 import com.cultivaet.hassad.domain.usecase.SurveyUseCase
 import com.cultivaet.hassad.ui.auth.LoginViewModel
 import com.cultivaet.hassad.ui.main.MainViewModel
-import com.cultivaet.hassad.ui.main.addfarmer.AddFarmerViewModel
+import com.cultivaet.hassad.ui.main.farmers.addfarmer.AddFarmerViewModel
 import com.cultivaet.hassad.ui.main.farmers.FarmersViewModel
-import com.cultivaet.hassad.ui.profile.ProfileViewModel
+import com.cultivaet.hassad.ui.main.profile.ProfileViewModel
 import com.cultivaet.hassad.ui.main.survey.SurveyViewModel
 import com.cultivaet.hassad.ui.splash.SplashViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -50,7 +50,7 @@ val databaseModule = module {
 
 val helperModule = module {
     single<ApiHelper> { ApiHelperImpl(get()) }
-    single<DatabaseHelper> { DatabaseHelperImpl() }
+    single<DatabaseHelper> { DatabaseHelperImpl(get()) }
 }
 
 val repositoryModule = module {
