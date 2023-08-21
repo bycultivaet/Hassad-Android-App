@@ -5,11 +5,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cultivaet.hassad.core.source.remote.Resource
+import com.cultivaet.hassad.domain.model.remote.requests.Answer
 import com.cultivaet.hassad.domain.model.remote.requests.FacilitatorAnswer
 import com.cultivaet.hassad.domain.usecase.SurveyUseCase
 import com.cultivaet.hassad.ui.main.farmers.FarmerDataItem
 import com.cultivaet.hassad.ui.main.survey.intent.SurveyIntent
 import com.cultivaet.hassad.ui.main.survey.viewstate.SurveyState
+import com.google.gson.Gson
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +32,7 @@ class SurveyViewModel(
 
     init {
         handleIntent()
+        getFacilitatorAnswers()
     }
 
     private fun handleIntent() {
@@ -109,15 +112,29 @@ class SurveyViewModel(
 
     fun insertFacilitatorAnswer() {
         val facilitatorAnswerLocal = com.cultivaet.hassad.domain.model.local.FacilitatorAnswer(
-            facilitatorAnswer.userId,
-            facilitatorAnswer.formId,
             facilitatorAnswer.farmerId,
+            facilitatorAnswer.formId,
             facilitatorAnswer.geolocation,
-            facilitatorAnswer.answers.toString(),
+            listOfAnswersToJson(facilitatorAnswer.answers),
             facilitatorAnswer.type
         )
         viewModelScope.launch { surveyUseCase.insertFacilitatorAnswer(facilitatorAnswerLocal) }
 
         Log.d("TAG", "insertFacilitatorAnswer: $facilitatorAnswerLocal")
+    }
+
+    private fun getFacilitatorAnswers() {
+        viewModelScope.launch {
+            val list = surveyUseCase.getFacilitatorAnswers()
+            Log.d("TAG", "getFacilitatorAnswers: $list")
+        }
+    }
+
+    private fun listOfAnswersToJson(answers: List<Answer>): String {
+        return Gson().toJson(answers)
+    }
+
+    private fun jsonToListOfAnswers(str: String): List<Answer> {
+        return Gson().fromJson(str, Array<Answer>::class.java).asList()
     }
 }

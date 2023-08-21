@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "886005768476",
+    "project_id": "hassad-8d9f4",
+    "storage_bucket": "hassad-8d9f4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:886005768476:android:e82684bacb69130ee51ad9",
+        "android_client_info": {
+          "package_name": "com.cultivaet.hassad"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "886005768476-0n46hahfnk6arnn2aurc1nuokac5aqgm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cultivaet.hassad",
+            "certificate_hash": "aefade21fcb28a67f079dfdf3ecf9eea1702e998"
+          }
+        },
+        {
+          "client_id": "886005768476-ll79qf0esro9atm7krod55gdi3shd1do.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-CS7Xzud0QdYgbiq198xcZ-EqSAgfcCU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "886005768476-ll79qf0esro9atm7krod55gdi3shd1do.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

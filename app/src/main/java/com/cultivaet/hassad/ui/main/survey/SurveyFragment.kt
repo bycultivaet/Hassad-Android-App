@@ -54,6 +54,8 @@ class SurveyFragment : Fragment() {
 
             observeViewModel()
 
+            (activity as MainActivity).getCurrentLocation()
+
             binding.listOfFarmers.setOnClickListener {
                 val farmersBottomSheet = surveyViewModel.farmersList?.let { farmers ->
                     FarmersBottomSheet(
@@ -255,7 +257,10 @@ class SurveyFragment : Fragment() {
         button.setOnClickListener {
             isNotEmptyWholeValidation = true
 
-            surveyViewModel.insertFacilitatorAnswer()
+            val location = (activity as MainActivity).getLocation()
+            if (location != null) {
+                Log.d("SurveyFragment", "locationAAA: $location")
+            }
 
             val viewParent = it.parent
             if (viewParent is LinearLayout) {
@@ -285,9 +290,6 @@ class SurveyFragment : Fragment() {
                         }
                     }
                 }
-
-                val location = (activity as MainActivity).getLocation()
-                Log.d("SurveyFragment", "locationAAA: $location")
 
                 if (location != null) {
                     surveyViewModel.facilitatorAnswer.geolocation =

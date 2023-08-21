@@ -46,10 +46,6 @@ class FarmersFragment : Fragment() {
 
             observeViewModel()
 
-            runBlocking {
-                lifecycleScope.launch { farmersViewModel.farmersIntent.send(FarmersIntent.GetUserId) }
-            }
-
             binding.farmersRecyclerView.adapter = farmersAdapter
 
             binding.searchEditText.addTextChangedListener(object : TextWatcher {
@@ -80,6 +76,13 @@ class FarmersFragment : Fragment() {
             }
         }
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        runBlocking {
+            lifecycleScope.launch { farmersViewModel.farmersIntent.send(FarmersIntent.GetUserId) }
+        }
     }
 
     private fun observeViewModel() {

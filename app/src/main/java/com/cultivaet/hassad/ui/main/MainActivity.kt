@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
@@ -26,26 +27,25 @@ import com.cultivaet.hassad.core.extension.logoutAlert
 import com.cultivaet.hassad.databinding.ActivityMainBinding
 import com.cultivaet.hassad.ui.BaseActivity
 import com.cultivaet.hassad.ui.auth.LoginActivity
-import com.google.android.gms.location.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.android.ext.android.inject
 
 @ExperimentalCoroutinesApi
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity(), LocationListener {
     private val mainViewModel: MainViewModel by inject()
 
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var navController: NavController
+
+    private lateinit var appBarConfiguration: AppBarConfiguration
+
+    private lateinit var locationManager: LocationManager
 
     private var location: Location? = null
 
     private val locationPermissionCode = 2
-
-    private lateinit var navController: NavController
-
-    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,10 +54,6 @@ class MainActivity : BaseActivity() {
         setContentView(binding.root)
 
         val navView: BottomNavigationView = binding.navView
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-        getCurrentLocation()
 
         navController = findNavController(R.id.nav_host_fragment_activity_main)
         navView.setupWithNavController(navController)
@@ -127,27 +123,8 @@ class MainActivity : BaseActivity() {
     fun getCurrentLocation() {
         if (checkPermissions()) {
             if (isLocationEnabled()) {
-                val locationRequest = LocationRequest.create().apply {
-                    priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
-                    interval = 5000 // Update interval in milliseconds
-                    maxWaitTime = 15000 // Maximum time to wait for a location fix
-                }
-
-                fusedLocationClient.requestLocationUpdates(
-                    locationRequest,
-                    object : LocationCallback() {
-                        override fun onLocationResult(locationResult: LocationResult) {
-                            super.onLocationResult(locationResult)
-                            val lastLocation = locationResult.lastLocation
-                            location = lastLocation
-                            Log.d(
-                                "MainActivity",
-                                "onLocationResult: ${lastLocation?.latitude}, ${lastLocation?.longitude}"
-                            )
-                        }
-                    },
-                    null
-                )
+                locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 5f, this)
             } else {
                 startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
             }
@@ -173,6 +150,14 @@ class MainActivity : BaseActivity() {
                 ).show()
             }
         }
+    }
+
+    override fun onLocationChanged(location: Location) {
+        Log.d(
+            "MainActivity",
+            "onLocationChanged: Latitude: ${location.latitude}, Longitude: ${location.longitude}"
+        )
+        this.location = location
     }
 
     fun getLocation(): Location? {

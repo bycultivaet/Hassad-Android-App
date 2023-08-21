@@ -22,7 +22,7 @@ inline fun <reified T : Activity> Activity.launchActivity(
     withFinish: Boolean = false
 ) {
     startActivity(Intent(this, T::class.java))
-    overridePendingTransition(R.anim.slide_out_bottom, R.anim.slide_in_bottom);
+    overridePendingTransition(R.anim.slide_out_bottom, R.anim.slide_in_bottom)
     if (withFinish) this.finish()
 }
 
@@ -41,7 +41,17 @@ fun Context.logoutAlert(yesCallback: () -> Unit) {
 
 fun String.getDateFromString(): String {
     val formatter = SimpleDateFormat("yyyy-MM-dd", Locale("en"))
-    return formatter.format(SimpleDateFormat("d MMM yyyy").parse(this))
+    val dateFormats = arrayOf(
+        SimpleDateFormat("dd MMMM yyyy", Locale("ar")),  // Arabic format
+        SimpleDateFormat("MMM d, yyyy", Locale.US)      // English format
+    )
+    for (dateFormat in dateFormats) {
+        try {
+            return formatter.format(dateFormat.parse(this))
+        } catch (_: Exception) {
+        }
+    }
+    return ""
 }
 
 fun TextInputLayout.showError(context: Context): Boolean {

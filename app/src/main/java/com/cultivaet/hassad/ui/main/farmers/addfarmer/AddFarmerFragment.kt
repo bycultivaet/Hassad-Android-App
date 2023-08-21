@@ -80,6 +80,11 @@ class AddFarmerFragment : Fragment() {
             binding.buttonAddFarmer.setOnClickListener {
                 isNotEmptyWholeValidation = true
 
+                val location = (activity as MainActivity).getLocation()
+                if (location != null) {
+                    Log.d("AddFarmerFragment", "locationAAA: $location")
+                }
+
                 val firstName = binding.firstNameTextField.editText?.text.toString()
                 val lastName = binding.lastNameTextField.editText?.text.toString()
                 val phoneNumber = binding.phoneNumberTextField.editText?.text.toString()
@@ -90,8 +95,7 @@ class AddFarmerFragment : Fragment() {
                 val areaLand = binding.areaLandTextField.editText?.text.toString()
                 val selectedDate = binding.dateTextField.editText?.text.toString()
                 val cropType = binding.cropTypeTextField.editText?.text.toString()
-                val previouslyGrownCrops =
-                    binding.previouslyGrownCropsTextField.editText?.text.toString()
+                val previouslyGrownCrops = binding.previouslyGrownCropsTextField.editText?.text.toString()
 
                 listOfChecks.clear()
                 listOfChecks.add(binding.firstNameTextField.showError(requireActivity()))
@@ -108,9 +112,6 @@ class AddFarmerFragment : Fragment() {
 
                 for (check in listOfChecks)
                     isNotEmptyWholeValidation = isNotEmptyWholeValidation && check
-
-                val location = (activity as MainActivity).getLocation()
-                Log.d("AddFarmerFragment", "locationAAA: $location")
 
                 if (location != null) {
                     if (isNotEmptyWholeValidation) {
