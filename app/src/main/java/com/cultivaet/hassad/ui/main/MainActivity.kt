@@ -22,6 +22,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.cultivaet.hassad.R
+import com.cultivaet.hassad.core.extension.isConnectedToInternet
 import com.cultivaet.hassad.core.extension.launchActivity
 import com.cultivaet.hassad.core.extension.logoutAlert
 import com.cultivaet.hassad.databinding.ActivityMainBinding
@@ -79,6 +80,7 @@ class MainActivity : BaseActivity(), LocationListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.logout -> {
+                Log.d("TAG", "onOptionsItemSelected: ${isConnectedToInternet()}")
                 this@MainActivity.logoutAlert {
                     mainViewModel.loggedInState {
                         launchActivity<LoginActivity>(withFinish = true)
