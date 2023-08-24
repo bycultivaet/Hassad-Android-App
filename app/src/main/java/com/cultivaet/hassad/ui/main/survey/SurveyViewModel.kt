@@ -1,6 +1,5 @@
 package com.cultivaet.hassad.ui.main.survey
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,7 +31,6 @@ class SurveyViewModel(
 
     init {
         handleIntent()
-        getFacilitatorAnswers()
     }
 
     private fun handleIntent() {
@@ -48,6 +46,12 @@ class SurveyViewModel(
                     is SurveyIntent.SubmitFacilitatorAnswer -> submitFacilitatorAnswer(
                         facilitatorAnswer
                     )
+
+                    is SurveyIntent.InsertFacilitatorAnswerOffline -> insertFacilitatorAnswerOffline(
+                        facilitatorAnswer
+                    )
+
+                    is SurveyIntent.SubmitOfflineFacilitatorAnswersList -> submitOfflineFacilitatorAnswersList()
                 }
             }
         }
@@ -110,23 +114,35 @@ class SurveyViewModel(
         }
     }
 
-    fun insertFacilitatorAnswer() {
+    private fun insertFacilitatorAnswerOffline(facilitatorAnswer: FacilitatorAnswer) {
         val facilitatorAnswerLocal = com.cultivaet.hassad.domain.model.local.FacilitatorAnswer(
             facilitatorAnswer.farmerId,
             facilitatorAnswer.formId,
             facilitatorAnswer.geolocation,
-            listOfAnswersToJson(facilitatorAnswer.answers),
-            facilitatorAnswer.type
+            listOfAnswersToJson(facilitatorAnswer.answers)
         )
+
         viewModelScope.launch { surveyUseCase.insertFacilitatorAnswer(facilitatorAnswerLocal) }
 
         Log.d("TAG", "insertFacilitatorAnswer: $facilitatorAnswerLocal")
     }
 
-    private fun getFacilitatorAnswers() {
+    private fun submitOfflineFacilitatorAnswersList() {
         viewModelScope.launch {
-            val list = surveyUseCase.getFacilitatorAnswers()
-            Log.d("TAG", "getFacilitatorAnswers: $list")
+            val facilitatorAnswersList = surveyUseCase.getFacilitatorAnswers()
+            Log.d("TAG", "getFacilitatorAnswers: $facilitatorAnswersList")
+            for (facAnswer in facilitatorAnswersList) {
+                submitFacilitatorAnswer(
+                    FacilitatorAnswer(
+                        userId = facilitatorAnswer.userId,
+                        formId = facAnswer.formId,
+                        farmerId = facAnswer.farmerId,
+                        geolocation = facAnswer.geolocation,
+                        answers = jsonToListOfAnswers(facAnswer.answers).toMutableList(),
+                        facilitatorAnswer.type
+                    )
+                )
+            }
         }
     }
 

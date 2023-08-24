@@ -8,4 +8,8 @@ sealed class SurveyIntent {
     object FetchFacilitatorForm : SurveyIntent()
 
     object SubmitFacilitatorAnswer : SurveyIntent()
+
+    object InsertFacilitatorAnswerOffline : SurveyIntent()
+
+    object SubmitOfflineFacilitatorAnswersList : SurveyIntent()
 }

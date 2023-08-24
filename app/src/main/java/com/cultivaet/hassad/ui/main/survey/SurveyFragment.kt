@@ -1,5 +1,9 @@
 package com.cultivaet.hassad.ui.main.survey
 
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -44,6 +48,26 @@ class SurveyFragment : Fragment() {
 
     private var isNotEmptyWholeValidation = true
 
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            super.onAvailable(network)
+            Log.d("networkCallback", "onAvailable: ")
+
+            runBlocking {
+                lifecycleScope.launch { surveyViewModel.surveyIntent.send(SurveyIntent.GetUserId) }
+            }
+
+            runBlocking {
+                lifecycleScope.launch { surveyViewModel.surveyIntent.send(SurveyIntent.SubmitOfflineFacilitatorAnswersList) }
+            }
+        }
+
+        override fun onLost(network: Network) {
+            super.onLost(network)
+            Log.d("networkCallback", "onLost: ")
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,6 +79,15 @@ class SurveyFragment : Fragment() {
             observeViewModel()
 
             (activity as MainActivity).getCurrentLocation()
+
+            val networkRequest = NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .build()
+
+            val connectivityManager = requireActivity().getSystemService(ConnectivityManager::class.java) as ConnectivityManager
+            connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
 
             binding.listOfFarmers.setOnClickListener {
                 val farmersBottomSheet = surveyViewModel.farmersList?.let { farmers ->
@@ -88,6 +121,7 @@ class SurveyFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+
         runBlocking {
             lifecycleScope.launch { surveyViewModel.surveyIntent.send(SurveyIntent.GetUserId) }
         }
