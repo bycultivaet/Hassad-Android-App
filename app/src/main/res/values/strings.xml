@@ -63,4 +63,5 @@
     <string name="addFarmer">إضافة مزارع</string>
     <string name="content">المحتوى</string>
     <string name="noContent">لا يوجد محتوى</string>
+    <string name="surveyMsgOffline">عند الاتصال بالانترنت سيتم ارسال الاستبيان</string>
 </resources>

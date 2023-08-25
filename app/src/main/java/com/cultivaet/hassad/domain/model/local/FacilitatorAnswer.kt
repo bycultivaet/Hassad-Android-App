@@ -10,4 +10,5 @@ class FacilitatorAnswer(
     var farmerId: Int,
     var geolocation: String,
     var answers: String,
+    var userId: Int,
 )

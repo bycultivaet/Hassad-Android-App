@@ -53,6 +53,7 @@
                         android:inputType="phone"
                         android:maxLines="1"
                         android:singleLine="true"
+                        android:text="01063593802"
                         android:textAlignment="viewStart"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_12ssp" />

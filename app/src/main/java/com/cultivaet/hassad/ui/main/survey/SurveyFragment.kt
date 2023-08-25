@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.cultivaet.hassad.R
 import com.cultivaet.hassad.core.extension.fillListOfTypesToAdapter
+import com.cultivaet.hassad.core.extension.isConnectedToInternet
 import com.cultivaet.hassad.core.extension.setMargin
 import com.cultivaet.hassad.core.extension.showError
 import com.cultivaet.hassad.databinding.FragmentSurveyBinding
@@ -54,10 +55,6 @@ class SurveyFragment : Fragment() {
             Log.d("networkCallback", "onAvailable: ")
 
             runBlocking {
-                lifecycleScope.launch { surveyViewModel.surveyIntent.send(SurveyIntent.GetUserId) }
-            }
-
-            runBlocking {
                 lifecycleScope.launch { surveyViewModel.surveyIntent.send(SurveyIntent.SubmitOfflineFacilitatorAnswersList) }
             }
         }
@@ -86,7 +83,8 @@ class SurveyFragment : Fragment() {
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 .build()
 
-            val connectivityManager = requireActivity().getSystemService(ConnectivityManager::class.java) as ConnectivityManager
+            val connectivityManager =
+                requireActivity().getSystemService(ConnectivityManager::class.java) as ConnectivityManager
             connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
 
             binding.listOfFarmers.setOnClickListener {
@@ -156,21 +154,8 @@ class SurveyFragment : Fragment() {
                             }
 
                             is FacilitatorAnswer -> {
-                                Toast.makeText(
-                                    activity,
-                                    getString(R.string.added_successfully),
-                                    Toast.LENGTH_SHORT
-                                ).show()
-
-                                binding.scrollView.visibility = View.GONE
-                                binding.selectFarmerMsgTextView.visibility = View.VISIBLE
-
-                                runBlocking {
-                                    lifecycleScope.launch {
-                                        surveyViewModel.surveyIntent.send(
-                                            SurveyIntent.FetchAllFarmers
-                                        )
-                                    }
+                                if (it.data.showMessageResponse) {
+                                    responseMessageForFacilitatorAnswer()
                                 }
                             }
 
@@ -182,6 +167,27 @@ class SurveyFragment : Fragment() {
                         binding.progressBar.visibility = View.GONE
                         Toast.makeText(activity, it.error, Toast.LENGTH_LONG).show()
                     }
+                }
+            }
+        }
+    }
+
+    private fun responseMessageForFacilitatorAnswer(isOffline: Boolean = false) {
+        Toast.makeText(
+            activity,
+            getString(if (!isOffline) R.string.added_successfully else R.string.surveyMsgOffline),
+            Toast.LENGTH_SHORT
+        ).show()
+
+        binding.scrollView.visibility = View.GONE
+        binding.selectFarmerMsgTextView.visibility = View.VISIBLE
+
+        if (!isOffline) {
+            runBlocking {
+                lifecycleScope.launch {
+                    surveyViewModel.surveyIntent.send(
+                        SurveyIntent.FetchAllFarmers
+                    )
                 }
             }
         }
@@ -291,11 +297,6 @@ class SurveyFragment : Fragment() {
         button.setOnClickListener {
             isNotEmptyWholeValidation = true
 
-            val location = (activity as MainActivity).getLocation()
-            if (location != null) {
-                Log.d("SurveyFragment", "locationAAA: $location")
-            }
-
             val viewParent = it.parent
             if (viewParent is LinearLayout) {
                 val count: Int = viewParent.childCount
@@ -324,17 +325,22 @@ class SurveyFragment : Fragment() {
                         }
                     }
                 }
+            }
 
-                if (location != null) {
-                    surveyViewModel.facilitatorAnswer.geolocation =
-                        "${location.latitude}, ${location.longitude}"
+            val location = (activity as MainActivity).getLocation()
+            if (location != null) {
+                Log.d("SurveyFragment", "location: $location")
 
-                    Log.d(
-                        "SurveyFragment",
-                        "facilitatorAnswer: ${surveyViewModel.facilitatorAnswer}"
-                    )
+                surveyViewModel.facilitatorAnswer.geolocation =
+                    "${location.latitude}, ${location.longitude}"
 
-                    if (isNotEmptyWholeValidation) {
+                Log.d(
+                    "SurveyFragment",
+                    "facilitatorAnswer: ${surveyViewModel.facilitatorAnswer}"
+                )
+
+                if (isNotEmptyWholeValidation) {
+                    if (requireActivity().isConnectedToInternet()) {
                         runBlocking {
                             lifecycleScope.launch {
                                 surveyViewModel.surveyIntent.send(
@@ -342,10 +348,19 @@ class SurveyFragment : Fragment() {
                                 )
                             }
                         }
+                    } else {
+                        runBlocking {
+                            lifecycleScope.launch {
+                                surveyViewModel.surveyIntent.send(
+                                    SurveyIntent.InsertFacilitatorAnswerOffline
+                                )
+                            }
+                        }
+                        responseMessageForFacilitatorAnswer()
                     }
-                } else {
-                    (activity as MainActivity).getCurrentLocation()
                 }
+            } else {
+                (activity as MainActivity).getCurrentLocation()
             }
         }
         return button

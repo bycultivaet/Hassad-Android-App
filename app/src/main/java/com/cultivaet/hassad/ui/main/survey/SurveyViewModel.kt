@@ -91,8 +91,7 @@ class SurveyViewModel(
             _state.value =
                 when (val resource = surveyUseCase.getFacilitatorForm(id)) {
                     is Resource.Success -> {
-                        val form = resource.data
-                        SurveyState.Success(form)
+                        SurveyState.Success(resource.data)
                     }
 
                     is Resource.Error -> SurveyState.Error(resource.error)
@@ -100,13 +99,23 @@ class SurveyViewModel(
         }
     }
 
-    private fun submitFacilitatorAnswer(facilitatorAnswer: FacilitatorAnswer) {
+    private fun submitFacilitatorAnswer(
+        facilitatorAnswer: FacilitatorAnswer,
+        showMessageResponse: Boolean = true,
+        facilitatorAnswerDb: com.cultivaet.hassad.domain.model.local.FacilitatorAnswer? = null
+    ) {
         viewModelScope.launch {
             _state.value = SurveyState.Loading
             _state.value =
                 when (val resource = surveyUseCase.submitFacilitatorAnswer(facilitatorAnswer)) {
                     is Resource.Success -> {
-                        SurveyState.Success(resource.data)
+                        if (facilitatorAnswerDb != null) {
+                            deleteFacilitatorAnswerOffline(facilitatorAnswerDb)
+                        }
+
+                        val data = resource.data
+                        data?.showMessageResponse = showMessageResponse
+                        SurveyState.Success(data)
                     }
 
                     is Resource.Error -> SurveyState.Error(resource.error)
@@ -116,10 +125,11 @@ class SurveyViewModel(
 
     private fun insertFacilitatorAnswerOffline(facilitatorAnswer: FacilitatorAnswer) {
         val facilitatorAnswerLocal = com.cultivaet.hassad.domain.model.local.FacilitatorAnswer(
-            facilitatorAnswer.farmerId,
             facilitatorAnswer.formId,
+            facilitatorAnswer.farmerId,
             facilitatorAnswer.geolocation,
-            listOfAnswersToJson(facilitatorAnswer.answers)
+            listOfAnswersToJson(facilitatorAnswer.answers),
+            facilitatorAnswer.userId,
         )
 
         viewModelScope.launch { surveyUseCase.insertFacilitatorAnswer(facilitatorAnswerLocal) }
@@ -127,20 +137,26 @@ class SurveyViewModel(
         Log.d("TAG", "insertFacilitatorAnswer: $facilitatorAnswerLocal")
     }
 
+    private fun deleteFacilitatorAnswerOffline(facilitatorAnswer: com.cultivaet.hassad.domain.model.local.FacilitatorAnswer) {
+        viewModelScope.launch { surveyUseCase.deleteFacilitatorAnswer(facilitatorAnswer) }
+    }
+
     private fun submitOfflineFacilitatorAnswersList() {
         viewModelScope.launch {
             val facilitatorAnswersList = surveyUseCase.getFacilitatorAnswers()
             Log.d("TAG", "getFacilitatorAnswers: $facilitatorAnswersList")
-            for (facAnswer in facilitatorAnswersList) {
+            facilitatorAnswersList.forEachIndexed { index, element ->
                 submitFacilitatorAnswer(
                     FacilitatorAnswer(
-                        userId = facilitatorAnswer.userId,
-                        formId = facAnswer.formId,
-                        farmerId = facAnswer.farmerId,
-                        geolocation = facAnswer.geolocation,
-                        answers = jsonToListOfAnswers(facAnswer.answers).toMutableList(),
+                        userId = element.userId,
+                        formId = element.formId,
+                        farmerId = element.farmerId,
+                        geolocation = element.geolocation,
+                        answers = jsonToListOfAnswers(element.answers).toMutableList(),
                         facilitatorAnswer.type
-                    )
+                    ),
+                    index == facilitatorAnswersList.size - 1,
+                    element
                 )
             }
         }
