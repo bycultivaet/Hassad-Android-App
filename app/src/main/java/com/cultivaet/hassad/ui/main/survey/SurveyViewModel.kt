@@ -28,6 +28,7 @@ class SurveyViewModel(
     val state: StateFlow<SurveyState> = _state
     var farmersList: List<FarmerDataItem>? = null
     val facilitatorAnswer = FacilitatorAnswer()
+    var isInsertingOfflineData = false
 
     init {
         handleIntent()
@@ -73,35 +74,32 @@ class SurveyViewModel(
     private fun getAllFarmersById(id: Int) {
         viewModelScope.launch {
             _state.value = SurveyState.Loading
-            _state.value =
-                when (val resource = surveyUseCase.getAllFarmersById(id)) {
-                    is Resource.Success -> {
-                        farmersList = resource.data?.map { it.toFarmerDataItem() }
-                        SurveyState.Success(farmersList)
-                    }
-
-                    is Resource.Error -> SurveyState.Error(resource.error)
+            _state.value = when (val resource = surveyUseCase.getAllFarmersById(id)) {
+                is Resource.Success -> {
+                    farmersList = resource.data?.map { it.toFarmerDataItem() }
+                    SurveyState.Success(farmersList)
                 }
+
+                is Resource.Error -> SurveyState.Error(resource.error)
+            }
         }
     }
 
     private fun getFacilitatorForm(id: Int) {
         viewModelScope.launch {
             _state.value = SurveyState.Loading
-            _state.value =
-                when (val resource = surveyUseCase.getFacilitatorForm(id)) {
-                    is Resource.Success -> {
-                        SurveyState.Success(resource.data)
-                    }
-
-                    is Resource.Error -> SurveyState.Error(resource.error)
+            _state.value = when (val resource = surveyUseCase.getFacilitatorForm(id)) {
+                is Resource.Success -> {
+                    SurveyState.Success(resource.data)
                 }
+
+                is Resource.Error -> SurveyState.Error(resource.error)
+            }
         }
     }
 
     private fun submitFacilitatorAnswer(
         facilitatorAnswer: FacilitatorAnswer,
-        showMessageResponse: Boolean = true,
         facilitatorAnswerDb: com.cultivaet.hassad.domain.model.local.FacilitatorAnswer? = null
     ) {
         viewModelScope.launch {
@@ -110,12 +108,13 @@ class SurveyViewModel(
                 when (val resource = surveyUseCase.submitFacilitatorAnswer(facilitatorAnswer)) {
                     is Resource.Success -> {
                         if (facilitatorAnswerDb != null) {
+                            isInsertingOfflineData = true
                             deleteFacilitatorAnswerOffline(facilitatorAnswerDb)
+                        } else {
+                            isInsertingOfflineData = false
                         }
 
-                        val data = resource.data
-                        data?.showMessageResponse = showMessageResponse
-                        SurveyState.Success(data)
+                        SurveyState.Success(resource.data)
                     }
 
                     is Resource.Error -> SurveyState.Error(resource.error)
@@ -145,7 +144,7 @@ class SurveyViewModel(
         viewModelScope.launch {
             val facilitatorAnswersList = surveyUseCase.getFacilitatorAnswers()
             Log.d("TAG", "getFacilitatorAnswers: $facilitatorAnswersList")
-            facilitatorAnswersList.forEachIndexed { index, element ->
+            for (element in facilitatorAnswersList) {
                 submitFacilitatorAnswer(
                     FacilitatorAnswer(
                         userId = element.userId,
@@ -155,7 +154,6 @@ class SurveyViewModel(
                         answers = jsonToListOfAnswers(element.answers).toMutableList(),
                         facilitatorAnswer.type
                     ),
-                    index == facilitatorAnswersList.size - 1,
                     element
                 )
             }

@@ -4,4 +4,6 @@ sealed class AddFarmerIntent {
     object GetUserId : AddFarmerIntent()
 
     object AddFarmer : AddFarmerIntent()
+
+    object InsertFarmerOffline : AddFarmerIntent()
 }

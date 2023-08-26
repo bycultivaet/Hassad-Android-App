@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.cultivaet.hassad.R
 import com.cultivaet.hassad.core.extension.getEncoded64ImageStringFromBitmap
 import com.cultivaet.hassad.databinding.FragmentTasksBinding
@@ -31,8 +30,6 @@ class TasksFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val tasksViewModel = ViewModelProvider(this)[TasksViewModel::class.java]
-
         _binding = FragmentTasksBinding.inflate(inflater, container, false)
         val root: View = binding.root
 

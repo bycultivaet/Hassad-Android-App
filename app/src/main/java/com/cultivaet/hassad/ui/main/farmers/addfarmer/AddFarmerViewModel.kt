@@ -1,5 +1,6 @@
 package com.cultivaet.hassad.ui.main.farmers.addfarmer
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cultivaet.hassad.core.source.remote.Resource
@@ -36,6 +37,8 @@ class AddFarmerViewModel(
                     is AddFarmerIntent.GetUserId -> getUserId()
 
                     is AddFarmerIntent.AddFarmer -> addFarmer(farmer)
+
+                    is AddFarmerIntent.InsertFarmerOffline -> insertFarmerOffline(farmer)
                 }
             }
         }
@@ -56,14 +59,35 @@ class AddFarmerViewModel(
     private fun addFarmer(farmer: Farmer) {
         viewModelScope.launch {
             _state.value = AddFarmerState.Loading
-            _state.value =
-                when (val resource = addFarmerUseCase.addFarmer(farmer)) {
-                    is Resource.Success -> {
-                        AddFarmerState.Success(resource.data)
-                    }
-
-                    is Resource.Error -> AddFarmerState.Error(resource.error)
+            _state.value = when (val resource = addFarmerUseCase.addFarmer(farmer)) {
+                is Resource.Success -> {
+                    AddFarmerState.Success(resource.data)
                 }
+
+                is Resource.Error -> AddFarmerState.Error(resource.error)
+            }
         }
+    }
+
+    private fun insertFarmerOffline(farmer: Farmer) {
+        val farmerLocal = com.cultivaet.hassad.domain.model.local.Farmer(
+            farmer.firstName,
+            farmer.lastName,
+            farmer.phoneNumber,
+            farmer.gender,
+            farmer.age,
+            farmer.address,
+            farmer.landArea,
+            farmer.ownership,
+            farmer.geolocation,
+            farmer.ZeroDay,
+            farmer.cropType,
+            farmer.cropsHistory,
+            farmer.facilitatorId,
+        )
+
+        viewModelScope.launch { addFarmerUseCase.insertFarmer(farmerLocal) }
+
+        Log.d("TAG", "insertFarmerOffline: $farmerLocal")
     }
 }

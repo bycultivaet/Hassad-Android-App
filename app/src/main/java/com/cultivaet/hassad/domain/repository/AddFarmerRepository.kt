@@ -9,5 +9,11 @@ interface AddFarmerRepository {
 
     suspend fun getAllFarmersById(id: Int, filter: Boolean): Resource<List<Farmer>>
 
-    suspend fun addFarmer(farmer: com.cultivaet.hassad.domain.model.remote.requests.Farmer): Resource<Farmer>
+    suspend fun addFarmer(
+        farmer: com.cultivaet.hassad.domain.model.remote.requests.Farmer
+    ): Resource<Farmer>
+
+    suspend fun insertFarmer(
+        farmer: com.cultivaet.hassad.domain.model.local.Farmer
+    )
 }

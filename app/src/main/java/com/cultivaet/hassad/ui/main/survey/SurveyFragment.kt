@@ -154,9 +154,7 @@ class SurveyFragment : Fragment() {
                             }
 
                             is FacilitatorAnswer -> {
-                                if (it.data.showMessageResponse) {
-                                    responseMessageForFacilitatorAnswer()
-                                }
+                                responseMessageForFacilitatorAnswer(isOffline = false)
                             }
 
                             else -> {}
@@ -173,11 +171,13 @@ class SurveyFragment : Fragment() {
     }
 
     private fun responseMessageForFacilitatorAnswer(isOffline: Boolean = false) {
-        Toast.makeText(
-            activity,
-            getString(if (!isOffline) R.string.added_successfully else R.string.surveyMsgOffline),
-            Toast.LENGTH_SHORT
-        ).show()
+        if (isOffline) {
+            Toast.makeText(activity, getString(R.string.surveyMsgOffline), Toast.LENGTH_SHORT)
+                .show()
+        } else if (!surveyViewModel.isInsertingOfflineData) {
+            Toast.makeText(activity, getString(R.string.added_successfully), Toast.LENGTH_SHORT)
+                .show()
+        }
 
         binding.scrollView.visibility = View.GONE
         binding.selectFarmerMsgTextView.visibility = View.VISIBLE
@@ -356,7 +356,7 @@ class SurveyFragment : Fragment() {
                                 )
                             }
                         }
-                        responseMessageForFacilitatorAnswer()
+                        responseMessageForFacilitatorAnswer(isOffline = true)
                     }
                 }
             } else {

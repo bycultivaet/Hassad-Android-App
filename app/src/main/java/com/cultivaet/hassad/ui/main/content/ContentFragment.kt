@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.cultivaet.hassad.R
 import com.cultivaet.hassad.databinding.FragmentContentBinding
-import com.cultivaet.hassad.ui.main.tasks.TasksViewModel
 
 class ContentFragment : Fragment() {
 
@@ -24,8 +22,6 @@ class ContentFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val tasksViewModel = ViewModelProvider(this)[TasksViewModel::class.java]
-
         _binding = FragmentContentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 

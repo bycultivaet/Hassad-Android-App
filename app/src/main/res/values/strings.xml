@@ -64,4 +64,5 @@
     <string name="content">المحتوى</string>
     <string name="noContent">لا يوجد محتوى</string>
     <string name="surveyMsgOffline">عند الاتصال بالانترنت سيتم ارسال الاستبيان</string>
+    <string name="addFarmerMsgOffline">عند الاتصال بالانترنت سيتم ارسال البيانات</string>
 </resources>

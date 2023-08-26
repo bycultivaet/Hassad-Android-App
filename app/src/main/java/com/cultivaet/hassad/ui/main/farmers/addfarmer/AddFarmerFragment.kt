@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.cultivaet.hassad.R
 import com.cultivaet.hassad.core.extension.fillListOfTypesToAdapter
 import com.cultivaet.hassad.core.extension.getDateFromString
+import com.cultivaet.hassad.core.extension.isConnectedToInternet
 import com.cultivaet.hassad.core.extension.showError
 import com.cultivaet.hassad.databinding.FragmentAddFarmerBinding
 import com.cultivaet.hassad.domain.model.remote.requests.Farmer
@@ -95,7 +96,8 @@ class AddFarmerFragment : Fragment() {
                 val areaLand = binding.areaLandTextField.editText?.text.toString()
                 val selectedDate = binding.dateTextField.editText?.text.toString()
                 val cropType = binding.cropTypeTextField.editText?.text.toString()
-                val previouslyGrownCrops = binding.previouslyGrownCropsTextField.editText?.text.toString()
+                val previouslyGrownCrops =
+                    binding.previouslyGrownCropsTextField.editText?.text.toString()
 
                 listOfChecks.clear()
                 listOfChecks.add(binding.firstNameTextField.showError(requireActivity()))
@@ -132,12 +134,24 @@ class AddFarmerFragment : Fragment() {
                         )
 
                         Log.d("AddFarmerFragment", "farmer: ${addFarmerViewModel.farmer}")
-                        runBlocking {
-                            lifecycleScope.launch {
-                                addFarmerViewModel.addFarmerIntent.send(
-                                    AddFarmerIntent.AddFarmer
-                                )
+
+                        if (requireActivity().isConnectedToInternet()) {
+                            runBlocking {
+                                lifecycleScope.launch {
+                                    addFarmerViewModel.addFarmerIntent.send(
+                                        AddFarmerIntent.AddFarmer
+                                    )
+                                }
                             }
+                        } else {
+                            runBlocking {
+                                lifecycleScope.launch {
+                                    addFarmerViewModel.addFarmerIntent.send(
+                                        AddFarmerIntent.InsertFarmerOffline
+                                    )
+                                }
+                            }
+                            responseMessageForFarmer(isOffline = true)
                         }
                     }
                 } else {
@@ -163,9 +177,7 @@ class AddFarmerFragment : Fragment() {
                     is AddFarmerState.Success -> {
                         binding.progressBar.visibility = View.GONE
 
-                        Toast.makeText(
-                            activity, getString(R.string.added_successfully), Toast.LENGTH_SHORT
-                        ).show()
+                        responseMessageForFarmer(isOffline = false)
 
                         findNavController().popBackStack()
                     }
@@ -177,5 +189,17 @@ class AddFarmerFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun responseMessageForFarmer(isOffline: Boolean = false) {
+        if (isOffline) {
+            Toast.makeText(activity, getString(R.string.addFarmerMsgOffline), Toast.LENGTH_SHORT)
+                .show()
+        } else {
+            Toast.makeText(activity, getString(R.string.added_successfully), Toast.LENGTH_SHORT)
+                .show()
+        }
+
+        findNavController().popBackStack()
     }
 }

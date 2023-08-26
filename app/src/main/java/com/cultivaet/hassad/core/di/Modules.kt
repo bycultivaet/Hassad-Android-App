@@ -31,8 +31,8 @@ import com.cultivaet.hassad.domain.usecase.SplashUseCase
 import com.cultivaet.hassad.domain.usecase.SurveyUseCase
 import com.cultivaet.hassad.ui.auth.LoginViewModel
 import com.cultivaet.hassad.ui.main.MainViewModel
-import com.cultivaet.hassad.ui.main.farmers.addfarmer.AddFarmerViewModel
 import com.cultivaet.hassad.ui.main.farmers.FarmersViewModel
+import com.cultivaet.hassad.ui.main.farmers.addfarmer.AddFarmerViewModel
 import com.cultivaet.hassad.ui.main.profile.ProfileViewModel
 import com.cultivaet.hassad.ui.main.survey.SurveyViewModel
 import com.cultivaet.hassad.ui.splash.SplashViewModel
@@ -59,7 +59,7 @@ val repositoryModule = module {
     single<MainRepository> { MainRepositoryImpl(get()) }
     single<ProfileRepository> { ProfileRepositoryImpl(get(), get(), get()) }
     single<FarmersRepository> { FarmersRepositoryImpl(get(), get(), get()) }
-    single<AddFarmerRepository> { AddFarmerRepositoryImpl(get(), get(), get()) }
+    single<AddFarmerRepository> { AddFarmerRepositoryImpl(get(), get(), get(), get()) }
     single<SurveyRepository> { SurveyRepositoryImpl(get(), get(), get(), get()) }
 }
 
