@@ -20,10 +20,4 @@ interface SurveyRepository {
     suspend fun insertFacilitatorAnswer(
         facilitatorAnswer: com.cultivaet.hassad.domain.model.local.FacilitatorAnswer
     )
-
-    suspend fun deleteFacilitatorAnswer(
-        facilitatorAnswer: com.cultivaet.hassad.domain.model.local.FacilitatorAnswer
-    )
-
-    suspend fun getFacilitatorAnswers(): List<com.cultivaet.hassad.domain.model.local.FacilitatorAnswer>
 }

@@ -1,9 +1,5 @@
 package com.cultivaet.hassad.ui.main.survey
 
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -27,6 +23,7 @@ import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Field
 import com.cultivaet.hassad.domain.model.remote.responses.Form
 import com.cultivaet.hassad.ui.main.MainActivity
+import com.cultivaet.hassad.ui.main.OfflineListener
 import com.cultivaet.hassad.ui.main.farmers.bottomsheet.FarmersBottomSheet
 import com.cultivaet.hassad.ui.main.survey.intent.SurveyIntent
 import com.cultivaet.hassad.ui.main.survey.viewstate.SurveyState
@@ -38,7 +35,7 @@ import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
 
 @ExperimentalCoroutinesApi
-class SurveyFragment : Fragment() {
+class SurveyFragment : Fragment(), OfflineListener {
     private val surveyViewModel: SurveyViewModel by inject()
 
     private var _binding: FragmentSurveyBinding? = null
@@ -48,22 +45,6 @@ class SurveyFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var isNotEmptyWholeValidation = true
-
-    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
-        override fun onAvailable(network: Network) {
-            super.onAvailable(network)
-            Log.d("networkCallback", "onAvailable: ")
-
-            runBlocking {
-                lifecycleScope.launch { surveyViewModel.surveyIntent.send(SurveyIntent.SubmitOfflineFacilitatorAnswersList) }
-            }
-        }
-
-        override fun onLost(network: Network) {
-            super.onLost(network)
-            Log.d("networkCallback", "onLost: ")
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,15 +58,7 @@ class SurveyFragment : Fragment() {
 
             (activity as MainActivity).getCurrentLocation()
 
-            val networkRequest = NetworkRequest.Builder()
-                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                .build()
-
-            val connectivityManager =
-                requireActivity().getSystemService(ConnectivityManager::class.java) as ConnectivityManager
-            connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+            (activity as MainActivity).setOfflineListener(this)
 
             binding.listOfFarmers.setOnClickListener {
                 val farmersBottomSheet = surveyViewModel.farmersList?.let { farmers ->
@@ -174,7 +147,7 @@ class SurveyFragment : Fragment() {
         if (isOffline) {
             Toast.makeText(activity, getString(R.string.surveyMsgOffline), Toast.LENGTH_SHORT)
                 .show()
-        } else if (!surveyViewModel.isInsertingOfflineData) {
+        } else {
             Toast.makeText(activity, getString(R.string.added_successfully), Toast.LENGTH_SHORT)
                 .show()
         }
@@ -183,13 +156,7 @@ class SurveyFragment : Fragment() {
         binding.selectFarmerMsgTextView.visibility = View.VISIBLE
 
         if (!isOffline) {
-            runBlocking {
-                lifecycleScope.launch {
-                    surveyViewModel.surveyIntent.send(
-                        SurveyIntent.FetchAllFarmers
-                    )
-                }
-            }
+            refreshFarmers()
         }
     }
 
@@ -364,5 +331,15 @@ class SurveyFragment : Fragment() {
             }
         }
         return button
+    }
+
+    override fun refreshFarmers() {
+        runBlocking {
+            lifecycleScope.launch {
+                surveyViewModel.surveyIntent.send(
+                    SurveyIntent.FetchAllFarmers
+                )
+            }
+        }
     }
 }

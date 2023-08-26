@@ -11,4 +11,5 @@ class FacilitatorAnswer(
     var geolocation: String,
     var answers: String,
     var userId: Int,
+    var type: String = "facilitator"
 )

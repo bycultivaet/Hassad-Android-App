@@ -56,7 +56,7 @@ val helperModule = module {
 val repositoryModule = module {
     single<SplashRepository> { SplashRepositoryImpl(get()) }
     single<LoginRepository> { LoginRepositoryImpl(get(), get(), get()) }
-    single<MainRepository> { MainRepositoryImpl(get()) }
+    single<MainRepository> { MainRepositoryImpl(get(), get(), get(), get()) }
     single<ProfileRepository> { ProfileRepositoryImpl(get(), get(), get()) }
     single<FarmersRepository> { FarmersRepositoryImpl(get(), get(), get()) }
     single<AddFarmerRepository> { AddFarmerRepositoryImpl(get(), get(), get(), get()) }

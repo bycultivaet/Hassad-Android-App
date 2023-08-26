@@ -8,6 +8,10 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -15,6 +19,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -22,14 +27,17 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.cultivaet.hassad.R
-import com.cultivaet.hassad.core.extension.isConnectedToInternet
 import com.cultivaet.hassad.core.extension.launchActivity
 import com.cultivaet.hassad.core.extension.logoutAlert
 import com.cultivaet.hassad.databinding.ActivityMainBinding
 import com.cultivaet.hassad.ui.BaseActivity
 import com.cultivaet.hassad.ui.auth.LoginActivity
+import com.cultivaet.hassad.ui.main.intent.MainIntent
+import com.cultivaet.hassad.ui.main.viewstate.MainState
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
 
 @ExperimentalCoroutinesApi
@@ -48,11 +56,35 @@ class MainActivity : BaseActivity(), LocationListener {
 
     private val locationPermissionCode = 2
 
+    private lateinit var offlineListener: OfflineListener
+
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            super.onAvailable(network)
+            Log.d("networkCallback", "onAvailable: ")
+
+            runBlocking {
+                lifecycleScope.launch { mainViewModel.mainIntent.send(MainIntent.SubmitOfflineFacilitatorAnswersList) }
+            }
+
+            runBlocking {
+                lifecycleScope.launch { mainViewModel.mainIntent.send(MainIntent.SubmitOfflineFarmersList) }
+            }
+        }
+
+        override fun onLost(network: Network) {
+            super.onLost(network)
+            Log.d("networkCallback", "onLost: ")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        observeViewModel()
 
         val navView: BottomNavigationView = binding.navView
 
@@ -70,6 +102,31 @@ class MainActivity : BaseActivity(), LocationListener {
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
+
+        val networkRequest = NetworkRequest.Builder()
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .build()
+
+        val connectivityManager = getSystemService(
+            ConnectivityManager::class.java
+        ) as ConnectivityManager
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+    }
+
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            mainViewModel.state.collect {
+                when (it) {
+                    MainState.Idle -> {}
+
+                    MainState.Success -> {
+                        offlineListener.refreshFarmers()
+                    }
+                }
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -80,7 +137,6 @@ class MainActivity : BaseActivity(), LocationListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.logout -> {
-                Log.d("TAG", "onOptionsItemSelected: ${isConnectedToInternet()}")
                 this@MainActivity.logoutAlert {
                     mainViewModel.loggedInState {
                         launchActivity<LoginActivity>(withFinish = true)
@@ -92,11 +148,11 @@ class MainActivity : BaseActivity(), LocationListener {
     }
 
     private fun isLocationEnabled(): Boolean {
-        val locationManager: LocationManager =
-            getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
-            LocationManager.NETWORK_PROVIDER
-        )
+        val locationManager: LocationManager = getSystemService(
+            Context.LOCATION_SERVICE
+        ) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
 
     private fun checkPermissions(): Boolean {
@@ -162,11 +218,19 @@ class MainActivity : BaseActivity(), LocationListener {
         this.location = location
     }
 
+    override fun onProviderEnabled(provider: String) {}
+
+    override fun onProviderDisabled(provider: String) {}
+
     fun getLocation(): Location? {
         return this.location
     }
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
+    }
+
+    fun setOfflineListener(offlineListener: OfflineListener) {
+        this.offlineListener = offlineListener
     }
 }

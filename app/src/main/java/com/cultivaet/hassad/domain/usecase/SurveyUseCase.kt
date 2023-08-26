@@ -18,11 +18,4 @@ class SurveyUseCase(private val repository: SurveyRepository) {
     suspend fun insertFacilitatorAnswer(
         facilitatorAnswer: com.cultivaet.hassad.domain.model.local.FacilitatorAnswer
     ) = repository.insertFacilitatorAnswer(facilitatorAnswer)
-
-    suspend fun deleteFacilitatorAnswer(
-        facilitatorAnswer: com.cultivaet.hassad.domain.model.local.FacilitatorAnswer
-    ) = repository.deleteFacilitatorAnswer(facilitatorAnswer)
-
-    suspend fun getFacilitatorAnswers(): List<com.cultivaet.hassad.domain.model.local.FacilitatorAnswer> =
-        repository.getFacilitatorAnswers()
 }

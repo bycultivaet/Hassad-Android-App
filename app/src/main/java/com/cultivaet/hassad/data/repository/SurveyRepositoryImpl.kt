@@ -30,11 +30,4 @@ class SurveyRepositoryImpl(
     override suspend fun insertFacilitatorAnswer(
         facilitatorAnswer: com.cultivaet.hassad.domain.model.local.FacilitatorAnswer
     ) = databaseHelper.insertFacilitatorAnswer(facilitatorAnswer)
-
-    override suspend fun deleteFacilitatorAnswer(
-        facilitatorAnswer: com.cultivaet.hassad.domain.model.local.FacilitatorAnswer
-    ) = databaseHelper.deleteFacilitatorAnswer(facilitatorAnswer)
-
-    override suspend fun getFacilitatorAnswers(): List<com.cultivaet.hassad.domain.model.local.FacilitatorAnswer> =
-        databaseHelper.getFacilitatorAnswers()
 }

@@ -12,6 +12,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.cultivaet.hassad.R
 import com.cultivaet.hassad.databinding.FragmentFarmersBinding
+import com.cultivaet.hassad.ui.main.MainActivity
+import com.cultivaet.hassad.ui.main.OfflineListener
 import com.cultivaet.hassad.ui.main.farmers.intent.FarmersIntent
 import com.cultivaet.hassad.ui.main.farmers.viewstate.FarmersState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,7 +22,7 @@ import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
 
 @ExperimentalCoroutinesApi
-class FarmersFragment : Fragment() {
+class FarmersFragment : Fragment(), OfflineListener {
     private val farmersViewModel: FarmersViewModel by inject()
 
     private var _binding: FragmentFarmersBinding? = null
@@ -45,6 +47,8 @@ class FarmersFragment : Fragment() {
             _binding = FragmentFarmersBinding.inflate(inflater, container, false)
 
             observeViewModel()
+
+            (activity as MainActivity).setOfflineListener(this)
 
             binding.farmersRecyclerView.adapter = farmersAdapter
 
@@ -114,6 +118,12 @@ class FarmersFragment : Fragment() {
                     }
                 }
             }
+        }
+    }
+
+    override fun refreshFarmers() {
+        runBlocking {
+            lifecycleScope.launch { farmersViewModel.farmersIntent.send(FarmersIntent.FetchAllFarmers) }
         }
     }
 }

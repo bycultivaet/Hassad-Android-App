@@ -28,7 +28,6 @@ class SurveyViewModel(
     val state: StateFlow<SurveyState> = _state
     var farmersList: List<FarmerDataItem>? = null
     val facilitatorAnswer = FacilitatorAnswer()
-    var isInsertingOfflineData = false
 
     init {
         handleIntent()
@@ -51,8 +50,6 @@ class SurveyViewModel(
                     is SurveyIntent.InsertFacilitatorAnswerOffline -> insertFacilitatorAnswerOffline(
                         facilitatorAnswer
                     )
-
-                    is SurveyIntent.SubmitOfflineFacilitatorAnswersList -> submitOfflineFacilitatorAnswersList()
                 }
             }
         }
@@ -98,22 +95,12 @@ class SurveyViewModel(
         }
     }
 
-    private fun submitFacilitatorAnswer(
-        facilitatorAnswer: FacilitatorAnswer,
-        facilitatorAnswerDb: com.cultivaet.hassad.domain.model.local.FacilitatorAnswer? = null
-    ) {
+    private fun submitFacilitatorAnswer(facilitatorAnswer: FacilitatorAnswer) {
         viewModelScope.launch {
             _state.value = SurveyState.Loading
             _state.value =
                 when (val resource = surveyUseCase.submitFacilitatorAnswer(facilitatorAnswer)) {
                     is Resource.Success -> {
-                        if (facilitatorAnswerDb != null) {
-                            isInsertingOfflineData = true
-                            deleteFacilitatorAnswerOffline(facilitatorAnswerDb)
-                        } else {
-                            isInsertingOfflineData = false
-                        }
-
                         SurveyState.Success(resource.data)
                     }
 
@@ -132,39 +119,9 @@ class SurveyViewModel(
         )
 
         viewModelScope.launch { surveyUseCase.insertFacilitatorAnswer(facilitatorAnswerLocal) }
-
-        Log.d("TAG", "insertFacilitatorAnswer: $facilitatorAnswerLocal")
-    }
-
-    private fun deleteFacilitatorAnswerOffline(facilitatorAnswer: com.cultivaet.hassad.domain.model.local.FacilitatorAnswer) {
-        viewModelScope.launch { surveyUseCase.deleteFacilitatorAnswer(facilitatorAnswer) }
-    }
-
-    private fun submitOfflineFacilitatorAnswersList() {
-        viewModelScope.launch {
-            val facilitatorAnswersList = surveyUseCase.getFacilitatorAnswers()
-            Log.d("TAG", "getFacilitatorAnswers: $facilitatorAnswersList")
-            for (element in facilitatorAnswersList) {
-                submitFacilitatorAnswer(
-                    FacilitatorAnswer(
-                        userId = element.userId,
-                        formId = element.formId,
-                        farmerId = element.farmerId,
-                        geolocation = element.geolocation,
-                        answers = jsonToListOfAnswers(element.answers).toMutableList(),
-                        facilitatorAnswer.type
-                    ),
-                    element
-                )
-            }
-        }
     }
 
     private fun listOfAnswersToJson(answers: List<Answer>): String {
         return Gson().toJson(answers)
-    }
-
-    private fun jsonToListOfAnswers(str: String): List<Answer> {
-        return Gson().fromJson(str, Array<Answer>::class.java).asList()
     }
 }
