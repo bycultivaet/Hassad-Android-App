@@ -4,6 +4,10 @@ import com.cultivaet.hassad.domain.model.remote.responses.Facilitator
 import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
 import com.cultivaet.hassad.domain.model.remote.responses.Form
+import com.cultivaet.hassad.domain.model.remote.responses.ImageUUID
+import com.cultivaet.hassad.domain.model.remote.responses.Task
+import com.cultivaet.hassad.domain.model.remote.responses.UpdateStatus
+import okhttp3.MultipartBody
 import retrofit2.Response
 
 interface ApiHelper {
@@ -13,9 +17,23 @@ interface ApiHelper {
 
     suspend fun getAllFarmersById(id: Int, filter: Boolean): Response<List<Farmer>>
 
-    suspend fun addFarmer(farmer: com.cultivaet.hassad.domain.model.remote.requests.Farmer): Response<Farmer>
+    suspend fun addFarmer(
+        farmer: com.cultivaet.hassad.domain.model.remote.requests.Farmer
+    ): Response<Farmer>
 
     suspend fun getFacilitatorForm(id: Int): Response<Form>
 
-    suspend fun submitFacilitatorAnswer(facilitatorAnswer: com.cultivaet.hassad.domain.model.remote.requests.FacilitatorAnswer): Response<FacilitatorAnswer>
+    suspend fun submitFacilitatorAnswer(
+        facilitatorAnswer: com.cultivaet.hassad.domain.model.remote.requests.FacilitatorAnswer
+    ): Response<FacilitatorAnswer>
+
+    suspend fun uploadImage(image: MultipartBody.Part): Response<ImageUUID>
+
+    suspend fun getAllTasksById(id: Int): Response<List<Task>>
+
+    suspend fun updateTaskStatus(
+        facilitatorId: Int,
+        taskId: Int,
+        status: Boolean
+    ): Response<UpdateStatus>
 }

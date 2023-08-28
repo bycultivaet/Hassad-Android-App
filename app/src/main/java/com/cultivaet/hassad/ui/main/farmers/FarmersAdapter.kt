@@ -53,7 +53,7 @@ class FarmersAdapter(
 
         holder.selectIcon.visibility = if (isSelectedOption) View.VISIBLE else View.GONE
 
-        holder.selectIcon.setImageResource(if (farmer.id == selectedFarmerId) R.drawable.ic_checked else R.drawable.ic_unchecked)
+        holder.selectIcon.setImageResource(if (farmer.id == selectedFarmerId) R.drawable.ic_selected else R.drawable.ic_unselected)
 
         holder.selectIcon.setOnClickListener {
             selectedFarmerId = farmer.id

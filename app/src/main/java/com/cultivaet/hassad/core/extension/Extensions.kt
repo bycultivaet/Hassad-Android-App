@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+
 fun Context.isConnectedToInternet(): Boolean {
     val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
@@ -61,7 +62,7 @@ fun Context.logoutAlert(yesCallback: () -> Unit) {
 }
 
 fun String.getDateFromString(): String {
-    val formatter = SimpleDateFormat("yyyy-MM-dd", Locale("en"))
+    val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
     val dateFormats = arrayOf(
         SimpleDateFormat("dd MMMM yyyy", Locale("ar")),  // Arabic format
         SimpleDateFormat("MMM d, yyyy", Locale.US)      // English format
@@ -71,6 +72,15 @@ fun String.getDateFromString(): String {
             return formatter.format(dateFormat.parse(this))
         } catch (_: Exception) {
         }
+    }
+    return ""
+}
+
+fun String.getDateFromAPI(): String {
+    val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+    try {
+        return formatter.format(SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).parse(this))
+    } catch (_: Exception) {
     }
     return ""
 }

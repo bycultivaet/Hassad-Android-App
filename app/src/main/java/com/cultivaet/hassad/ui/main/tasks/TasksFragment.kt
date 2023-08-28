@@ -1,21 +1,23 @@
 package com.cultivaet.hassad.ui.main.tasks
 
-import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.cultivaet.hassad.R
-import com.cultivaet.hassad.core.extension.getEncoded64ImageStringFromBitmap
+import androidx.lifecycle.lifecycleScope
 import com.cultivaet.hassad.databinding.FragmentTasksBinding
+import com.cultivaet.hassad.ui.main.tasks.intent.TasksIntent
+import com.cultivaet.hassad.ui.main.tasks.viewstate.TasksState
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import org.koin.android.ext.android.inject
 
+@ExperimentalCoroutinesApi
 class TasksFragment : Fragment() {
+    private val tasksViewModel: TasksViewModel by inject()
 
     private var _binding: FragmentTasksBinding? = null
 
@@ -23,38 +25,67 @@ class TasksFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private val REQUEST_CODE = 200
+    private lateinit var taskAdapter: TasksAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentTasksBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        if (_binding == null) {
+            _binding = FragmentTasksBinding.inflate(inflater, container, false)
 
-        val textView: TextView = binding.textDashboard
-        textView.text = getString(R.string.no_missions)
+            observeViewModel()
 
-        textView.setOnClickListener {
-            startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_CODE)
+            taskAdapter = TasksAdapter {
+                tasksViewModel.taskDataItem = it
+                runBlocking {
+                    lifecycleScope.launch { tasksViewModel.tasksIntent.send(TasksIntent.UpdateTaskStatus) }
+                }
+            }
+
+            binding.tasksRecyclerView.adapter = taskAdapter
         }
-
-        return root
+        return binding.root
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == AppCompatActivity.RESULT_OK && requestCode == REQUEST_CODE && data != null) {
-            val bitmap = data.extras?.get("data") as Bitmap
-            binding.imageTest.setImageBitmap(bitmap)
-
-            Log.d("TAG", "onActivityResult: ${bitmap.getEncoded64ImageStringFromBitmap()}")
+    override fun onResume() {
+        super.onResume()
+        runBlocking {
+            lifecycleScope.launch { tasksViewModel.tasksIntent.send(TasksIntent.GetUserId) }
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            tasksViewModel.state.collect {
+                when (it) {
+                    is TasksState.Idle -> {
+                        binding.progressBar.visibility = View.GONE
+                    }
+
+                    is TasksState.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+
+                    is TasksState.Success<*> -> {
+                        binding.progressBar.visibility = View.GONE
+
+                        when (it.data) {
+                            is List<*> -> {
+                                binding.noTasks.visibility = View.GONE
+
+                                taskAdapter.setItems(it.data as List<TaskDataItem>)
+                            }
+
+                            else -> {}
+                        }
+                    }
+
+                    is TasksState.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                        Toast.makeText(activity, it.error, Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        }
     }
 }

@@ -1,6 +1,8 @@
 package com.cultivaet.hassad.ui.main
 
+import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cultivaet.hassad.core.source.remote.Resource
@@ -21,6 +23,7 @@ import kotlinx.coroutines.runBlocking
 
 @ExperimentalCoroutinesApi
 class MainViewModel(
+    private val application: Application,
     private val mainUseCase: MainUseCase
 ) : ViewModel() {
     val mainIntent = Channel<MainIntent>(Channel.UNLIMITED)
@@ -53,6 +56,9 @@ class MainViewModel(
             if (resource is Resource.Success) {
                 deleteFacilitatorAnswerOffline(facilitatorAnswerDb)
                 if (isLastElement) _state.value = MainState.Success
+            } else {
+                Toast.makeText(application.applicationContext, resource.error, Toast.LENGTH_LONG)
+                    .show()
             }
         }
     }
@@ -96,6 +102,9 @@ class MainViewModel(
             if (resource is Resource.Success) {
                 deleteFarmerOffline(farmerDb)
                 if (isLastElement) _state.value = MainState.Success
+            } else {
+                Toast.makeText(application.applicationContext, resource.error, Toast.LENGTH_LONG)
+                    .show()
             }
         }
     }

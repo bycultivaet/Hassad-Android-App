@@ -8,7 +8,9 @@ import com.cultivaet.hassad.data.source.remote.ApiHelper
 import com.cultivaet.hassad.domain.model.remote.requests.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
 import com.cultivaet.hassad.domain.model.remote.responses.Form
+import com.cultivaet.hassad.domain.model.remote.responses.ImageUUID
 import com.cultivaet.hassad.domain.repository.SurveyRepository
+import okhttp3.MultipartBody
 
 class SurveyRepositoryImpl(
     application: Application,
@@ -30,4 +32,8 @@ class SurveyRepositoryImpl(
     override suspend fun insertFacilitatorAnswer(
         facilitatorAnswer: com.cultivaet.hassad.domain.model.local.FacilitatorAnswer
     ) = databaseHelper.insertFacilitatorAnswer(facilitatorAnswer)
+
+    override suspend fun uploadImage(
+        image: MultipartBody.Part
+    ): Resource<ImageUUID> = safeApiCall { apiHelper.uploadImage(image) }
 }

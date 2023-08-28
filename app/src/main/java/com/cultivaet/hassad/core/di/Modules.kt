@@ -11,6 +11,7 @@ import com.cultivaet.hassad.data.repository.MainRepositoryImpl
 import com.cultivaet.hassad.data.repository.ProfileRepositoryImpl
 import com.cultivaet.hassad.data.repository.SplashRepositoryImpl
 import com.cultivaet.hassad.data.repository.SurveyRepositoryImpl
+import com.cultivaet.hassad.data.repository.TasksRepositoryImpl
 import com.cultivaet.hassad.data.source.local.DatabaseHelper
 import com.cultivaet.hassad.data.source.local.DatabaseHelperImpl
 import com.cultivaet.hassad.data.source.remote.ApiHelper
@@ -22,6 +23,7 @@ import com.cultivaet.hassad.domain.repository.MainRepository
 import com.cultivaet.hassad.domain.repository.ProfileRepository
 import com.cultivaet.hassad.domain.repository.SplashRepository
 import com.cultivaet.hassad.domain.repository.SurveyRepository
+import com.cultivaet.hassad.domain.repository.TasksRepository
 import com.cultivaet.hassad.domain.usecase.AddFarmerUseCase
 import com.cultivaet.hassad.domain.usecase.FarmersUseCase
 import com.cultivaet.hassad.domain.usecase.LoginUseCase
@@ -29,12 +31,14 @@ import com.cultivaet.hassad.domain.usecase.MainUseCase
 import com.cultivaet.hassad.domain.usecase.ProfileUseCase
 import com.cultivaet.hassad.domain.usecase.SplashUseCase
 import com.cultivaet.hassad.domain.usecase.SurveyUseCase
+import com.cultivaet.hassad.domain.usecase.TasksUseCase
 import com.cultivaet.hassad.ui.auth.LoginViewModel
 import com.cultivaet.hassad.ui.main.MainViewModel
 import com.cultivaet.hassad.ui.main.farmers.FarmersViewModel
 import com.cultivaet.hassad.ui.main.farmers.addfarmer.AddFarmerViewModel
 import com.cultivaet.hassad.ui.main.profile.ProfileViewModel
 import com.cultivaet.hassad.ui.main.survey.SurveyViewModel
+import com.cultivaet.hassad.ui.main.tasks.TasksViewModel
 import com.cultivaet.hassad.ui.splash.SplashViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.dsl.module
@@ -61,6 +65,7 @@ val repositoryModule = module {
     single<FarmersRepository> { FarmersRepositoryImpl(get(), get(), get()) }
     single<AddFarmerRepository> { AddFarmerRepositoryImpl(get(), get(), get(), get()) }
     single<SurveyRepository> { SurveyRepositoryImpl(get(), get(), get(), get()) }
+    single<TasksRepository> { TasksRepositoryImpl(get(), get(), get()) }
 }
 
 val useCaseModule = module {
@@ -71,15 +76,17 @@ val useCaseModule = module {
     single { FarmersUseCase(get()) }
     single { AddFarmerUseCase(get()) }
     single { SurveyUseCase(get()) }
+    single { TasksUseCase(get()) }
 }
 
 @ExperimentalCoroutinesApi
 val viewModelModule = module {
     factory { SplashViewModel(get()) }
     factory { LoginViewModel(get(), get()) }
-    factory { MainViewModel(get()) }
+    factory { MainViewModel(get(), get()) }
     factory { ProfileViewModel(get()) }
     factory { FarmersViewModel(get()) }
     factory { AddFarmerViewModel(get()) }
     factory { SurveyViewModel(get()) }
+    factory { TasksViewModel(get()) }
 }

@@ -18,6 +18,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.InputStream
 
 @ExperimentalCoroutinesApi
 class SurveyViewModel(
@@ -123,5 +127,26 @@ class SurveyViewModel(
 
     private fun listOfAnswersToJson(answers: List<Answer>): String {
         return Gson().toJson(answers)
+    }
+
+    fun uploadImage(inputStream: InputStream) {
+        viewModelScope.launch {
+            _state.value = SurveyState.Loading
+            _state.value = when (val resource = surveyUseCase.uploadImage(
+                MultipartBody.Part.createFormData(
+                    "pic", "myPic", RequestBody.create(
+                        "image/*".toMediaTypeOrNull(),
+                        inputStream.readBytes()
+                    )
+                )
+            )) {
+                is Resource.Success -> {
+                    Log.d("TAG", "uploadImage: ${resource.data}")
+                    SurveyState.Success(resource.data)
+                }
+
+                is Resource.Error -> SurveyState.Error(resource.error)
+            }
+        }
     }
 }

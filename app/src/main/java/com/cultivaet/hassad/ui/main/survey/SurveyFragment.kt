@@ -1,6 +1,9 @@
 package com.cultivaet.hassad.ui.main.survey
 
+import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,11 +12,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.cultivaet.hassad.R
 import com.cultivaet.hassad.core.extension.fillListOfTypesToAdapter
+import com.cultivaet.hassad.core.extension.getEncoded64ImageStringFromBitmap
 import com.cultivaet.hassad.core.extension.isConnectedToInternet
 import com.cultivaet.hassad.core.extension.setMargin
 import com.cultivaet.hassad.core.extension.showError
@@ -45,6 +50,8 @@ class SurveyFragment : Fragment(), OfflineListener {
     private val binding get() = _binding!!
 
     private var isNotEmptyWholeValidation = true
+
+    private val REQUEST_CODE = 200
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -264,6 +271,8 @@ class SurveyFragment : Fragment(), OfflineListener {
         button.setOnClickListener {
             isNotEmptyWholeValidation = true
 
+            startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_CODE)
+
             val viewParent = it.parent
             if (viewParent is LinearLayout) {
                 val count: Int = viewParent.childCount
@@ -340,6 +349,16 @@ class SurveyFragment : Fragment(), OfflineListener {
                     SurveyIntent.FetchAllFarmers
                 )
             }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == AppCompatActivity.RESULT_OK && requestCode == REQUEST_CODE && data != null) {
+            val bitmap = data.extras?.get("data") as Bitmap
+//            binding.imageTest.setImageBitmap(bitmap)
+
+//            surveyViewModel.uploadImage(bitmap.getEncoded64ImageStringFromBitmap())
         }
     }
 }

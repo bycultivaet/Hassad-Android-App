@@ -11,7 +11,7 @@
         android:layout_width="@dimen/_24sdp"
         android:layout_height="@dimen/_24sdp"
         android:layout_margin="@dimen/_8sdp"
-        android:src="@drawable/ic_unchecked"
+        android:src="@drawable/ic_unselected"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/contentLinearLayout"
         app:layout_constraintStart_toStartOf="parent"

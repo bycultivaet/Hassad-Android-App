@@ -16,6 +16,9 @@ object Constants {
         const val PostSubmitFacilitatorAnswer = "api/facilitator/answer"
 
         const val PostImage = "api/images"
+
+        const val GetAllTasksById = "api/facilitator/{id}/tasks"
+        const val PATCH_TASK = "api/facilitator/{facilitator_id}/task/{task_id}"
     }
 
     object PreferenceKeys {

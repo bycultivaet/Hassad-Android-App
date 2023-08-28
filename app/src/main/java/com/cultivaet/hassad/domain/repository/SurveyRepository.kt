@@ -4,7 +4,9 @@ import com.cultivaet.hassad.core.source.remote.Resource
 import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
 import com.cultivaet.hassad.domain.model.remote.responses.Form
+import com.cultivaet.hassad.domain.model.remote.responses.ImageUUID
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MultipartBody
 
 interface SurveyRepository {
     suspend fun userId(): Flow<Int?>
@@ -20,4 +22,8 @@ interface SurveyRepository {
     suspend fun insertFacilitatorAnswer(
         facilitatorAnswer: com.cultivaet.hassad.domain.model.local.FacilitatorAnswer
     )
+
+    suspend fun uploadImage(
+        image: MultipartBody.Part
+    ): Resource<ImageUUID>
 }

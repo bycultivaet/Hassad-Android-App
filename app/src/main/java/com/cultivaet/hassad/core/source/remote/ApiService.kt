@@ -6,11 +6,14 @@ import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
 import com.cultivaet.hassad.domain.model.remote.responses.Form
 import com.cultivaet.hassad.domain.model.remote.responses.ImageUUID
+import com.cultivaet.hassad.domain.model.remote.responses.Task
+import com.cultivaet.hassad.domain.model.remote.responses.UpdateStatus
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
@@ -41,4 +44,16 @@ interface ApiService {
     @Multipart
     @POST(Constants.EndPoints.PostImage)
     suspend fun uploadImage(@Part image: MultipartBody.Part): Response<ImageUUID>
+
+    @GET(Constants.EndPoints.GetAllTasksById)
+    suspend fun getAllTasksById(
+        @Path("id") id: Int,
+    ): Response<List<Task>>
+
+    @PATCH(Constants.EndPoints.PATCH_TASK)
+    suspend fun updateTaskStatus(
+        @Path("facilitator_id") facilitatorId: Int,
+        @Path("task_id") taskId: Int,
+        @Query("status") status: Boolean
+    ): Response<UpdateStatus>
 }
