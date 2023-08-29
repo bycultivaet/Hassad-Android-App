@@ -83,7 +83,7 @@ val useCaseModule = module {
 val viewModelModule = module {
     factory { SplashViewModel(get()) }
     factory { LoginViewModel(get(), get()) }
-    factory { MainViewModel(get(), get()) }
+    factory { MainViewModel(get()) }
     factory { ProfileViewModel(get()) }
     factory { FarmersViewModel(get()) }
     factory { AddFarmerViewModel(get()) }

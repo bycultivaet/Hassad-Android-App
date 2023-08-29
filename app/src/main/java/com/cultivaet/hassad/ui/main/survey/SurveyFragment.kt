@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.cultivaet.hassad.R
 import com.cultivaet.hassad.core.extension.fillListOfTypesToAdapter
+import com.cultivaet.hassad.core.extension.getDateFromString
 import com.cultivaet.hassad.core.extension.getEncoded64ImageStringFromBitmap
 import com.cultivaet.hassad.core.extension.isConnectedToInternet
 import com.cultivaet.hassad.core.extension.setMargin
@@ -123,8 +124,7 @@ class SurveyFragment : Fragment(), OfflineListener {
                         binding.progressBar.visibility = View.GONE
                         when (it.data) {
                             is List<*> -> {
-                                binding.numberOfFarmersTextView.text =
-                                    getString(R.string.numberOfFarmersInList, it.data.size)
+                                binding.numberOfFarmersTextView.text = getString(R.string.numberOfFarmersInList, it.data.size)
                             }
 
                             is Form -> {
@@ -254,7 +254,7 @@ class SurveyFragment : Fragment(), OfflineListener {
                     "DATE_PICKER"
                 )
                 addOnPositiveButtonClickListener {
-                    textInputLayout.editText?.setText(this.headerText)
+                    textInputLayout.editText?.setText(it.getDateFromString())
                 }
             }
         }
@@ -271,7 +271,7 @@ class SurveyFragment : Fragment(), OfflineListener {
         button.setOnClickListener {
             isNotEmptyWholeValidation = true
 
-            startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_CODE)
+//            startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_CODE)
 
             val viewParent = it.parent
             if (viewParent is LinearLayout) {

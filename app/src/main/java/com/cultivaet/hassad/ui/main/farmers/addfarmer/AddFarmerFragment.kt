@@ -73,7 +73,7 @@ class AddFarmerFragment : Fragment() {
                         "DATE_PICKER"
                     )
                     addOnPositiveButtonClickListener {
-                        binding.dateTextField.editText?.setText(this.headerText)
+                        binding.dateTextField.editText?.setText(it.getDateFromString())
                     }
                 }
             }
@@ -127,7 +127,7 @@ class AddFarmerFragment : Fragment() {
                             landArea = areaLand.toDouble(),
                             ownership = if (possessionType == getString(R.string.ownershipLand)) "owned" else "rented",
                             geolocation = "${location.latitude}, ${location.longitude}",
-                            ZeroDay = selectedDate.getDateFromString(),
+                            ZeroDay = selectedDate,
                             cropType = cropType,
                             cropsHistory = previouslyGrownCrops,
                             facilitatorId = addFarmerViewModel.userId

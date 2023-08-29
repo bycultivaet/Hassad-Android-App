@@ -19,7 +19,9 @@ import com.cultivaet.hassad.R
 import com.google.android.material.textfield.TextInputLayout
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
+import java.util.TimeZone
 
 
 fun Context.isConnectedToInternet(): Boolean {
@@ -61,19 +63,11 @@ fun Context.logoutAlert(yesCallback: () -> Unit) {
     dialog.show()
 }
 
-fun String.getDateFromString(): String {
-    val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-    val dateFormats = arrayOf(
-        SimpleDateFormat("dd MMMM yyyy", Locale("ar")),  // Arabic format
-        SimpleDateFormat("MMM d, yyyy", Locale.US)      // English format
-    )
-    for (dateFormat in dateFormats) {
-        try {
-            return formatter.format(dateFormat.parse(this))
-        } catch (_: Exception) {
-        }
-    }
-    return ""
+fun Long.getDateFromString(): String {
+    val utc = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+    utc.timeInMillis = this
+    val format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+    return format.format(utc.time)
 }
 
 fun String.getDateFromAPI(): String {
