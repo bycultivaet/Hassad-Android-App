@@ -10,6 +10,7 @@ import com.cultivaet.hassad.domain.model.remote.responses.Farmer
 import com.cultivaet.hassad.domain.model.remote.responses.Form
 import com.cultivaet.hassad.domain.model.remote.responses.ImageUUID
 import com.cultivaet.hassad.domain.repository.SurveyRepository
+import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 
 class SurveyRepositoryImpl(
@@ -26,7 +27,9 @@ class SurveyRepositoryImpl(
     override suspend fun getFacilitatorForm(id: Int): Resource<Form> =
         safeApiCall { apiHelper.getFacilitatorForm(id) }
 
-    override suspend fun submitFacilitatorAnswer(facilitatorAnswer: FacilitatorAnswer): Resource<com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer> =
+    override suspend fun submitFacilitatorAnswer(
+        facilitatorAnswer: FacilitatorAnswer
+    ): Resource<com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer> =
         safeApiCall { apiHelper.submitFacilitatorAnswer(facilitatorAnswer) }
 
     override suspend fun insertFacilitatorAnswer(
@@ -36,4 +39,10 @@ class SurveyRepositoryImpl(
     override suspend fun uploadImage(
         image: MultipartBody.Part
     ): Resource<ImageUUID> = safeApiCall { apiHelper.uploadImage(image) }
+
+    override suspend fun setFacilitatorForm(facilitatorFormJson: String) =
+        preferencesDataSource.setFacilitatorForm(facilitatorFormJson)
+
+    override suspend fun getFacilitatorForm(): Flow<String?> =
+        preferencesDataSource.getFacilitatorForm()
 }

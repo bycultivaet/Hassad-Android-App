@@ -9,8 +9,7 @@ import com.cultivaet.hassad.domain.model.local.Farmer
 
 @Database(
     entities = [FacilitatorAnswer::class, Farmer::class],
-    version = 1,
-    exportSchema = false
+    version = 2
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun facilitatorAnswerDao(): FacilitatorAnswerDao

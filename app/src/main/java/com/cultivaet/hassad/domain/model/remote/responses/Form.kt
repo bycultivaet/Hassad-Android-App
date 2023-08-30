@@ -1,8 +1,8 @@
 package com.cultivaet.hassad.domain.model.remote.responses
 
 data class Form(
-    val ID: Int,
-    val description: String,
-    val fields: List<Field>,
-    val name: String
+    var ID: Int = -1,
+    var description: String = "",
+    var fields: List<Field> = mutableListOf(),
+    var name: String = ""
 )

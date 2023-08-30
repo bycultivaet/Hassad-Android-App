@@ -26,4 +26,8 @@ interface SurveyRepository {
     suspend fun uploadImage(
         image: MultipartBody.Part
     ): Resource<ImageUUID>
+
+    suspend fun setFacilitatorForm(facilitatorFormJson: String)
+
+    suspend fun getFacilitatorForm(): Flow<String?>
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.cultivaet.hassad.core.source.remote.Resource
 import com.cultivaet.hassad.domain.model.remote.requests.Answer
 import com.cultivaet.hassad.domain.model.remote.requests.FacilitatorAnswer
+import com.cultivaet.hassad.domain.model.remote.responses.Form
 import com.cultivaet.hassad.domain.usecase.SurveyUseCase
 import com.cultivaet.hassad.ui.main.farmers.FarmerDataItem
 import com.cultivaet.hassad.ui.main.survey.intent.SurveyIntent
@@ -32,9 +33,11 @@ class SurveyViewModel(
     val state: StateFlow<SurveyState> = _state
     var farmersList: List<FarmerDataItem>? = null
     val facilitatorAnswer = FacilitatorAnswer()
+    val facilitatorForm = Form()
 
     init {
         handleIntent()
+        getUserId()
     }
 
     private fun handleIntent() {
@@ -54,6 +57,10 @@ class SurveyViewModel(
                     is SurveyIntent.InsertFacilitatorAnswerOffline -> insertFacilitatorAnswerOffline(
                         facilitatorAnswer
                     )
+
+                    SurveyIntent.GetFacilitatorForm -> getFacilitatorForm()
+
+                    SurveyIntent.SetFacilitatorForm -> setFacilitatorForm(facilitatorForm)
                 }
             }
         }
@@ -65,7 +72,6 @@ class SurveyViewModel(
                 surveyUseCase.userId().collect { id ->
                     if (id != null) {
                         facilitatorAnswer.userId = id
-                        getAllFarmersById(facilitatorAnswer.userId)
                     }
                 }
             }
@@ -88,13 +94,16 @@ class SurveyViewModel(
 
     private fun getFacilitatorForm(id: Int) {
         viewModelScope.launch {
-            _state.value = SurveyState.Loading
-            _state.value = when (val resource = surveyUseCase.getFacilitatorForm(id)) {
-                is Resource.Success -> {
-                    SurveyState.Success(resource.data)
+            val resource = surveyUseCase.getFacilitatorForm(id)
+            if (resource is Resource.Success) {
+                val data = resource.data
+                if (data != null) {
+                    facilitatorForm.ID = data.ID
+                    facilitatorForm.description = data.description
+                    facilitatorForm.fields = data.fields
+                    facilitatorForm.name = data.name
+                    setFacilitatorForm(facilitatorForm)
                 }
-
-                is Resource.Error -> SurveyState.Error(resource.error)
             }
         }
     }
@@ -125,10 +134,6 @@ class SurveyViewModel(
         viewModelScope.launch { surveyUseCase.insertFacilitatorAnswer(facilitatorAnswerLocal) }
     }
 
-    private fun listOfAnswersToJson(answers: List<Answer>): String {
-        return Gson().toJson(answers)
-    }
-
     fun uploadImage(inputStream: InputStream) {
         viewModelScope.launch {
             _state.value = SurveyState.Loading
@@ -146,6 +151,32 @@ class SurveyViewModel(
                 }
 
                 is Resource.Error -> SurveyState.Error(resource.error)
+            }
+        }
+    }
+
+    private fun listOfAnswersToJson(answers: List<Answer>): String {
+        return Gson().toJson(answers)
+    }
+
+    private fun setFacilitatorForm(form: Form) {
+        viewModelScope.launch {
+            surveyUseCase.setFacilitatorForm(Gson().toJson(form))
+        }
+    }
+
+    private fun getFacilitatorForm() {
+        viewModelScope.launch {
+            surveyUseCase.getFacilitatorForm().collect { facilitatorFormJson ->
+                if (facilitatorFormJson.isNullOrEmpty()) {
+                    getFacilitatorForm(facilitatorAnswer.userId)
+                } else {
+                    val form = Gson().fromJson(facilitatorFormJson, Form::class.java)
+                    facilitatorForm.ID = form.ID
+                    facilitatorForm.description = form.description
+                    facilitatorForm.fields = form.fields
+                    facilitatorForm.name = form.name
+                }
             }
         }
     }

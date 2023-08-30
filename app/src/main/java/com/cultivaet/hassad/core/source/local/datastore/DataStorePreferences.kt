@@ -18,6 +18,7 @@ class DataStorePreferences(private val application: Application) : PreferencesDa
         application.applicationContext.dataStore.edit { preferences ->
             preferences[PreferenceKeys.USER_ID] = userId
             preferences[PreferenceKeys.IS_LOGGED] = true
+            preferences[PreferenceKeys.FACILITATOR_FORM] = ""
         }
     }
 
@@ -32,6 +33,17 @@ class DataStorePreferences(private val application: Application) : PreferencesDa
     override suspend fun userLoggedOut() {
         application.applicationContext.dataStore.edit { preferences ->
             preferences[PreferenceKeys.IS_LOGGED] = false
+            preferences[PreferenceKeys.FACILITATOR_FORM] = ""
         }
+    }
+
+    override suspend fun setFacilitatorForm(facilitatorFormJson: String) {
+        application.applicationContext.dataStore.edit { preferences ->
+            preferences[PreferenceKeys.FACILITATOR_FORM] = facilitatorFormJson
+        }
+    }
+
+    override suspend fun getFacilitatorForm(): Flow<String?> {
+        return application.applicationContext.dataStore.data.map { preference -> preference[PreferenceKeys.FACILITATOR_FORM] }
     }
 }

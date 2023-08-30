@@ -4,6 +4,7 @@ import com.cultivaet.hassad.core.source.remote.Resource
 import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.ImageUUID
 import com.cultivaet.hassad.domain.repository.SurveyRepository
+import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 
 class SurveyUseCase(private val repository: SurveyRepository) {
@@ -27,4 +28,9 @@ class SurveyUseCase(private val repository: SurveyRepository) {
     suspend fun uploadImage(
         image: MultipartBody.Part
     ): Resource<ImageUUID> = repository.uploadImage(image)
+
+    suspend fun setFacilitatorForm(facilitatorFormJson: String) =
+        repository.setFacilitatorForm(facilitatorFormJson)
+
+    suspend fun getFacilitatorForm(): Flow<String?> = repository.getFacilitatorForm()
 }

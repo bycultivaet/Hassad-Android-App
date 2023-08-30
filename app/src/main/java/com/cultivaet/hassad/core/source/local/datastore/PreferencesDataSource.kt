@@ -10,4 +10,8 @@ interface PreferencesDataSource {
     fun isLoggedIn(): Flow<Boolean?>
 
     suspend fun userLoggedOut()
+
+    suspend fun setFacilitatorForm(facilitatorFormJson: String)
+
+    suspend fun getFacilitatorForm(): Flow<String?>
 }

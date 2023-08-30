@@ -32,7 +32,9 @@ import com.cultivaet.hassad.core.extension.logoutAlert
 import com.cultivaet.hassad.databinding.ActivityMainBinding
 import com.cultivaet.hassad.ui.BaseActivity
 import com.cultivaet.hassad.ui.auth.LoginActivity
+import com.cultivaet.hassad.ui.main.farmers.FarmersOfflineListener
 import com.cultivaet.hassad.ui.main.intent.MainIntent
+import com.cultivaet.hassad.ui.main.survey.SurveyOfflineListener
 import com.cultivaet.hassad.ui.main.viewstate.MainState
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -56,7 +58,9 @@ class MainActivity : BaseActivity(), LocationListener {
 
     private val locationPermissionCode = 2
 
-    private lateinit var offlineListener: OfflineListener
+    private lateinit var surveyOfflineListener: SurveyOfflineListener
+
+    private lateinit var farmersOfflineListener: FarmersOfflineListener
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
@@ -121,9 +125,9 @@ class MainActivity : BaseActivity(), LocationListener {
                 when (it) {
                     MainState.Idle -> {}
 
-                    MainState.Success -> {
-                        offlineListener.refreshFarmers()
-                    }
+                    MainState.SuccessSurvey -> surveyOfflineListener.refreshFarmers()
+
+                    MainState.SuccessFarmers -> farmersOfflineListener.refreshFarmers()
                 }
             }
         }
@@ -230,7 +234,11 @@ class MainActivity : BaseActivity(), LocationListener {
         return navController.navigateUp(appBarConfiguration)
     }
 
-    fun setOfflineListener(offlineListener: OfflineListener) {
-        this.offlineListener = offlineListener
+    fun setOfflineListener(surveyOfflineListener: SurveyOfflineListener) {
+        this.surveyOfflineListener = surveyOfflineListener
+    }
+
+    fun setOfflineListener(farmersOfflineListener: FarmersOfflineListener) {
+        this.farmersOfflineListener = farmersOfflineListener
     }
 }

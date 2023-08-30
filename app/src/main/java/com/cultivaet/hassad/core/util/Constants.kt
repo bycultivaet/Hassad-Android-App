@@ -2,6 +2,7 @@ package com.cultivaet.hassad.core.util
 
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.cultivaet.hassad.BuildConfig
 
 object Constants {
@@ -24,6 +25,7 @@ object Constants {
     object PreferenceKeys {
         val USER_ID = intPreferencesKey("id")
         val IS_LOGGED = booleanPreferencesKey("is_logged")
+        val FACILITATOR_FORM = stringPreferencesKey("facilitator_form")
     }
 
     object Database {

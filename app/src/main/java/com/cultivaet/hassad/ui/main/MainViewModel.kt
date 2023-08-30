@@ -52,7 +52,7 @@ class MainViewModel(
             val resource = mainUseCase.submitFacilitatorAnswer(facilitatorAnswer)
             if (resource is Resource.Success) {
                 deleteFacilitatorAnswerOffline(facilitatorAnswerDb)
-                if (isLastElement) _state.value = MainState.Success
+                if (isLastElement) _state.value = MainState.SuccessSurvey
             }
         }
     }
@@ -95,7 +95,7 @@ class MainViewModel(
             val resource = mainUseCase.submitAddFarmer(farmer)
             if (resource is Resource.Success) {
                 deleteFarmerOffline(farmerDb)
-                if (isLastElement) _state.value = MainState.Success
+                if (isLastElement) _state.value = MainState.SuccessFarmers
             }
         }
     }

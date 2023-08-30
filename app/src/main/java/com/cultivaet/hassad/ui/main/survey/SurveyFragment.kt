@@ -3,7 +3,6 @@ package com.cultivaet.hassad.ui.main.survey
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,7 +18,6 @@ import androidx.lifecycle.lifecycleScope
 import com.cultivaet.hassad.R
 import com.cultivaet.hassad.core.extension.fillListOfTypesToAdapter
 import com.cultivaet.hassad.core.extension.getDateFromString
-import com.cultivaet.hassad.core.extension.getEncoded64ImageStringFromBitmap
 import com.cultivaet.hassad.core.extension.isConnectedToInternet
 import com.cultivaet.hassad.core.extension.setMargin
 import com.cultivaet.hassad.core.extension.showError
@@ -29,7 +27,6 @@ import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Field
 import com.cultivaet.hassad.domain.model.remote.responses.Form
 import com.cultivaet.hassad.ui.main.MainActivity
-import com.cultivaet.hassad.ui.main.OfflineListener
 import com.cultivaet.hassad.ui.main.farmers.bottomsheet.FarmersBottomSheet
 import com.cultivaet.hassad.ui.main.survey.intent.SurveyIntent
 import com.cultivaet.hassad.ui.main.survey.viewstate.SurveyState
@@ -41,7 +38,7 @@ import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
 
 @ExperimentalCoroutinesApi
-class SurveyFragment : Fragment(), OfflineListener {
+class SurveyFragment : Fragment(), SurveyOfflineListener {
     private val surveyViewModel: SurveyViewModel by inject()
 
     private var _binding: FragmentSurveyBinding? = null
@@ -64,9 +61,15 @@ class SurveyFragment : Fragment(), OfflineListener {
 
             observeViewModel()
 
+            (activity as MainActivity).setOfflineListener(this)
+
             (activity as MainActivity).getCurrentLocation()
 
-            (activity as MainActivity).setOfflineListener(this)
+            lifecycleScope.launch {
+                surveyViewModel.surveyIntent.send(
+                    SurveyIntent.GetFacilitatorForm
+                )
+            }
 
             binding.listOfFarmers.setOnClickListener {
                 val farmersBottomSheet = surveyViewModel.farmersList?.let { farmers ->
@@ -78,17 +81,9 @@ class SurveyFragment : Fragment(), OfflineListener {
                         if (farmerId != null && farmerId != -1) {
                             surveyViewModel.facilitatorAnswer.farmerId = farmerId
 
-                            binding.rootContainer.removeAllViews()
-
                             (activity as MainActivity).getCurrentLocation()
 
-                            runBlocking {
-                                lifecycleScope.launch {
-                                    surveyViewModel.surveyIntent.send(
-                                        SurveyIntent.FetchFacilitatorForm
-                                    )
-                                }
-                            }
+                            renderDynamicViews(surveyViewModel.facilitatorForm)
                         }
                     }
                 }
@@ -101,9 +96,7 @@ class SurveyFragment : Fragment(), OfflineListener {
     override fun onResume() {
         super.onResume()
 
-        runBlocking {
-            lifecycleScope.launch { surveyViewModel.surveyIntent.send(SurveyIntent.GetUserId) }
-        }
+        refreshFarmers()
     }
 
     private fun observeViewModel() {
@@ -124,20 +117,13 @@ class SurveyFragment : Fragment(), OfflineListener {
                         binding.progressBar.visibility = View.GONE
                         when (it.data) {
                             is List<*> -> {
-                                binding.numberOfFarmersTextView.text = getString(R.string.numberOfFarmersInList, it.data.size)
-                            }
-
-                            is Form -> {
-                                renderDynamicViews(it.data)
-                                binding.scrollView.visibility = View.VISIBLE
-                                binding.selectFarmerMsgTextView.visibility = View.GONE
+                                binding.numberOfFarmersTextView.text =
+                                    getString(R.string.numberOfFarmersInList, it.data.size)
                             }
 
                             is FacilitatorAnswer -> {
                                 responseMessageForFacilitatorAnswer(isOffline = false)
                             }
-
-                            else -> {}
                         }
                     }
 
@@ -168,6 +154,8 @@ class SurveyFragment : Fragment(), OfflineListener {
     }
 
     private fun renderDynamicViews(form: Form) {
+        binding.rootContainer.removeAllViews()
+
         surveyViewModel.facilitatorAnswer.formId = form.ID
         form.fields.forEachIndexed { index, field ->
             val viewGroup = when (field.type) {
@@ -193,6 +181,9 @@ class SurveyFragment : Fragment(), OfflineListener {
             val marginValue = resources.getDimension(com.intuit.sdp.R.dimen._16sdp).toInt()
             setMargin(bottom = marginValue)
         })
+
+        binding.scrollView.visibility = View.VISIBLE
+        binding.selectFarmerMsgTextView.visibility = View.GONE
     }
 
     private fun addTextInputLayout(field: Field): TextInputLayout {
@@ -343,12 +334,10 @@ class SurveyFragment : Fragment(), OfflineListener {
     }
 
     override fun refreshFarmers() {
-        runBlocking {
-            lifecycleScope.launch {
-                surveyViewModel.surveyIntent.send(
-                    SurveyIntent.FetchAllFarmers
-                )
-            }
+        lifecycleScope.launch {
+            surveyViewModel.surveyIntent.send(
+                SurveyIntent.FetchAllFarmers
+            )
         }
     }
 
