@@ -87,6 +87,6 @@ val viewModelModule = module {
     factory { ProfileViewModel(get()) }
     factory { FarmersViewModel(get()) }
     factory { AddFarmerViewModel(get()) }
-    factory { SurveyViewModel(get()) }
+    factory { SurveyViewModel(get(), get()) }
     factory { TasksViewModel(get()) }
 }

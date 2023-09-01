@@ -3,6 +3,7 @@ package com.cultivaet.hassad.ui.main.survey
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import com.cultivaet.hassad.R
 import com.cultivaet.hassad.core.extension.fillListOfTypesToAdapter
 import com.cultivaet.hassad.core.extension.getDateFromString
@@ -26,6 +28,7 @@ import com.cultivaet.hassad.domain.model.remote.requests.Answer
 import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Field
 import com.cultivaet.hassad.domain.model.remote.responses.Form
+import com.cultivaet.hassad.domain.model.remote.responses.ImageUUID
 import com.cultivaet.hassad.ui.main.MainActivity
 import com.cultivaet.hassad.ui.main.farmers.bottomsheet.FarmersBottomSheet
 import com.cultivaet.hassad.ui.main.survey.intent.SurveyIntent
@@ -50,6 +53,12 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
     private var isNotEmptyWholeValidation = true
 
     private val REQUEST_CODE = 200
+
+    private val imagesAdapter: ImagesAdapter by lazy {
+        ImagesAdapter {
+            startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_CODE)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -95,7 +104,6 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
 
     override fun onResume() {
         super.onResume()
-
         refreshFarmers()
     }
 
@@ -123,6 +131,10 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
 
                             is FacilitatorAnswer -> {
                                 responseMessageForFacilitatorAnswer(isOffline = false)
+                            }
+
+                            is ImageUUID -> {
+                                Log.d("TAG", "observeViewModel: ${it.data.uuid}")
                             }
                         }
                     }
@@ -161,6 +173,10 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
             val viewGroup = when (field.type) {
                 "date" -> {
                     addConstraintLayout(field)
+                }
+
+                "images" -> {
+                    addRecyclerViewForImages(field)
                 }
 
                 else -> {
@@ -252,6 +268,20 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
         return constraintLayout
     }
 
+    private fun addRecyclerViewForImages(field: Field): RecyclerView {
+        val recyclerView = LayoutInflater.from(requireContext())
+            .inflate(
+                R.layout.text_input_layout_image,
+                null
+            ) as RecyclerView
+
+        recyclerView.tag = field.name
+
+        recyclerView.adapter = imagesAdapter
+
+        return recyclerView
+    }
+
     private fun addButton(): Button {
         val button = LayoutInflater.from(requireContext())
             .inflate(
@@ -261,8 +291,6 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
 
         button.setOnClickListener {
             isNotEmptyWholeValidation = true
-
-//            startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_CODE)
 
             val viewParent = it.parent
             if (viewParent is LinearLayout) {
@@ -345,9 +373,8 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == AppCompatActivity.RESULT_OK && requestCode == REQUEST_CODE && data != null) {
             val bitmap = data.extras?.get("data") as Bitmap
-//            binding.imageTest.setImageBitmap(bitmap)
-
-//            surveyViewModel.uploadImage(bitmap.getEncoded64ImageStringFromBitmap())
+            imagesAdapter.setItem(bitmap)
+//            surveyViewModel.uploadImage(bitmap)
         }
     }
 }

@@ -4,13 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cultivaet.hassad.core.source.remote.Resource
+import com.cultivaet.hassad.core.util.Utils
 import com.cultivaet.hassad.domain.model.remote.requests.Answer
 import com.cultivaet.hassad.domain.model.remote.requests.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.requests.Farmer
 import com.cultivaet.hassad.domain.usecase.MainUseCase
 import com.cultivaet.hassad.ui.main.intent.MainIntent
 import com.cultivaet.hassad.ui.main.viewstate.MainState
-import com.google.gson.Gson
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -72,7 +72,7 @@ class MainViewModel(
                         formId = value.formId,
                         farmerId = value.farmerId,
                         geolocation = value.geolocation,
-                        answers = jsonToListOfAnswers(value.answers).toMutableList(),
+                        answers = Utils.fromJson<Array<Answer>>(value.answers).asList().toMutableList(),
                         type = value.type
                     ),
                     value,
@@ -80,10 +80,6 @@ class MainViewModel(
                 )
             }
         }
-    }
-
-    private fun jsonToListOfAnswers(str: String): List<Answer> {
-        return Gson().fromJson(str, Array<Answer>::class.java).asList()
     }
 
     private fun submitFarmer(

@@ -1,10 +1,12 @@
 package com.cultivaet.hassad.ui.main.survey
 
-import android.util.Log
+import android.app.Application
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cultivaet.hassad.core.extension.createTempImageFile
 import com.cultivaet.hassad.core.source.remote.Resource
-import com.cultivaet.hassad.domain.model.remote.requests.Answer
+import com.cultivaet.hassad.core.util.Utils
 import com.cultivaet.hassad.domain.model.remote.requests.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Form
 import com.cultivaet.hassad.domain.usecase.SurveyUseCase
@@ -21,11 +23,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import java.io.InputStream
+import okhttp3.RequestBody.Companion.asRequestBody
 
 @ExperimentalCoroutinesApi
 class SurveyViewModel(
+    private val application: Application,
     private val surveyUseCase: SurveyUseCase
 ) : ViewModel() {
     val surveyIntent = Channel<SurveyIntent>(Channel.UNLIMITED)
@@ -127,36 +129,11 @@ class SurveyViewModel(
             facilitatorAnswer.formId,
             facilitatorAnswer.farmerId,
             facilitatorAnswer.geolocation,
-            listOfAnswersToJson(facilitatorAnswer.answers),
+            Utils.toJson(facilitatorAnswer.answers),
             facilitatorAnswer.userId,
         )
 
         viewModelScope.launch { surveyUseCase.insertFacilitatorAnswer(facilitatorAnswerLocal) }
-    }
-
-    fun uploadImage(inputStream: InputStream) {
-        viewModelScope.launch {
-            _state.value = SurveyState.Loading
-            _state.value = when (val resource = surveyUseCase.uploadImage(
-                MultipartBody.Part.createFormData(
-                    "pic", "myPic", RequestBody.create(
-                        "image/*".toMediaTypeOrNull(),
-                        inputStream.readBytes()
-                    )
-                )
-            )) {
-                is Resource.Success -> {
-                    Log.d("TAG", "uploadImage: ${resource.data}")
-                    SurveyState.Success(resource.data)
-                }
-
-                is Resource.Error -> SurveyState.Error(resource.error)
-            }
-        }
-    }
-
-    private fun listOfAnswersToJson(answers: List<Answer>): String {
-        return Gson().toJson(answers)
     }
 
     private fun setFacilitatorForm(form: Form) {
@@ -171,12 +148,32 @@ class SurveyViewModel(
                 if (facilitatorFormJson.isNullOrEmpty()) {
                     getFacilitatorForm(facilitatorAnswer.userId)
                 } else {
-                    val form = Gson().fromJson(facilitatorFormJson, Form::class.java)
+                    val form = Utils.fromJson<Form>(facilitatorFormJson)
                     facilitatorForm.ID = form.ID
                     facilitatorForm.description = form.description
                     facilitatorForm.fields = form.fields
                     facilitatorForm.name = form.name
                 }
+            }
+        }
+    }
+
+    fun uploadImage(bitmap: Bitmap) {
+        val imageFile = application.applicationContext.createTempImageFile()
+        imageFile
+            .outputStream()
+            .use { outputStream -> bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream) }
+        val requestFile = imageFile.asRequestBody("image/*".toMediaTypeOrNull())
+        val imagePart = MultipartBody.Part.createFormData("image", imageFile.name, requestFile)
+
+        viewModelScope.launch {
+            _state.value = SurveyState.Loading
+            _state.value = when (val resource = surveyUseCase.uploadImage(imagePart)) {
+                is Resource.Success -> {
+                    SurveyState.Success(resource.data)
+                }
+
+                is Resource.Error -> SurveyState.Error(resource.error)
             }
         }
     }

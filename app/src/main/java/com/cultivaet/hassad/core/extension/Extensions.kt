@@ -4,12 +4,11 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.os.Environment
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
@@ -17,9 +16,10 @@ import android.widget.AutoCompleteTextView
 import android.widget.LinearLayout
 import com.cultivaet.hassad.R
 import com.google.android.material.textfield.TextInputLayout
-import java.io.ByteArrayOutputStream
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
@@ -125,9 +125,13 @@ fun View.setMargin(left: Int = 0, top: Int = 0, right: Int = 0, bottom: Int = 0)
     this.layoutParams = layoutParams
 }
 
-fun Bitmap.getEncoded64ImageStringFromBitmap(): String {
-    val byteArrayOutputStream = ByteArrayOutputStream()
-    this.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
-    val imageBytes: ByteArray = byteArrayOutputStream.toByteArray()
-    return Base64.encodeToString(imageBytes, Base64.DEFAULT)
+fun Context.createTempImageFile(): File {
+    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+    val storageDir = this.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+
+    return File.createTempFile(
+        "JPEG_${timeStamp}_", /* prefix */
+        ".jpg", /* suffix */
+        storageDir /* directory */
+    )
 }
