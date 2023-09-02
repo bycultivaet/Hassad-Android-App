@@ -8,11 +8,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.cultivaet.hassad.R
-import com.cultivaet.hassad.core.util.Utils
 
 @SuppressLint("NotifyDataSetChanged")
 class ImagesAdapter(
-    private var mList: MutableList<Bitmap> = mutableListOf(Utils.dummyBitmap()),
+    private var mList: MutableList<Bitmap> = mutableListOf(),
     private val addImage: () -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

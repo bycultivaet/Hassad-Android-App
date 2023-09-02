@@ -136,6 +136,8 @@ class SurveyViewModel(
             facilitatorAnswer.userId,
         )
 
+        Log.d("TAG", "insertFacilitatorAnswerOffline: $facilitatorAnswerLocal")
+
         viewModelScope.launch { surveyUseCase.insertFacilitatorAnswer(facilitatorAnswerLocal) }
     }
 

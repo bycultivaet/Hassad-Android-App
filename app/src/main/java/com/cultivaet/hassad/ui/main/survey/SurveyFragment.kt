@@ -23,6 +23,7 @@ import com.cultivaet.hassad.core.extension.getDateFromString
 import com.cultivaet.hassad.core.extension.isConnectedToInternet
 import com.cultivaet.hassad.core.extension.setMargin
 import com.cultivaet.hassad.core.extension.showError
+import com.cultivaet.hassad.core.util.Utils
 import com.cultivaet.hassad.databinding.FragmentSurveyBinding
 import com.cultivaet.hassad.domain.model.remote.requests.Answer
 import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
@@ -175,6 +176,8 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
 
     private fun renderDynamicViews(form: Form) {
         binding.rootContainer.removeAllViews()
+
+        imagesAdapter.setItems(mutableListOf(Utils.dummyBitmap()))
 
         surveyViewModel.facilitatorAnswer.formId = form.ID
         form.fields.forEachIndexed { index, field ->
@@ -332,6 +335,9 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
                         }
                     } else if (view is RecyclerView && isThereImages) {
                         surveyViewModel.indexOfImages = answerIndex++
+                        surveyViewModel.facilitatorAnswer.answers[surveyViewModel.indexOfImages].apply {
+                            this.body = Utils.toJson(imagesAdapter.getItems())
+                        }
                     }
                 }
             }
@@ -355,18 +361,23 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
                             getString(R.string.uploadAtleastImageMsg),
                             Toast.LENGTH_LONG
                         ).show()
+                        return@setOnClickListener
                     } else {
-                        imagesAdapter.getItems().forEachIndexed { index, bitmap ->
-                            if (index < imagesAdapter.itemCount - 1) { // 0 < 2 // 1 < 2 // 2 < 2 false
-                                surveyViewModel.uploadImage(
-                                    bitmap,
-                                    imagesAdapter.itemCount,
-                                    index
-                                )
+                        if (isNotEmptyWholeValidation) {
+                            if (requireActivity().isConnectedToInternet()) {
+                                imagesAdapter.getItems().forEachIndexed { index, bitmap ->
+                                    if (index < imagesAdapter.itemCount - 1) { // 0 < 2 // 1 < 2 // 2 < 2 false
+                                        surveyViewModel.uploadImage(
+                                            bitmap,
+                                            imagesAdapter.itemCount,
+                                            index
+                                        )
+                                    }
+                                }
+                                return@setOnClickListener
                             }
                         }
                     }
-                    return@setOnClickListener
                 }
 
                 if (isNotEmptyWholeValidation) {

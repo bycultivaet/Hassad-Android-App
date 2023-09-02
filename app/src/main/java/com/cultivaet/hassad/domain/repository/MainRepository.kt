@@ -3,6 +3,8 @@ package com.cultivaet.hassad.domain.repository
 import com.cultivaet.hassad.core.source.remote.Resource
 import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
+import com.cultivaet.hassad.domain.model.remote.responses.ImageUUID
+import okhttp3.MultipartBody
 
 interface MainRepository {
     suspend fun userLoggedOut()
@@ -17,6 +19,10 @@ interface MainRepository {
     )
 
     suspend fun getFacilitatorAnswers(): List<com.cultivaet.hassad.domain.model.local.FacilitatorAnswer>
+
+    suspend fun uploadImage(
+        image: MultipartBody.Part
+    ): Resource<ImageUUID>
 
     // -------------- Farmer for caching --------------
     suspend fun submitAddFarmer(
