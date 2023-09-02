@@ -2,6 +2,7 @@ package com.cultivaet.hassad.ui.main.survey
 
 import android.app.Application
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cultivaet.hassad.core.extension.createTempImageFile
@@ -32,10 +33,12 @@ class SurveyViewModel(
 ) : ViewModel() {
     val surveyIntent = Channel<SurveyIntent>(Channel.UNLIMITED)
     private val _state = MutableStateFlow<SurveyState>(SurveyState.Idle)
-    val state: StateFlow<SurveyState> = _state
-    var farmersList: List<FarmerDataItem>? = null
-    val facilitatorAnswer = FacilitatorAnswer()
-    val facilitatorForm = Form()
+    internal val state: StateFlow<SurveyState> = _state
+    internal var farmersList: List<FarmerDataItem>? = null
+    internal val facilitatorAnswer = FacilitatorAnswer()
+    internal val facilitatorForm = Form()
+    internal var uuidImages: String = ""
+    internal var indexOfImages: Int = -1
 
     init {
         handleIntent()
@@ -158,7 +161,7 @@ class SurveyViewModel(
         }
     }
 
-    fun uploadImage(bitmap: Bitmap) {
+    fun uploadImage(bitmap: Bitmap, size: Int, currentIndex: Int) {
         val imageFile = application.applicationContext.createTempImageFile()
         imageFile
             .outputStream()
@@ -167,13 +170,20 @@ class SurveyViewModel(
         val imagePart = MultipartBody.Part.createFormData("image", imageFile.name, requestFile)
 
         viewModelScope.launch {
-            _state.value = SurveyState.Loading
-            _state.value = when (val resource = surveyUseCase.uploadImage(imagePart)) {
-                is Resource.Success -> {
-                    SurveyState.Success(resource.data)
-                }
+            val resource = surveyUseCase.uploadImage(imagePart)
+            if (resource is Resource.Success) {
+                val data = resource.data
 
-                is Resource.Error -> SurveyState.Error(resource.error)
+                if (currentIndex == size - 2) {
+                    uuidImages += data?.uuid
+                    facilitatorAnswer.answers[indexOfImages].apply {
+                        this.body = uuidImages
+                    }
+                    _state.value = SurveyState.Success(data)
+                    Log.d("TAG", "uploadImage: $uuidImages")
+                } else {
+                    uuidImages += "${data?.uuid},"
+                }
             }
         }
     }

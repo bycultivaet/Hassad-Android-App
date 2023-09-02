@@ -60,6 +60,8 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
         }
     }
 
+    private var isThereImages: Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -134,7 +136,13 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
                             }
 
                             is ImageUUID -> {
-                                Log.d("TAG", "observeViewModel: ${it.data.uuid}")
+                                runBlocking {
+                                    lifecycleScope.launch {
+                                        surveyViewModel.surveyIntent.send(
+                                            SurveyIntent.SubmitFacilitatorAnswer
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
@@ -176,6 +184,7 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
                 }
 
                 "images" -> {
+                    isThereImages = true
                     addRecyclerViewForImages(field)
                 }
 
@@ -292,12 +301,15 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
         button.setOnClickListener {
             isNotEmptyWholeValidation = true
 
+            surveyViewModel.uuidImages = ""
+
             val viewParent = it.parent
             if (viewParent is LinearLayout) {
                 val count: Int = viewParent.childCount
                 var answerIndex = 0
                 for (index in 0 until count) {
-                    val textInputLayout = when (val view: View = viewParent.getChildAt(index)) {
+                    val view: View = viewParent.getChildAt(index)
+                    val textInputLayout = when (view) {
                         is TextInputLayout -> {
                             viewParent.findViewWithTag(view.tag)
                         }
@@ -318,6 +330,8 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
                         surveyViewModel.facilitatorAnswer.answers[answerIndex++].apply {
                             this.body = textInputLayout.editText?.text.toString()
                         }
+                    } else if (view is RecyclerView && isThereImages) {
+                        surveyViewModel.indexOfImages = answerIndex++
                     }
                 }
             }
@@ -333,6 +347,27 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
                     "SurveyFragment",
                     "facilitatorAnswer: ${surveyViewModel.facilitatorAnswer}"
                 )
+
+                if (isThereImages) {
+                    if (imagesAdapter.itemCount == 1) {
+                        Toast.makeText(
+                            activity,
+                            getString(R.string.uploadAtleastImageMsg),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        imagesAdapter.getItems().forEachIndexed { index, bitmap ->
+                            if (index < imagesAdapter.itemCount - 1) { // 0 < 2 // 1 < 2 // 2 < 2 false
+                                surveyViewModel.uploadImage(
+                                    bitmap,
+                                    imagesAdapter.itemCount,
+                                    index
+                                )
+                            }
+                        }
+                    }
+                    return@setOnClickListener
+                }
 
                 if (isNotEmptyWholeValidation) {
                     if (requireActivity().isConnectedToInternet()) {
@@ -374,7 +409,6 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
         if (resultCode == AppCompatActivity.RESULT_OK && requestCode == REQUEST_CODE && data != null) {
             val bitmap = data.extras?.get("data") as Bitmap
             imagesAdapter.setItem(bitmap)
-//            surveyViewModel.uploadImage(bitmap)
         }
     }
 }
