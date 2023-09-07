@@ -1,8 +1,11 @@
 package com.cultivaet.hassad.ui.main
 
+import android.app.Application
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cultivaet.hassad.core.extension.createTempImageFile
 import com.cultivaet.hassad.core.source.remote.Resource
 import com.cultivaet.hassad.core.util.Utils
 import com.cultivaet.hassad.domain.model.remote.requests.Answer
@@ -11,16 +14,23 @@ import com.cultivaet.hassad.domain.model.remote.requests.Farmer
 import com.cultivaet.hassad.domain.usecase.MainUseCase
 import com.cultivaet.hassad.ui.main.intent.MainIntent
 import com.cultivaet.hassad.ui.main.viewstate.MainState
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 
 @ExperimentalCoroutinesApi
 class MainViewModel(
+    private val application: Application,
     private val mainUseCase: MainUseCase
 ) : ViewModel() {
     val mainIntent = Channel<MainIntent>(Channel.UNLIMITED)
@@ -66,19 +76,61 @@ class MainViewModel(
             val facilitatorAnswersList = mainUseCase.getFacilitatorAnswers()
             Log.d("TAG", "getFacilitatorAnswers: $facilitatorAnswersList")
             for ((index, value) in facilitatorAnswersList.withIndex()) {
+                val answers = Utils.fromJson<Array<Answer>>(value.answers).asList().toMutableList()
+                val answersWithImages = answers.find { it.type == "images" }
+                if (answersWithImages != null) {
+                    val indexOfAnswerImage = answers.indexOf(answersWithImages)
+                    val list = getUUIDsFromBitmaps(
+                        Utils.fromJson<Array<Bitmap>>(answersWithImages.body.toString()).asList()
+                    ).await()
+                    answers[indexOfAnswerImage].body = list.map { it.await() }.joinToString(", ")
+                }
+                Log.d("TAG", "submitOfflineFacilitatorAnswersList: $answers")
                 submitFacilitatorAnswer(
                     FacilitatorAnswer(
                         userId = value.userId,
                         formId = value.formId,
                         farmerId = value.farmerId,
                         geolocation = value.geolocation,
-                        answers = Utils.fromJson<Array<Answer>>(value.answers).asList().toMutableList(),
+                        answers = answers,
                         type = value.type
                     ),
                     value,
                     index == facilitatorAnswersList.size - 1
                 )
             }
+        }
+    }
+
+    fun getUUIDsFromBitmaps(bitmaps: List<Bitmap>): Deferred<List<Deferred<String>>> {
+        return viewModelScope.async(Dispatchers.IO) {
+            val listOfDeferred = mutableListOf<Deferred<String>>()
+            bitmaps.forEachIndexed { index, bitmap ->
+                if (index < bitmaps.size - 1) {
+                    listOfDeferred.add(uploadImage(bitmap))
+                }
+            }
+            listOfDeferred
+        }
+    }
+
+    fun uploadImage(bitmap: Bitmap): Deferred<String> {
+        return viewModelScope.async(Dispatchers.IO) {
+            val imageFile = application.applicationContext.createTempImageFile()
+            imageFile
+                .outputStream()
+                .use { outputStream ->
+                    bitmap.compress(
+                        Bitmap.CompressFormat.JPEG,
+                        80,
+                        outputStream
+                    )
+                }
+            val requestFile = imageFile.asRequestBody("image/*".toMediaTypeOrNull())
+            val imagePart = MultipartBody.Part.createFormData("image", imageFile.name, requestFile)
+
+            val resource = mainUseCase.uploadImage(imagePart)
+            (if (resource is Resource.Success) resource.data?.uuid else "").toString()
         }
     }
 

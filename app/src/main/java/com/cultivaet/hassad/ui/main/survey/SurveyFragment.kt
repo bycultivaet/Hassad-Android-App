@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -188,7 +189,7 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
 
                 "images" -> {
                     isThereImages = true
-                    addRecyclerViewForImages(field)
+                    addLinearLayoutForImages(field)
                 }
 
                 else -> {
@@ -280,18 +281,24 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
         return constraintLayout
     }
 
-    private fun addRecyclerViewForImages(field: Field): RecyclerView {
-        val recyclerView = LayoutInflater.from(requireContext())
+    private fun addLinearLayoutForImages(field: Field): LinearLayout {
+        val linearLayout = LayoutInflater.from(requireContext())
             .inflate(
                 R.layout.text_input_layout_image,
                 null
-            ) as RecyclerView
+            ) as LinearLayout
 
-        recyclerView.tag = field.name
+        linearLayout.tag = field.name
 
-        recyclerView.adapter = imagesAdapter
+        val imagesTitle = linearLayout.findViewById<TextView>(R.id.imagesTitle)
 
-        return recyclerView
+        imagesTitle.text = field.placeholder
+
+        val imagesRecyclerView = linearLayout.findViewById<RecyclerView>(R.id.imagesRecyclerView)
+
+        imagesRecyclerView.adapter = imagesAdapter
+
+        return linearLayout
     }
 
     private fun addButton(): Button {
@@ -333,7 +340,7 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
                         surveyViewModel.facilitatorAnswer.answers[answerIndex++].apply {
                             this.body = textInputLayout.editText?.text.toString()
                         }
-                    } else if (view is RecyclerView && isThereImages) {
+                    } else if (view is LinearLayout && isThereImages) {
                         surveyViewModel.indexOfImages = answerIndex++
                         surveyViewModel.facilitatorAnswer.answers[surveyViewModel.indexOfImages].apply {
                             this.body = Utils.toJson(imagesAdapter.getItems())
@@ -365,20 +372,23 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
                     } else {
                         if (isNotEmptyWholeValidation) {
                             if (requireActivity().isConnectedToInternet()) {
-                                imagesAdapter.getItems().forEachIndexed { index, bitmap ->
-                                    if (index < imagesAdapter.itemCount - 1) { // 0 < 2 // 1 < 2 // 2 < 2 false
-                                        surveyViewModel.uploadImage(
-                                            bitmap,
-                                            imagesAdapter.itemCount,
-                                            index
-                                        )
+                                runBlocking {
+                                    val list =
+                                        (activity as MainActivity).mainViewModel.getUUIDsFromBitmaps(
+                                            imagesAdapter.getItems()
+                                        ).await()
+
+                                    surveyViewModel.facilitatorAnswer.answers[surveyViewModel.indexOfImages].apply {
+                                        this.body =
+                                            list.map { def -> def.await() }.joinToString(", ")
                                     }
                                 }
-                                return@setOnClickListener
                             }
                         }
                     }
                 }
+
+                Log.d("TAG", "addButtonAmr: ${surveyViewModel.facilitatorAnswer.answers}")
 
                 if (isNotEmptyWholeValidation) {
                     if (requireActivity().isConnectedToInternet()) {

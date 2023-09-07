@@ -44,7 +44,7 @@ import org.koin.android.ext.android.inject
 
 @ExperimentalCoroutinesApi
 class MainActivity : BaseActivity(), LocationListener {
-    private val mainViewModel: MainViewModel by inject()
+    val mainViewModel: MainViewModel by inject()
 
     private lateinit var binding: ActivityMainBinding
 
