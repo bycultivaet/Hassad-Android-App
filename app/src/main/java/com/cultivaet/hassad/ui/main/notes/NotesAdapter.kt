@@ -1,27 +1,25 @@
-package com.cultivaet.hassad.ui.main.tasks
+package com.cultivaet.hassad.ui.main.notes
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.cultivaet.hassad.R
 
 @SuppressLint("NotifyDataSetChanged")
-class TasksAdapter(
-    private var mList: List<TaskDataItem> = listOf(),
-    private val updateStatusByTaskId: (taskId: TaskDataItem) -> Unit
-) : RecyclerView.Adapter<TasksAdapter.ViewHolder>() {
+class NotesAdapter(
+    private var mList: List<NoteDataItem> = listOf(),
+) : RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
 
-    fun setItems(farmers: List<TaskDataItem>) {
+    fun setItems(farmers: List<NoteDataItem>) {
         mList = farmers
         notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.task_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.note_item, parent, false)
         return ViewHolder(view)
     }
 
@@ -31,14 +29,6 @@ class TasksAdapter(
             title.text = task.title
             text.text = task.text
         }
-
-        holder.checkIcon.setImageResource(if (task.isChecked) R.drawable.ic_checked else R.drawable.ic_unchecked)
-
-        holder.checkIcon.setOnClickListener {
-            task.isChecked = !task.isChecked
-            updateStatusByTaskId.invoke(task)
-            notifyDataSetChanged()
-        }
     }
 
     override fun getItemCount(): Int {
@@ -46,7 +36,6 @@ class TasksAdapter(
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val checkIcon: ImageView = itemView.findViewById(R.id.checkIcon)
         val title: TextView = itemView.findViewById(R.id.title)
         val text: TextView = itemView.findViewById(R.id.text)
     }

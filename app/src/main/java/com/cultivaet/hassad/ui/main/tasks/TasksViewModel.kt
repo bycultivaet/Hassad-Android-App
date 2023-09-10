@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 @ExperimentalCoroutinesApi
 class TasksViewModel(
@@ -22,7 +21,8 @@ class TasksViewModel(
     private val _state = MutableStateFlow<TasksState>(TasksState.Idle)
     val state: StateFlow<TasksState> = _state
 
-    var userId: Int = -1
+    internal var userId: Int = -1
+
     lateinit var taskDataItem: TaskDataItem
 
     init {
@@ -33,26 +33,13 @@ class TasksViewModel(
         viewModelScope.launch {
             tasksIntent.consumeAsFlow().collect {
                 when (it) {
-                    is TasksIntent.GetUserId -> getUserId()
-
                     is TasksIntent.FetchAllTasks -> getAllTasksById(userId)
 
                     is TasksIntent.UpdateTaskStatus -> {
                         updateTaskStatus(userId, taskDataItem.id, taskDataItem.isChecked)
                     }
-                }
-            }
-        }
-    }
 
-    private fun getUserId() {
-        runBlocking {
-            viewModelScope.launch {
-                tasksUseCase.userId().collect { id ->
-                    if (id != null) {
-                        userId = id
-                        getAllTasksById(userId)
-                    }
+                    is TasksIntent.FetchAllNotes -> getAllNotesById(userId)
                 }
             }
         }
@@ -86,6 +73,19 @@ class TasksViewModel(
 
                     is Resource.Error -> TasksState.Error(resource.error)
                 }
+        }
+    }
+
+    private fun getAllNotesById(id: Int) {
+        viewModelScope.launch {
+            _state.value = TasksState.Loading
+            _state.value = when (val resource = tasksUseCase.getAllNotesById(id)) {
+                is Resource.Success -> {
+                    TasksState.Success(resource.data?.map { it.toNoteDataItem() })
+                }
+
+                is Resource.Error -> TasksState.Error(resource.error)
+            }
         }
     }
 }

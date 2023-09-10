@@ -19,8 +19,6 @@ class SurveyRepositoryImpl(
     private val apiHelper: ApiHelper,
     private val databaseHelper: DatabaseHelper
 ) : BaseRepository(application), SurveyRepository {
-    override suspend fun userId() = preferencesDataSource.userId()
-
     override suspend fun getAllFarmersById(id: Int, filter: Boolean): Resource<List<Farmer>> =
         safeApiCall { apiHelper.getAllFarmersById(id, filter) }
 

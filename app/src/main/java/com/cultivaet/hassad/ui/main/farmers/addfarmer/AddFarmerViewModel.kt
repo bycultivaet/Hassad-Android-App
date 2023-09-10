@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 @ExperimentalCoroutinesApi
 class AddFarmerViewModel(
@@ -23,7 +22,9 @@ class AddFarmerViewModel(
     val addFarmerIntent = Channel<AddFarmerIntent>(Channel.UNLIMITED)
     private val _state = MutableStateFlow<AddFarmerState>(AddFarmerState.Idle)
     val state: StateFlow<AddFarmerState> = _state
+
     internal var userId: Int = -1
+
     internal lateinit var farmer: Farmer
 
     init {
@@ -34,23 +35,9 @@ class AddFarmerViewModel(
         viewModelScope.launch {
             addFarmerIntent.consumeAsFlow().collect {
                 when (it) {
-                    is AddFarmerIntent.GetUserId -> getUserId()
-
                     is AddFarmerIntent.AddFarmer -> addFarmer(farmer)
 
                     is AddFarmerIntent.InsertFarmerOffline -> insertFarmerOffline(farmer)
-                }
-            }
-        }
-    }
-
-    private fun getUserId() {
-        runBlocking {
-            viewModelScope.launch {
-                addFarmerUseCase.userId().collect { id ->
-                    if (id != null) {
-                        userId = id
-                    }
                 }
             }
         }

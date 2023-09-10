@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.cultivaet.hassad.databinding.FragmentProfileBinding
+import com.cultivaet.hassad.ui.main.MainActivity
 import com.cultivaet.hassad.ui.main.profile.intent.ProfileIntent
 import com.cultivaet.hassad.ui.main.profile.viewstate.ProfileState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,11 +36,16 @@ class ProfileFragment : Fragment() {
 
             observeViewModel()
 
-            runBlocking {
-                lifecycleScope.launch { profileViewModel.profileIntent.send(ProfileIntent.GetUserId) }
-            }
+            profileViewModel.userId = (activity as MainActivity).getUserId()
         }
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        runBlocking {
+            lifecycleScope.launch { profileViewModel.profileIntent.send(ProfileIntent.FetchFacilitator) }
+        }
     }
 
     private fun observeViewModel() {

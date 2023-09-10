@@ -47,6 +47,8 @@ class FarmersFragment : Fragment(), FarmersOfflineListener {
 
             observeViewModel()
 
+            farmersViewModel.userId = (activity as MainActivity).getUserId()
+
             (activity as MainActivity).setOfflineListener(this)
 
             binding.farmersRecyclerView.adapter = farmersAdapter
@@ -84,7 +86,7 @@ class FarmersFragment : Fragment(), FarmersOfflineListener {
     override fun onResume() {
         super.onResume()
         runBlocking {
-            lifecycleScope.launch { farmersViewModel.farmersIntent.send(FarmersIntent.GetUserId) }
+            lifecycleScope.launch { farmersViewModel.farmersIntent.send(FarmersIntent.FetchAllFarmers) }
         }
     }
 

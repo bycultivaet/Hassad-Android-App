@@ -5,6 +5,7 @@ import com.cultivaet.hassad.domain.model.remote.requests.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
 import com.cultivaet.hassad.domain.model.remote.responses.Form
 import com.cultivaet.hassad.domain.model.remote.responses.ImageUUID
+import com.cultivaet.hassad.domain.model.remote.responses.Note
 import com.cultivaet.hassad.domain.model.remote.responses.Task
 import com.cultivaet.hassad.domain.model.remote.responses.UpdateStatus
 import okhttp3.MultipartBody
@@ -47,4 +48,12 @@ class ApiHelperImpl(private val apiService: ApiService) : ApiHelper {
         taskId: Int,
         status: Boolean
     ): Response<UpdateStatus> = apiService.updateTaskStatus(facilitatorId, taskId, status)
+
+    override suspend fun getAllNotesById(
+        id: Int
+    ): Response<List<Note>> = apiService.getAllNotesById(id)
+
+    override suspend fun getAllCommentsByFormId(
+        formId: Int
+    ): Response<List<Note>> = apiService.getAllCommentsByFormId(formId)
 }

@@ -8,6 +8,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.cultivaet.hassad.databinding.FragmentTasksBinding
+import com.cultivaet.hassad.ui.main.MainActivity
+import com.cultivaet.hassad.ui.main.notes.NoteDataItem
+import com.cultivaet.hassad.ui.main.notes.NotesAdapter
 import com.cultivaet.hassad.ui.main.tasks.intent.TasksIntent
 import com.cultivaet.hassad.ui.main.tasks.viewstate.TasksState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,7 +28,9 @@ class TasksFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private lateinit var taskAdapter: TasksAdapter
+    private lateinit var tasksAdapter: TasksAdapter
+
+    private val notesAdapter: NotesAdapter = NotesAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -35,14 +40,17 @@ class TasksFragment : Fragment() {
 
             observeViewModel()
 
-            taskAdapter = TasksAdapter {
+            tasksViewModel.userId = (activity as MainActivity).getUserId()
+
+            tasksAdapter = TasksAdapter {
                 tasksViewModel.taskDataItem = it
                 runBlocking {
                     lifecycleScope.launch { tasksViewModel.tasksIntent.send(TasksIntent.UpdateTaskStatus) }
                 }
             }
+            binding.tasksRecyclerView.adapter = tasksAdapter
 
-            binding.tasksRecyclerView.adapter = taskAdapter
+            binding.notesRecyclerView.adapter = notesAdapter
         }
         return binding.root
     }
@@ -50,7 +58,9 @@ class TasksFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         runBlocking {
-            lifecycleScope.launch { tasksViewModel.tasksIntent.send(TasksIntent.GetUserId) }
+            lifecycleScope.launch { tasksViewModel.tasksIntent.send(TasksIntent.FetchAllTasks) }
+
+            lifecycleScope.launch { tasksViewModel.tasksIntent.send(TasksIntent.FetchAllNotes) }
         }
     }
 
@@ -69,11 +79,16 @@ class TasksFragment : Fragment() {
                     is TasksState.Success<*> -> {
                         binding.progressBar.visibility = View.GONE
 
-                        when (it.data) {
+                        when (val result = it.data) {
                             is List<*> -> {
-                                binding.noTasks.visibility = View.GONE
+                                if (result.isNotEmpty() && result[0] is TaskDataItem) {
+                                    binding.listsLinearLayout.visibility = View.VISIBLE
+                                    binding.noTasks.visibility = View.GONE
 
-                                taskAdapter.setItems(it.data as List<TaskDataItem>)
+                                    tasksAdapter.setItems(result as List<TaskDataItem>)
+                                } else if (result.isNotEmpty() && result[0] is NoteDataItem) {
+                                    notesAdapter.setItems(result as List<NoteDataItem>)
+                                }
                             }
 
                             else -> {}

@@ -47,11 +47,9 @@ class AddFarmerFragment : Fragment() {
 
             observeViewModel()
 
-            (activity as MainActivity).getCurrentLocation()
+            addFarmerViewModel.userId = (activity as MainActivity).getUserId()
 
-            runBlocking {
-                lifecycleScope.launch { addFarmerViewModel.addFarmerIntent.send(AddFarmerIntent.GetUserId) }
-            }
+            (activity as MainActivity).getCurrentLocation()
 
             binding.genderTextField.fillListOfTypesToAdapter(
                 requireContext(), listOf(getString(R.string.male), getString(R.string.female))

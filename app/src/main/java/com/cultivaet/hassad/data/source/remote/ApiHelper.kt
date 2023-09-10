@@ -5,6 +5,7 @@ import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
 import com.cultivaet.hassad.domain.model.remote.responses.Form
 import com.cultivaet.hassad.domain.model.remote.responses.ImageUUID
+import com.cultivaet.hassad.domain.model.remote.responses.Note
 import com.cultivaet.hassad.domain.model.remote.responses.Task
 import com.cultivaet.hassad.domain.model.remote.responses.UpdateStatus
 import okhttp3.MultipartBody
@@ -36,4 +37,8 @@ interface ApiHelper {
         taskId: Int,
         status: Boolean
     ): Response<UpdateStatus>
+
+    suspend fun getAllNotesById(id: Int): Response<List<Note>>
+
+    suspend fun getAllCommentsByFormId(formId: Int): Response<List<Note>>
 }

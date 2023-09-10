@@ -36,8 +36,10 @@ class MainViewModel(
     val mainIntent = Channel<MainIntent>(Channel.UNLIMITED)
     private val _state = MutableStateFlow<MainState>(MainState.Idle)
     val state: StateFlow<MainState> = _state
+    internal var userId: Int = -1
 
     init {
+        getUserId()
         handleIntent()
     }
 
@@ -48,6 +50,18 @@ class MainViewModel(
                     MainIntent.SubmitOfflineFacilitatorAnswersList -> submitOfflineFacilitatorAnswersList()
 
                     MainIntent.SubmitOfflineFarmersList -> submitOfflineFarmersList()
+                }
+            }
+        }
+    }
+
+    private fun getUserId() {
+        runBlocking {
+            viewModelScope.launch {
+                mainUseCase.userId().collect { id ->
+                    if (id != null) {
+                        userId = id
+                    }
                 }
             }
         }

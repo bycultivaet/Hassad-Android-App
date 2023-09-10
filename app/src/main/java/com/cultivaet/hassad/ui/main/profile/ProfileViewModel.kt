@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 @ExperimentalCoroutinesApi
 class ProfileViewModel(
@@ -21,7 +20,7 @@ class ProfileViewModel(
     val profileIntent = Channel<ProfileIntent>(Channel.UNLIMITED)
     private val _state = MutableStateFlow<ProfileState>(ProfileState.Idle)
     val state: StateFlow<ProfileState> = _state
-    private var userId: Int = -1
+    internal var userId: Int = -1
 
     init {
         handleIntent()
@@ -31,22 +30,7 @@ class ProfileViewModel(
         viewModelScope.launch {
             profileIntent.consumeAsFlow().collect {
                 when (it) {
-                    is ProfileIntent.GetUserId -> getUserId()
-
                     is ProfileIntent.FetchFacilitator -> getFacilitatorById(userId)
-                }
-            }
-        }
-    }
-
-    private fun getUserId() {
-        runBlocking {
-            viewModelScope.launch {
-                profileUseCase.userId().collect { id ->
-                    if (id != null) {
-                        userId = id
-                        getFacilitatorById(userId)
-                    }
                 }
             }
         }

@@ -74,6 +74,8 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
 
             observeViewModel()
 
+            surveyViewModel.facilitatorAnswer.userId = (activity as MainActivity).getUserId()
+
             (activity as MainActivity).setOfflineListener(this)
 
             (activity as MainActivity).getCurrentLocation()

@@ -9,8 +9,6 @@ import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 
 interface SurveyRepository {
-    suspend fun userId(): Flow<Int?>
-
     suspend fun getAllFarmersById(id: Int, filter: Boolean): Resource<List<Farmer>>
 
     suspend fun getFacilitatorForm(id: Int): Resource<Form>

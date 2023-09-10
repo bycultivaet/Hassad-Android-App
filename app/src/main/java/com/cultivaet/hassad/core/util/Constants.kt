@@ -20,6 +20,10 @@ object Constants {
 
         const val GetAllTasksById = "api/facilitator/{id}/tasks"
         const val PATCH_TASK = "api/facilitator/{facilitator_id}/task/{task_id}"
+
+        const val GetAllNotesById = "api/facilitator/{id}/notes"
+
+        const val GetAllCommentsByFormId = "api/facilitator/{id}/notes"
     }
 
     object PreferenceKeys {

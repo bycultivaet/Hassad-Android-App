@@ -241,4 +241,6 @@ class MainActivity : BaseActivity(), LocationListener {
     fun setOfflineListener(farmersOfflineListener: FarmersOfflineListener) {
         this.farmersOfflineListener = farmersOfflineListener
     }
+
+    fun getUserId() = mainViewModel.userId
 }

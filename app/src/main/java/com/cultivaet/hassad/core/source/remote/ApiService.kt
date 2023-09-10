@@ -1,11 +1,13 @@
 package com.cultivaet.hassad.core.source.remote
 
 import com.cultivaet.hassad.core.util.Constants
+import com.cultivaet.hassad.domain.model.remote.responses.Comment
 import com.cultivaet.hassad.domain.model.remote.responses.Facilitator
 import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
 import com.cultivaet.hassad.domain.model.remote.responses.Form
 import com.cultivaet.hassad.domain.model.remote.responses.ImageUUID
+import com.cultivaet.hassad.domain.model.remote.responses.Note
 import com.cultivaet.hassad.domain.model.remote.responses.Task
 import com.cultivaet.hassad.domain.model.remote.responses.UpdateStatus
 import okhttp3.MultipartBody
@@ -56,4 +58,14 @@ interface ApiService {
         @Path("task_id") taskId: Int,
         @Query("status") status: Boolean
     ): Response<UpdateStatus>
+
+    @GET(Constants.EndPoints.GetAllNotesById)
+    suspend fun getAllNotesById(
+        @Path("id") id: Int,
+    ): Response<List<Note>>
+
+    @GET(Constants.EndPoints.GetAllCommentsByFormId)
+    suspend fun getAllCommentsByFormId(
+        @Path("id") formId: Int,
+    ): Response<List<Note>>
 }

@@ -3,8 +3,6 @@ package com.cultivaet.hassad.domain.usecase
 import com.cultivaet.hassad.domain.repository.TasksRepository
 
 class TasksUseCase(private val repository: TasksRepository) {
-    suspend fun userId() = repository.userId()
-
     suspend fun getAllTasksById(
         id: Int,
     ) = repository.getAllTasksById(id)
@@ -14,4 +12,8 @@ class TasksUseCase(private val repository: TasksRepository) {
         taskId: Int,
         status: Boolean
     ) = repository.updateTaskStatus(facilitatorId, taskId, status)
+
+    suspend fun getAllNotesById(
+        id: Int,
+    ) = repository.getAllNotesById(id)
 }

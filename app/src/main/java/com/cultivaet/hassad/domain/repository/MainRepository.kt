@@ -4,9 +4,12 @@ import com.cultivaet.hassad.core.source.remote.Resource
 import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
 import com.cultivaet.hassad.domain.model.remote.responses.ImageUUID
+import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 
 interface MainRepository {
+    suspend fun userId(): Flow<Int?>
+
     suspend fun userLoggedOut()
 
     // -------------- Facilitator for caching --------------

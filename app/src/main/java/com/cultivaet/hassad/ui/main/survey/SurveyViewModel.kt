@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 @ExperimentalCoroutinesApi
 class SurveyViewModel(
@@ -27,23 +26,22 @@ class SurveyViewModel(
     val surveyIntent = Channel<SurveyIntent>(Channel.UNLIMITED)
     private val _state = MutableStateFlow<SurveyState>(SurveyState.Idle)
     internal val state: StateFlow<SurveyState> = _state
-    internal var farmersList: List<FarmerDataItem>? = null
+
     internal val facilitatorAnswer = FacilitatorAnswer()
+
+    internal var farmersList: List<FarmerDataItem>? = null
     internal val facilitatorForm = Form()
     internal var uuidImages: String = ""
     internal var indexOfImages: Int = -1
 
     init {
         handleIntent()
-        getUserId()
     }
 
     private fun handleIntent() {
         viewModelScope.launch {
             surveyIntent.consumeAsFlow().collect {
                 when (it) {
-                    is SurveyIntent.GetUserId -> getUserId()
-
                     is SurveyIntent.FetchAllFarmers -> getAllFarmersById(facilitatorAnswer.userId)
 
                     is SurveyIntent.FetchFacilitatorForm -> getFacilitatorForm(facilitatorAnswer.userId)
@@ -59,18 +57,6 @@ class SurveyViewModel(
                     SurveyIntent.GetFacilitatorForm -> getFacilitatorForm()
 
                     SurveyIntent.SetFacilitatorForm -> setFacilitatorForm(facilitatorForm)
-                }
-            }
-        }
-    }
-
-    private fun getUserId() {
-        runBlocking {
-            viewModelScope.launch {
-                surveyUseCase.userId().collect { id ->
-                    if (id != null) {
-                        facilitatorAnswer.userId = id
-                    }
                 }
             }
         }

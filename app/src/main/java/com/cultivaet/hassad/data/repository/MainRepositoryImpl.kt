@@ -9,6 +9,7 @@ import com.cultivaet.hassad.domain.model.remote.requests.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.requests.Farmer
 import com.cultivaet.hassad.domain.model.remote.responses.ImageUUID
 import com.cultivaet.hassad.domain.repository.MainRepository
+import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 
 class MainRepositoryImpl(
@@ -17,6 +18,8 @@ class MainRepositoryImpl(
     private val apiHelper: ApiHelper,
     private val databaseHelper: DatabaseHelper
 ) : BaseRepository(application), MainRepository {
+    override suspend fun userId(): Flow<Int?> = preferencesDataSource.userId()
+
     override suspend fun userLoggedOut() = preferencesDataSource.userLoggedOut()
     override suspend fun submitFacilitatorAnswer(
         facilitatorAnswer: FacilitatorAnswer
