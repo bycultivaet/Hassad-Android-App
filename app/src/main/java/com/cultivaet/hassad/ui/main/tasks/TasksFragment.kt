@@ -9,10 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.cultivaet.hassad.databinding.FragmentTasksBinding
 import com.cultivaet.hassad.ui.main.MainActivity
-import com.cultivaet.hassad.ui.main.notes.NoteDataItem
-import com.cultivaet.hassad.ui.main.notes.NotesAdapter
 import com.cultivaet.hassad.ui.main.tasks.intent.TasksIntent
+import com.cultivaet.hassad.ui.main.tasks.notes.NoteDataItem
+import com.cultivaet.hassad.ui.main.tasks.notes.NotesAdapter
 import com.cultivaet.hassad.ui.main.tasks.viewstate.TasksState
+import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -40,6 +41,8 @@ class TasksFragment : Fragment() {
 
             observeViewModel()
 
+            setupTabLayout()
+
             tasksViewModel.userId = (activity as MainActivity).getUserId()
 
             tasksAdapter = TasksAdapter {
@@ -53,6 +56,24 @@ class TasksFragment : Fragment() {
             binding.notesRecyclerView.adapter = notesAdapter
         }
         return binding.root
+    }
+
+    private fun setupTabLayout() {
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                if (tab?.position == 0) {
+                    binding.tasks.visibility = View.VISIBLE
+                    binding.notes.visibility = View.GONE
+                } else if (tab?.position == 1) {
+                    binding.tasks.visibility = View.GONE
+                    binding.notes.visibility = View.VISIBLE
+                }
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+        })
     }
 
     override fun onResume() {
@@ -82,11 +103,12 @@ class TasksFragment : Fragment() {
                         when (val result = it.data) {
                             is List<*> -> {
                                 if (result.isNotEmpty() && result[0] is TaskDataItem) {
-                                    binding.listsLinearLayout.visibility = View.VISIBLE
                                     binding.noTasks.visibility = View.GONE
 
                                     tasksAdapter.setItems(result as List<TaskDataItem>)
                                 } else if (result.isNotEmpty() && result[0] is NoteDataItem) {
+                                    binding.noNotes.visibility = View.GONE
+
                                     notesAdapter.setItems(result as List<NoteDataItem>)
                                 }
                             }

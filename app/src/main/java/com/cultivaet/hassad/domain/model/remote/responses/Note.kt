@@ -1,7 +1,7 @@
 package com.cultivaet.hassad.domain.model.remote.responses
 
 import com.cultivaet.hassad.core.extension.getDateFromAPI
-import com.cultivaet.hassad.ui.main.notes.NoteDataItem
+import com.cultivaet.hassad.ui.main.tasks.notes.NoteDataItem
 
 data class Note(
     val ID: Int,

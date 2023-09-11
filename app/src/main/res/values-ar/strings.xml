@@ -68,4 +68,7 @@
     <string name="addFarmerMsgOffline">عند الاتصال بالانترنت سيتم ارسال البيانات</string>
     <string name="noTasks">لا توجد مهام</string>
     <string name="uploadAtleastImageMsg">برجاء إرفاق صورة على الاقل</string>
+    <string name="workingTasks">مهام العمل</string>
+    <string name="notes">ملاحظات</string>
+    <string name="noNotes">لا توجد ملاحظات</string>
 </resources>

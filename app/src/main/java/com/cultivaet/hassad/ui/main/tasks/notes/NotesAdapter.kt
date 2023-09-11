@@ -1,4 +1,4 @@
-package com.cultivaet.hassad.ui.main.notes
+package com.cultivaet.hassad.ui.main.tasks.notes
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

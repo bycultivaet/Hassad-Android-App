@@ -1,4 +1,4 @@
-package com.cultivaet.hassad.ui.main.notes
+package com.cultivaet.hassad.ui.main.tasks.notes
 
 data class NoteDataItem(
     val id: Int,

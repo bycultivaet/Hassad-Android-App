@@ -23,6 +23,10 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
+fun String.isValidEgyptPhoneNumber(): Boolean {
+    val egyptianPhoneNumberRegex = """^(01)(0|1|2|5)[0-9]{8}$""".toRegex()
+    return egyptianPhoneNumberRegex.matches(this)
+}
 
 fun Context.isConnectedToInternet(): Boolean {
     val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

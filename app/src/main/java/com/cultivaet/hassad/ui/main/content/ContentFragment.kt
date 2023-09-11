@@ -11,8 +11,8 @@ import com.cultivaet.hassad.databinding.FragmentContentBinding
 import com.cultivaet.hassad.ui.main.MainActivity
 import com.cultivaet.hassad.ui.main.content.intent.ContentIntent
 import com.cultivaet.hassad.ui.main.content.viewstate.ContentState
-import com.cultivaet.hassad.ui.main.notes.NoteDataItem
-import com.cultivaet.hassad.ui.main.notes.NotesAdapter
+import com.cultivaet.hassad.ui.main.tasks.notes.NoteDataItem
+import com.cultivaet.hassad.ui.main.tasks.notes.NotesAdapter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
