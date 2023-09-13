@@ -8,6 +8,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Environment
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
@@ -104,15 +105,20 @@ fun TextInputLayout.showError(context: Context): Boolean {
         }
     })
 
-    val isEmpty = textInputLayout.editText?.text.toString().isEmpty()
-    if (isEmpty) {
+    val text = textInputLayout.editText?.text.toString()
+    if (text.isEmpty()) {
         textInputLayout.error = context.getString(R.string.please_enter)
         textInputLayout.requestFocus()
     } else {
+        if (textInputLayout.editText?.inputType == InputType.TYPE_CLASS_PHONE && !text.isValidEgyptPhoneNumber()) {
+            textInputLayout.error = context.getString(R.string.phoneErrorMsg)
+            textInputLayout.requestFocus()
+            return false
+        }
         textInputLayout.error = null
     }
 
-    return !isEmpty
+    return text.isNotEmpty()
 }
 
 fun TextInputLayout.fillListOfTypesToAdapter(context: Context, list: List<String>) {

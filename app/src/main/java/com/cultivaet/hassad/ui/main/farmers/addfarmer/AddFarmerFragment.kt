@@ -119,7 +119,7 @@ class AddFarmerFragment : Fragment() {
                             firstName = firstName,
                             lastName = lastName,
                             phoneNumber = phoneNumber,
-                            gender = gender,
+                            gender = if (gender == getString(R.string.male)) "male" else "female",
                             age = age.toInt(),
                             address = address,
                             landArea = areaLand.toDouble(),

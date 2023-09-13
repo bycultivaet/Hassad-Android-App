@@ -71,4 +71,5 @@
     <string name="workingTasks">مهام العمل</string>
     <string name="notes">ملاحظات</string>
     <string name="noNotes">لا توجد ملاحظات</string>
+    <string name="phoneErrorMsg">برجاء إدخال رقم هاتف مصري صحيح</string>
 </resources>
