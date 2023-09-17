@@ -31,18 +31,18 @@ class ContentViewModel(
         viewModelScope.launch {
             contentIntent.consumeAsFlow().collect {
                 when (it) {
-                    is ContentIntent.FetchAllComments -> getAllCommentsByFormId(userId)
+                    is ContentIntent.FetchAllComments -> getAllCommentsByFacilitatorId(userId)
                 }
             }
         }
     }
 
-    private fun getAllCommentsByFormId(id: Int) {
+    private fun getAllCommentsByFacilitatorId(id: Int) {
         viewModelScope.launch {
             _state.value = ContentState.Loading
-            _state.value = when (val resource = contentUseCase.getAllCommentsByFormId(id)) {
+            _state.value = when (val resource = contentUseCase.getAllCommentsByFacilitatorId(id)) {
                 is Resource.Success -> {
-                    ContentState.Success(resource.data?.map { it.toNoteDataItem() })
+                    ContentState.Success(resource.data?.map { it.toCommentDataItem() })
                 }
 
                 is Resource.Error -> ContentState.Error(resource.error)

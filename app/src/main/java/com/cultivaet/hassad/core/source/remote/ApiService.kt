@@ -64,8 +64,8 @@ interface ApiService {
         @Path("id") id: Int,
     ): Response<List<Note>>
 
-    @GET(Constants.EndPoints.GetAllCommentsByFormId)
-    suspend fun getAllCommentsByFormId(
-        @Path("id") formId: Int,
-    ): Response<List<Note>>
+    @GET(Constants.EndPoints.GetAllCommentsByFacilitatorId)
+    suspend fun getAllCommentsByFacilitatorId(
+        @Path("id") id: Int,
+    ): Response<List<Comment>>
 }

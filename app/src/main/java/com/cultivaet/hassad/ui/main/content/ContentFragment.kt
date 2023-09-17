@@ -28,7 +28,7 @@ class ContentFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private var commentsAdapter: NotesAdapter = NotesAdapter()
+    private var commentsAdapter: CommentsAdapter = CommentsAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -71,7 +71,7 @@ class ContentFragment : Fragment() {
                             is List<*> -> {
                                 binding.noContent.visibility = View.GONE
 
-                                commentsAdapter.setItems(it.data as List<NoteDataItem>)
+                                commentsAdapter.setItems(it.data as List<CommentDataItem>)
                             }
 
                             else -> {}

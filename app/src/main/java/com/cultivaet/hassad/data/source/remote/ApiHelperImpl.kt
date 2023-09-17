@@ -2,6 +2,7 @@ package com.cultivaet.hassad.data.source.remote
 
 import com.cultivaet.hassad.core.source.remote.ApiService
 import com.cultivaet.hassad.domain.model.remote.requests.FacilitatorAnswer
+import com.cultivaet.hassad.domain.model.remote.responses.Comment
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
 import com.cultivaet.hassad.domain.model.remote.responses.Form
 import com.cultivaet.hassad.domain.model.remote.responses.ImageUUID
@@ -53,7 +54,7 @@ class ApiHelperImpl(private val apiService: ApiService) : ApiHelper {
         id: Int
     ): Response<List<Note>> = apiService.getAllNotesById(id)
 
-    override suspend fun getAllCommentsByFormId(
-        formId: Int
-    ): Response<List<Note>> = apiService.getAllCommentsByFormId(formId)
+    override suspend fun getAllCommentsByFacilitatorId(
+        id: Int
+    ): Response<List<Comment>> = apiService.getAllCommentsByFacilitatorId(id)
 }

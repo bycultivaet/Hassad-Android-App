@@ -1,5 +1,6 @@
 package com.cultivaet.hassad.data.source.remote
 
+import com.cultivaet.hassad.domain.model.remote.responses.Comment
 import com.cultivaet.hassad.domain.model.remote.responses.Facilitator
 import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
@@ -40,5 +41,5 @@ interface ApiHelper {
 
     suspend fun getAllNotesById(id: Int): Response<List<Note>>
 
-    suspend fun getAllCommentsByFormId(formId: Int): Response<List<Note>>
+    suspend fun getAllCommentsByFacilitatorId(id: Int): Response<List<Comment>>
 }

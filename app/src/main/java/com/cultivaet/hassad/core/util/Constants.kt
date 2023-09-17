@@ -23,7 +23,7 @@ object Constants {
 
         const val GetAllNotesById = "api/facilitator/{id}/notes"
 
-        const val GetAllCommentsByFormId = "api/facilitator/{id}/notes"
+        const val GetAllCommentsByFacilitatorId = "api/facilitator/{id}/farmers/comments"
     }
 
     object PreferenceKeys {
