@@ -5,6 +5,7 @@ import com.cultivaet.hassad.domain.model.remote.responses.Comment
 import com.cultivaet.hassad.domain.model.remote.responses.Facilitator
 import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
+import com.cultivaet.hassad.domain.model.remote.responses.FileByUUID
 import com.cultivaet.hassad.domain.model.remote.responses.Form
 import com.cultivaet.hassad.domain.model.remote.responses.ImageUUID
 import com.cultivaet.hassad.domain.model.remote.responses.Note
@@ -68,4 +69,9 @@ interface ApiService {
     suspend fun getAllCommentsByFacilitatorId(
         @Path("id") id: Int,
     ): Response<List<Comment>>
+
+    @GET(Constants.EndPoints.GetFileByUUID)
+    suspend fun getFileByUUID(
+        @Path("uuid") uuid: String,
+    ): Response<FileByUUID>
 }

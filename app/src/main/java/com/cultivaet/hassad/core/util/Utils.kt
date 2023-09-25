@@ -17,4 +17,8 @@ object Utils {
         1,
         Bitmap.Config.RGB_565
     )
+
+    fun getMediaType(mediaType: String): MediaType {
+        return if (mediaType == "image") MediaType.IMAGE else MediaType.PDF
+    }
 }

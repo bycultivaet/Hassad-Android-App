@@ -1,5 +1,5 @@
 [versions]
-agp = "8.3.0-alpha04"
+agp = "8.1.1"
 kotlin = "1.8.0"
 core-ktx = "1.10.1"
 junit = "4.13.2"
@@ -28,6 +28,8 @@ org-jetbrains-kotlin-android = "1.8.0"
 google-services = "4.3.15"
 firebase-crashlytics = "2.9.8"
 firebase = "32.2.2"
+pdf-viewer = "3.2.0-beta.3"
+photo-view = "2.0.0"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -65,6 +67,8 @@ play-services-location = { group = "com.google.android.gms", name = "play-servic
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase" }
 firebase-crashlytics-ktx = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
 firebase-analytics-ktx = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
+pdf-viewer = { group = "com.github.mhiew", name = "android-pdf-viewer", version.ref = "pdf-viewer" }
+photo-view = { group = "com.github.chrisbanes", name = "PhotoView", version.ref = "photo-view" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

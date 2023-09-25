@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.os.Bundle
 import android.os.Environment
 import android.text.Editable
 import android.text.InputType
@@ -48,9 +49,13 @@ fun Context.isConnectedToInternet(): Boolean {
 }
 
 inline fun <reified T : Activity> Activity.launchActivity(
+    bundle: Bundle? = null,
     withFinish: Boolean = false
 ) {
-    startActivity(Intent(this, T::class.java))
+    val intent = Intent(this, T::class.java)
+    if (bundle != null)
+        intent.putExtras(bundle)
+    startActivity(intent)
     overridePendingTransition(R.anim.slide_out_bottom, R.anim.slide_in_bottom)
     if (withFinish) this.finish()
 }

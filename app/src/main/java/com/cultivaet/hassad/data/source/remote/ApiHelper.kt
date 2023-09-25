@@ -4,6 +4,7 @@ import com.cultivaet.hassad.domain.model.remote.responses.Comment
 import com.cultivaet.hassad.domain.model.remote.responses.Facilitator
 import com.cultivaet.hassad.domain.model.remote.responses.FacilitatorAnswer
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
+import com.cultivaet.hassad.domain.model.remote.responses.FileByUUID
 import com.cultivaet.hassad.domain.model.remote.responses.Form
 import com.cultivaet.hassad.domain.model.remote.responses.ImageUUID
 import com.cultivaet.hassad.domain.model.remote.responses.Note
@@ -42,4 +43,6 @@ interface ApiHelper {
     suspend fun getAllNotesById(id: Int): Response<List<Note>>
 
     suspend fun getAllCommentsByFacilitatorId(id: Int): Response<List<Comment>>
+
+    suspend fun getFileByUUID(uuid: String): Response<FileByUUID>
 }

@@ -8,5 +8,6 @@ data class CommentDataItem(
     val farmerLastName: String,
     val mediaType: String,
     val mediaUuid: String,
-    val text: String
+    val text: String,
+    var base64: String? = null
 )
