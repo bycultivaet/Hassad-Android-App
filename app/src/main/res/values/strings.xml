@@ -71,4 +71,8 @@
     <string name="notes">ملاحظات</string>
     <string name="noNotes">لا توجد ملاحظات</string>
     <string name="phoneErrorMsg">برجاء إدخال رقم هاتف مصري صحيح</string>
+    <string name="show_media">إظهار الوسائط</string>
+    <string name="close">إغلاق</string>
+    <string name="farmer_name">اسم المزارع</string>
+    <string name="searchByFarmerName">ابحث بأسم المزارع</string>
 </resources>

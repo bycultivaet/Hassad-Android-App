@@ -2,7 +2,9 @@ package com.cultivaet.hassad.ui.media
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Base64
 import androidx.appcompat.app.AppCompatActivity
+import com.cultivaet.hassad.core.util.Constants
 import com.cultivaet.hassad.core.util.MediaType
 import com.cultivaet.hassad.databinding.ActivityMediaBinding
 
@@ -18,13 +20,19 @@ class MediaActivity : AppCompatActivity() {
 
         val bundle: Bundle? = intent.extras
         val mediaType = bundle?.getString("mediaType")
-        val decodedString = bundle?.getByteArray("base64")
+        val mediaId = bundle?.getString("mediaId")
+
+        val byteArray = Base64.decode(Constants.cacheMedia[mediaId], Base64.DEFAULT)
 
         if (mediaType == MediaType.IMAGE.toString()) {
-            val decodedImage = decodedString?.let { BitmapFactory.decodeByteArray(decodedString, 0, it.size) }
+            val decodedImage = byteArray?.let {
+                BitmapFactory.decodeByteArray(byteArray, 0, it.size)
+            }
             binding.photoView.setImageBitmap(decodedImage)
         } else {
-            binding.pdfView.fromBytes(decodedString).load()
+            binding.pdfView.fromBytes(byteArray).load()
         }
+
+        binding.close.setOnClickListener { finish() }
     }
 }

@@ -6,6 +6,8 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.cultivaet.hassad.BuildConfig
 
 object Constants {
+    val cacheMedia: HashMap<String, String> = hashMapOf()
+
     object EndPoints {
         const val GetFacilitatorByPhoneNumber = "api/facilitator/search/{phone}"
         const val GetFacilitatorById = "api/facilitator/{id}"

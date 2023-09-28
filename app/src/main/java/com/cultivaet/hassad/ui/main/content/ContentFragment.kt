@@ -1,7 +1,8 @@
 package com.cultivaet.hassad.ui.main.content
 
 import android.os.Bundle
-import android.util.Base64
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.cultivaet.hassad.core.extension.launchActivity
-import com.cultivaet.hassad.core.util.ImagePopupDialog
+import com.cultivaet.hassad.core.util.Constants
 import com.cultivaet.hassad.core.util.Utils
 import com.cultivaet.hassad.databinding.FragmentContentBinding
 import com.cultivaet.hassad.domain.model.remote.responses.FileByUUID
@@ -33,16 +34,19 @@ class ContentFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val commentsAdapter: CommentsAdapter by lazy {
-        CommentsAdapter { position ->
+        CommentsAdapter(requireActivity()) { position ->
             contentViewModel.position = position
             val task = commentsAdapter.mList[position]
-            if (task.base64 != null) {
+            if (Constants.cacheMedia.contains(task.mediaUuid)) {
                 activity?.launchActivity<MediaActivity>(Bundle().apply {
                     putString(
                         "mediaType",
                         Utils.getMediaType(task.mediaType).toString()
                     )
-                    putByteArray("base64", Base64.decode(task.base64, Base64.DEFAULT))
+                    putString(
+                        "mediaId",
+                        task.mediaUuid
+                    )
                 })
             } else {
                 // image -> ab819a3e-c788-47cc-a7e7-b63a9864db2f
@@ -67,6 +71,29 @@ class ContentFragment : Fragment() {
             contentViewModel.userId = (activity as MainActivity).getUserId()
 
             binding.commentsRecyclerView.adapter = commentsAdapter
+
+            binding.searchEditText.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    val searchStr = s.toString()
+                    val filteredList = contentViewModel.commentsList?.filter {
+                        it.farmerFirstName.contains(searchStr) || it.farmerLastName.contains(searchStr)
+                    }
+                    if (filteredList != null) {
+                        commentsAdapter.setItems(filteredList)
+                    }
+                }
+            })
         }
         return binding.root
     }
@@ -96,23 +123,24 @@ class ContentFragment : Fragment() {
                         when (it.data) {
                             is List<*> -> {
                                 binding.noContent.visibility = View.GONE
+                                binding.contentLinearLayout.visibility = View.VISIBLE
 
                                 commentsAdapter.setItems(it.data as MutableList<CommentDataItem>)
                             }
 
                             is FileByUUID -> {
-                                commentsAdapter.mList[contentViewModel.position].base64 =
+                                Constants.cacheMedia[commentsAdapter.mList[contentViewModel.position].mediaUuid] =
                                     it.data.image
-//                                ImagePopupDialog(requireContext(), it.data.image).apply { show() }
                                 activity?.launchActivity<MediaActivity>(Bundle().apply {
                                     putString(
                                         "mediaType",
-                                        Utils.getMediaType(commentsAdapter.mList[contentViewModel.position].mediaType)
-                                            .toString()
+                                        Utils.getMediaType(
+                                            commentsAdapter.mList[contentViewModel.position].mediaType
+                                        ).toString()
                                     )
-                                    putByteArray(
-                                        "base64",
-                                        Base64.decode(it.data.image, Base64.DEFAULT)
+                                    putString(
+                                        "mediaId",
+                                        commentsAdapter.mList[contentViewModel.position].mediaUuid
                                     )
                                 })
                             }

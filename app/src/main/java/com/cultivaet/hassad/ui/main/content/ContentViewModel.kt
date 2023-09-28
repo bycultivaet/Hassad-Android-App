@@ -21,6 +21,8 @@ class ContentViewModel(
     private val _state = MutableStateFlow<ContentState>(ContentState.Idle)
     val state: StateFlow<ContentState> = _state
 
+    var commentsList: List<CommentDataItem>? = null
+
     internal var userId: Int = -1
 
     internal var position: Int = -1
@@ -47,14 +49,14 @@ class ContentViewModel(
             _state.value = ContentState.Loading
             _state.value = when (val resource = contentUseCase.getAllCommentsByFacilitatorId(id)) {
                 is Resource.Success -> {
-                    ContentState.Success(resource.data?.map { it.toCommentDataItem() })
+                    commentsList = resource.data?.map { it.toCommentDataItem() }
+                    ContentState.Success(commentsList)
                 }
 
                 is Resource.Error -> ContentState.Error(resource.error)
             }
         }
     }
-
 
     private fun getFileByUUID(uuid: String) {
         viewModelScope.launch {
