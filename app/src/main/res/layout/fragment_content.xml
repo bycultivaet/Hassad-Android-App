@@ -24,6 +24,7 @@
             android:drawablePadding="@dimen/_8sdp"
             android:hint="@string/searchByFarmerName"
             android:imeOptions="actionDone"
+            android:importantForAutofill="noExcludeDescendants"
             android:maxLines="1"
             android:padding="@dimen/_8sdp"
             android:singleLine="true"
