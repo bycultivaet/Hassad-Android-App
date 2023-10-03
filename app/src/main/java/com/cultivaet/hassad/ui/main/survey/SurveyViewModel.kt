@@ -84,7 +84,8 @@ class SurveyViewModel(
                 if (data != null) {
                     facilitatorForm.ID = data.ID
                     facilitatorForm.description = data.description
-                    facilitatorForm.fields = data.fields
+                    if (data.fields != null)
+                        facilitatorForm.fields = data.fields
                     facilitatorForm.name = data.name
                     setFacilitatorForm(facilitatorForm)
                 }

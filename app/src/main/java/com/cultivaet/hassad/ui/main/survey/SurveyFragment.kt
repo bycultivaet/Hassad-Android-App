@@ -183,7 +183,7 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
         imagesAdapter.setItems(mutableListOf(Utils.dummyBitmap()))
 
         surveyViewModel.facilitatorAnswer.formId = form.ID
-        form.fields.forEachIndexed { index, field ->
+        form.fields?.forEachIndexed { index, field ->
             val viewGroup = when (field.type) {
                 "date" -> {
                     addConstraintLayout(field)
