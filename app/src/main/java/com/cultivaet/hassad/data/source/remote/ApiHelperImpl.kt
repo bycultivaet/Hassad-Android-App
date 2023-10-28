@@ -2,6 +2,7 @@ package com.cultivaet.hassad.data.source.remote
 
 import com.cultivaet.hassad.core.source.remote.ApiService
 import com.cultivaet.hassad.domain.model.remote.requests.FacilitatorAnswer
+import com.cultivaet.hassad.domain.model.remote.responses.Answer
 import com.cultivaet.hassad.domain.model.remote.responses.Comment
 import com.cultivaet.hassad.domain.model.remote.responses.Farmer
 import com.cultivaet.hassad.domain.model.remote.responses.FileByUUID
@@ -58,6 +59,10 @@ class ApiHelperImpl(private val apiService: ApiService) : ApiHelper {
     override suspend fun getAllCommentsByFacilitatorId(
         id: Int
     ): Response<List<Comment>> = apiService.getAllCommentsByFacilitatorId(id)
+
+    override suspend fun getAnswerById(
+        id: Int
+    ): Response<Answer> = apiService.getAnswerById(id)
 
     override suspend fun getFileByUUID(
         uuid: String

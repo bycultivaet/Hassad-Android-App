@@ -9,5 +9,7 @@ data class CommentDataItem(
     val mediaType: String,
     val mediaUuid: String,
     val text: String,
-    var base64: String? = null
+    var isExpandable: Boolean = false,
+    var answerText: String? = "",
+    var base64: String? = null,
 )

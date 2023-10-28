@@ -28,6 +28,8 @@ class ContentViewModel(
     internal var position: Int = -1
     internal var uuid: String? = null
 
+    internal var answerId = -1
+
     init {
         handleIntent()
     }
@@ -37,6 +39,8 @@ class ContentViewModel(
             contentIntent.consumeAsFlow().collect {
                 when (it) {
                     is ContentIntent.FetchAllComments -> getAllCommentsByFacilitatorId(userId)
+
+                    is ContentIntent.FetchAnswerById -> getAnswerById(answerId)
 
                     is ContentIntent.FetchFile -> uuid?.let { uuid -> getFileByUUID(uuid) }
                 }
@@ -51,6 +55,19 @@ class ContentViewModel(
                 is Resource.Success -> {
                     commentsList = resource.data?.map { it.toCommentDataItem() }
                     ContentState.Success(commentsList)
+                }
+
+                is Resource.Error -> ContentState.Error(resource.error)
+            }
+        }
+    }
+
+    private fun getAnswerById(id: Int) {
+        viewModelScope.launch {
+            _state.value = ContentState.Loading
+            _state.value = when (val resource = contentUseCase.getAnswerById(id)) {
+                is Resource.Success -> {
+                    ContentState.Success(resource.data)
                 }
 
                 is Resource.Error -> ContentState.Error(resource.error)

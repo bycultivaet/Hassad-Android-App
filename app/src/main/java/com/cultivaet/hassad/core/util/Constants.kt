@@ -26,6 +26,7 @@ object Constants {
         const val GetAllNotesById = "api/facilitator/{id}/notes"
 
         const val GetAllCommentsByFacilitatorId = "api/facilitator/{id}/farmers/comments"
+        const val GetAnswerById = "api/answer/{id}"
 
         const val GetFileByUUID = "api/images/{uuid}"
     }

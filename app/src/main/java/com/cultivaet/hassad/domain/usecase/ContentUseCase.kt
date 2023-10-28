@@ -7,6 +7,10 @@ class ContentUseCase(private val repository: ContentRepository) {
         id: Int,
     ) = repository.getAllCommentsByFacilitatorId(id)
 
+    suspend fun getAnswerById(
+        id: Int,
+    ) = repository.getAnswerById(id)
+
     suspend fun getFileByUUID(
         uuid: String,
     ) = repository.getFileByUUID(uuid)
