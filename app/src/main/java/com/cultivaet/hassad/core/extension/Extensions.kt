@@ -16,6 +16,9 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.LinearLayout
+import androidx.annotation.IdRes
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph
 import com.cultivaet.hassad.R
 import com.google.android.material.textfield.TextInputLayout
 import java.io.File
@@ -149,4 +152,21 @@ fun Context.createTempImageFile(): File {
         ".jpg", /* suffix */
         storageDir /* directory */
     )
+}
+
+fun Int?.orEmpty(default: Int = 0): Int {
+    return this ?: default
+}
+
+fun NavController.navigateSafe(@IdRes resId: Int, args: Bundle? = null) {
+    val destinationId = currentDestination?.getAction(resId)?.destinationId.orEmpty()
+    currentDestination?.let { node ->
+        val currentNode = when (node) {
+            is NavGraph -> node
+            else -> node.parent
+        }
+        if (destinationId != 0) {
+            currentNode?.findNode(destinationId)?.let { navigate(resId, args) }
+        }
+    }
 }

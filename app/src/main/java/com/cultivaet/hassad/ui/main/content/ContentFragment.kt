@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.cultivaet.hassad.R
 import com.cultivaet.hassad.core.extension.launchActivity
 import com.cultivaet.hassad.core.util.Constants
 import com.cultivaet.hassad.core.util.Utils
@@ -137,7 +138,14 @@ class ContentFragment : Fragment() {
 
                         when (it.data) {
                             is Answer -> {
-                                commentsAdapter.mList[contentViewModel.position].answerText = it.data.toString()
+                                var answerText = getString(R.string.noData)
+                                if (it.data.answers.isNotEmpty()) {
+                                    val answer = it.data.answers[it.data.answers.size - 1]
+                                    if (answer.type != "image" && answer.body.isNotEmpty()) {
+                                        answerText = answer.body
+                                    }
+                                }
+                                commentsAdapter.mList[contentViewModel.position].answerText = answerText
                                 commentsAdapter.mList[contentViewModel.position].isExpandable = true
                                 commentsAdapter.notifyDataSetChanged()
                             }
@@ -155,8 +163,7 @@ class ContentFragment : Fragment() {
                             }
 
                             is FileByUUID -> {
-                                Constants.cacheMedia[commentsAdapter.mList[contentViewModel.position].mediaUuid] =
-                                    it.data.image
+                                Constants.cacheMedia[commentsAdapter.mList[contentViewModel.position].mediaUuid] = it.data.image
                                 activity?.launchActivity<MediaActivity>(Bundle().apply {
                                     putString(
                                         "mediaType",

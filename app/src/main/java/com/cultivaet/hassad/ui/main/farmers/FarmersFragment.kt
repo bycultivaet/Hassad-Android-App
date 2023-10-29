@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.cultivaet.hassad.R
+import com.cultivaet.hassad.core.extension.navigateSafe
 import com.cultivaet.hassad.databinding.FragmentFarmersBinding
 import com.cultivaet.hassad.ui.main.MainActivity
 import com.cultivaet.hassad.ui.main.farmers.intent.FarmersIntent
@@ -77,7 +78,7 @@ class FarmersFragment : Fragment(), FarmersOfflineListener {
             })
 
             binding.fab.setOnClickListener { _ ->
-                findNavController().navigate(R.id.to_add_farmer_fragment)
+                findNavController().navigateSafe(R.id.to_add_farmer_fragment)
             }
         }
         return binding.root
