@@ -36,7 +36,7 @@ class CommentsAdapter(
         holder.apply {
             title.text = task.text
             text.text = "${context.getString(R.string.farmer_name)}: ${task.farmerFirstName} ${task.farmerLastName}"
-            answerText.text = "${context.getString(R.string.answer)}: ${task.answerText}"
+            answerText.text = "${context.getString(R.string.question)}: ${task.answerText}"
             showMedia.setImageResource(
                 if (Utils.getMediaType(task.mediaType).toString() == MediaType.IMAGE.toString()) {
                     R.drawable.ic_image

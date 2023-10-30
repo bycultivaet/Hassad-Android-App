@@ -75,6 +75,6 @@
     <string name="close">إغلاق</string>
     <string name="farmer_name">اسم المزارع</string>
     <string name="searchByFarmerName">ابحث بأسم المزارع</string>
-    <string name="answer">الاجابة</string>
+    <string name="question">السؤال</string>
     <string name="noData">لا يوجد</string>
 </resources>
