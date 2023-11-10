@@ -12,6 +12,7 @@ import com.cultivaet.hassad.domain.model.remote.responses.ImageUUID
 import com.cultivaet.hassad.domain.model.remote.responses.Note
 import com.cultivaet.hassad.domain.model.remote.responses.Task
 import com.cultivaet.hassad.domain.model.remote.responses.UpdateStatus
+import com.cultivaet.hassad.domain.model.remote.responses.Visit
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -65,6 +66,17 @@ interface ApiService {
     suspend fun getAllNotesById(
         @Path("id") id: Int,
     ): Response<List<Note>>
+
+    @GET(Constants.EndPoints.GetFVVisitsByFacilitatorId)
+    suspend fun getFVVisitsByFacilitatorId(
+        @Path("id") id: Int,
+    ): Response<List<Visit>>
+
+    @GET(Constants.EndPoints.GetFFSVisitsByFacilitatorId)
+    suspend fun getFFSVisitsByFacilitatorId(
+        @Path("id") id: Int,
+        @Query("active") active: Boolean
+    ): Response<List<Visit>>
 
     @GET(Constants.EndPoints.GetAllCommentsByFacilitatorId)
     suspend fun getAllCommentsByFacilitatorId(

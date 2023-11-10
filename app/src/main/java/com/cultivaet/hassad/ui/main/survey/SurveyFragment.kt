@@ -82,7 +82,7 @@ class SurveyFragment : Fragment(), SurveyOfflineListener {
 
             lifecycleScope.launch {
                 surveyViewModel.surveyIntent.send(
-                    SurveyIntent.GetFacilitatorForm
+                    SurveyIntent.FetchFacilitatorForm
                 )
             }
 

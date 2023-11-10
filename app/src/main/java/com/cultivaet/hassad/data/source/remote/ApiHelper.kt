@@ -11,6 +11,7 @@ import com.cultivaet.hassad.domain.model.remote.responses.ImageUUID
 import com.cultivaet.hassad.domain.model.remote.responses.Note
 import com.cultivaet.hassad.domain.model.remote.responses.Task
 import com.cultivaet.hassad.domain.model.remote.responses.UpdateStatus
+import com.cultivaet.hassad.domain.model.remote.responses.Visit
 import okhttp3.MultipartBody
 import retrofit2.Response
 
@@ -42,6 +43,10 @@ interface ApiHelper {
     ): Response<UpdateStatus>
 
     suspend fun getAllNotesById(id: Int): Response<List<Note>>
+
+    suspend fun getFVVisitsByFacilitatorId(id: Int): Response<List<Visit>>
+
+    suspend fun getFFSVisitsByFacilitatorId(id: Int, active: Boolean): Response<List<Visit>>
 
     suspend fun getAllCommentsByFacilitatorId(id: Int): Response<List<Comment>>
 

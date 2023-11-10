@@ -13,6 +13,8 @@ import com.cultivaet.hassad.ui.main.tasks.intent.TasksIntent
 import com.cultivaet.hassad.ui.main.tasks.notes.NoteDataItem
 import com.cultivaet.hassad.ui.main.tasks.notes.NotesAdapter
 import com.cultivaet.hassad.ui.main.tasks.viewstate.TasksState
+import com.cultivaet.hassad.ui.main.tasks.visits.VisitDataItem
+import com.cultivaet.hassad.ui.main.tasks.visits.VisitsAdapter
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -32,6 +34,8 @@ class TasksFragment : Fragment() {
     private lateinit var tasksAdapter: TasksAdapter
 
     private val notesAdapter: NotesAdapter = NotesAdapter()
+
+    private val schedulesAdapter: VisitsAdapter = VisitsAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -54,6 +58,8 @@ class TasksFragment : Fragment() {
             binding.tasksRecyclerView.adapter = tasksAdapter
 
             binding.notesRecyclerView.adapter = notesAdapter
+
+            binding.schedulesRecyclerView.adapter = schedulesAdapter
         }
         return binding.root
     }
@@ -64,9 +70,15 @@ class TasksFragment : Fragment() {
                 if (tab?.position == 0) {
                     binding.tasks.visibility = View.VISIBLE
                     binding.notes.visibility = View.GONE
+                    binding.schedules.visibility = View.GONE
                 } else if (tab?.position == 1) {
                     binding.tasks.visibility = View.GONE
                     binding.notes.visibility = View.VISIBLE
+                    binding.schedules.visibility = View.GONE
+                } else if (tab?.position == 2) {
+                    binding.tasks.visibility = View.GONE
+                    binding.notes.visibility = View.GONE
+                    binding.schedules.visibility = View.VISIBLE
                 }
             }
 
@@ -82,6 +94,8 @@ class TasksFragment : Fragment() {
             lifecycleScope.launch { tasksViewModel.tasksIntent.send(TasksIntent.FetchAllTasks) }
 
             lifecycleScope.launch { tasksViewModel.tasksIntent.send(TasksIntent.FetchAllNotes) }
+
+            lifecycleScope.launch { tasksViewModel.tasksIntent.send(TasksIntent.FetchAllVisits) }
         }
     }
 
@@ -110,6 +124,11 @@ class TasksFragment : Fragment() {
                                     binding.noNotes.visibility = View.GONE
 
                                     notesAdapter.setItems(result as List<NoteDataItem>)
+                                } else if (result.isNotEmpty() && result[0] is VisitDataItem) {
+                                    binding.noSchedules.visibility = View.GONE
+
+                                    schedulesAdapter.mList.addAll(result as List<VisitDataItem>)
+                                    schedulesAdapter.setItems(schedulesAdapter.mList)
                                 }
                             }
 

@@ -11,6 +11,7 @@ import com.cultivaet.hassad.domain.model.remote.responses.ImageUUID
 import com.cultivaet.hassad.domain.model.remote.responses.Note
 import com.cultivaet.hassad.domain.model.remote.responses.Task
 import com.cultivaet.hassad.domain.model.remote.responses.UpdateStatus
+import com.cultivaet.hassad.domain.model.remote.responses.Visit
 import okhttp3.MultipartBody
 import retrofit2.Response
 
@@ -55,6 +56,15 @@ class ApiHelperImpl(private val apiService: ApiService) : ApiHelper {
     override suspend fun getAllNotesById(
         id: Int
     ): Response<List<Note>> = apiService.getAllNotesById(id)
+
+    override suspend fun getFVVisitsByFacilitatorId(
+        id: Int
+    ): Response<List<Visit>> = apiService.getFVVisitsByFacilitatorId(id)
+
+    override suspend fun getFFSVisitsByFacilitatorId(
+        id: Int,
+        active: Boolean
+    ): Response<List<Visit>> = apiService.getFFSVisitsByFacilitatorId(id, active)
 
     override suspend fun getAllCommentsByFacilitatorId(
         id: Int

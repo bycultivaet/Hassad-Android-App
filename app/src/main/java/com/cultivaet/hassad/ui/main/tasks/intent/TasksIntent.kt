@@ -6,4 +6,6 @@ sealed class TasksIntent {
     object UpdateTaskStatus : TasksIntent()
 
     object FetchAllNotes : TasksIntent()
+
+    object FetchAllVisits : TasksIntent()
 }

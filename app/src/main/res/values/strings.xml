@@ -77,4 +77,6 @@
     <string name="searchByFarmerName">ابحث بأسم المزارع</string>
     <string name="question">السؤال</string>
     <string name="noData">لا يوجد</string>
+    <string name="schedules">الجداول</string>
+    <string name="noSchedules">لا توجد جداول</string>
 </resources>

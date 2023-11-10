@@ -6,6 +6,7 @@ import com.cultivaet.hassad.data.source.remote.ApiHelper
 import com.cultivaet.hassad.domain.model.remote.responses.Note
 import com.cultivaet.hassad.domain.model.remote.responses.Task
 import com.cultivaet.hassad.domain.model.remote.responses.UpdateStatus
+import com.cultivaet.hassad.domain.model.remote.responses.Visit
 import com.cultivaet.hassad.domain.repository.TasksRepository
 
 class TasksRepositoryImpl(
@@ -26,4 +27,13 @@ class TasksRepositoryImpl(
     override suspend fun getAllNotesById(
         id: Int
     ): Resource<List<Note>> = safeApiCall { apiHelper.getAllNotesById(id) }
+
+    override suspend fun getFVVisitsByFacilitatorId(
+        id: Int
+    ): Resource<List<Visit>> = safeApiCall { apiHelper.getFVVisitsByFacilitatorId(id) }
+
+    override suspend fun getFFSVisitsByFacilitatorId(
+        id: Int,
+        active: Boolean
+    ): Resource<List<Visit>> = safeApiCall { apiHelper.getFFSVisitsByFacilitatorId(id, active) }
 }

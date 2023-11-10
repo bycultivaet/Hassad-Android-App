@@ -29,6 +29,9 @@ object Constants {
         const val GetAnswerById = "api/answer/{id}"
 
         const val GetFileByUUID = "api/images/{uuid}"
+
+        const val GetFVVisitsByFacilitatorId = "api/facilitator/{id}/fv/visits"
+        const val GetFFSVisitsByFacilitatorId = "api/facilitator/{id}/ffs/visits"
     }
 
     object PreferenceKeys {

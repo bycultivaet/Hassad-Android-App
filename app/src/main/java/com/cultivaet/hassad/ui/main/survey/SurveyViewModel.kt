@@ -90,6 +90,18 @@ class SurveyViewModel(
                     setFacilitatorForm(facilitatorForm)
                 }
             }
+
+            surveyUseCase.getFacilitatorForm().collect { facilitatorFormJson ->
+                if (facilitatorFormJson != null) {
+                    if (facilitatorFormJson.isNotEmpty()) {
+                        val form = Utils.fromJson<Form>(facilitatorFormJson)
+                        facilitatorForm.ID = form.ID
+                        facilitatorForm.description = form.description
+                        facilitatorForm.fields = form.fields
+                        facilitatorForm.name = form.name
+                    }
+                }
+            }
         }
     }
 
@@ -130,14 +142,15 @@ class SurveyViewModel(
     private fun getFacilitatorForm() {
         viewModelScope.launch {
             surveyUseCase.getFacilitatorForm().collect { facilitatorFormJson ->
-                if (facilitatorFormJson.isNullOrEmpty()) {
-                    getFacilitatorForm(facilitatorAnswer.userId)
-                } else {
-                    val form = Utils.fromJson<Form>(facilitatorFormJson)
-                    facilitatorForm.ID = form.ID
-                    facilitatorForm.description = form.description
-                    facilitatorForm.fields = form.fields
-                    facilitatorForm.name = form.name
+                getFacilitatorForm(facilitatorAnswer.userId)
+                if (facilitatorFormJson != null) {
+                    if (facilitatorFormJson.isNotEmpty()) {
+                        val form = Utils.fromJson<Form>(facilitatorFormJson)
+                        facilitatorForm.ID = form.ID
+                        facilitatorForm.description = form.description
+                        facilitatorForm.fields = form.fields
+                        facilitatorForm.name = form.name
+                    }
                 }
             }
         }

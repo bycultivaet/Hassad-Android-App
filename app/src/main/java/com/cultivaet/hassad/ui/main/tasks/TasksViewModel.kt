@@ -40,6 +40,11 @@ class TasksViewModel(
                     }
 
                     is TasksIntent.FetchAllNotes -> getAllNotesById(userId)
+
+                    is TasksIntent.FetchAllVisits -> {
+                        getFVVisitsByFacilitatorId(userId)
+                        getFFSVisitsByFacilitatorId(userId)
+                    }
                 }
             }
         }
@@ -82,6 +87,32 @@ class TasksViewModel(
             _state.value = when (val resource = tasksUseCase.getAllNotesById(id)) {
                 is Resource.Success -> {
                     TasksState.Success(resource.data?.map { it.toNoteDataItem() })
+                }
+
+                is Resource.Error -> TasksState.Error(resource.error)
+            }
+        }
+    }
+
+    private fun getFVVisitsByFacilitatorId(id: Int) {
+        viewModelScope.launch {
+            _state.value = TasksState.Loading
+            _state.value = when (val resource = tasksUseCase.getFVVisitsByFacilitatorId(id)) {
+                is Resource.Success -> {
+                    TasksState.Success(resource.data?.map { it.toVisitDataItem() })
+                }
+
+                is Resource.Error -> TasksState.Error(resource.error)
+            }
+        }
+    }
+
+    private fun getFFSVisitsByFacilitatorId(id: Int) {
+        viewModelScope.launch {
+            _state.value = TasksState.Loading
+            _state.value = when (val resource = tasksUseCase.getFFSVisitsByFacilitatorId(id, false)) {
+                is Resource.Success -> {
+                    TasksState.Success(resource.data?.map { it.toVisitDataItem() })
                 }
 
                 is Resource.Error -> TasksState.Error(resource.error)

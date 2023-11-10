@@ -16,4 +16,13 @@ class TasksUseCase(private val repository: TasksRepository) {
     suspend fun getAllNotesById(
         id: Int,
     ) = repository.getAllNotesById(id)
+
+    suspend fun getFVVisitsByFacilitatorId(
+        id: Int,
+    ) = repository.getFVVisitsByFacilitatorId(id)
+
+    suspend fun getFFSVisitsByFacilitatorId(
+        id: Int,
+        active: Boolean = true
+    ) = repository.getFFSVisitsByFacilitatorId(id, active)
 }
